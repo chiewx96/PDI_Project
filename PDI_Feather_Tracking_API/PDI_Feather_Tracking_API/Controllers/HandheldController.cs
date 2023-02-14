@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Metadata.Ecma335;
-using WeightScanAPI.Models;
+using PDI_Feather_Tracking_API.Models;
 
-namespace WeightScanAPI.Controllers
+namespace PDI_Feather_Tracking_API.Controllers
 {
     // [Controller("User")]
     [Route("handheld")]

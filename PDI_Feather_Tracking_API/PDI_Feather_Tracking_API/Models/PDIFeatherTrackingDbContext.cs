@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using System.Configuration;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
 using EFWeightScan;
 
-namespace WeightScanAPI.Models;
+namespace PDI_Feather_Tracking_API.Models;
 
 public partial class PDIFeatherTrackingDbContext : DbContext
 {

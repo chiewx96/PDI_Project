@@ -1,4 +1,4 @@
-﻿namespace WeightScanAPI.DataModel
+﻿namespace PDI_Feather_Tracking_API.DataModel
 {
     public class ModuleAccess
     {

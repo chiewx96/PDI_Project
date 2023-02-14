@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using WeightScanAPI.Models;
+using PDI_Feather_Tracking_API.Models;
 
 #nullable disable
 
-namespace WeightScanAPI.Migrations
+namespace PDI_Feather_Tracking_API.Migrations
 {
     [DbContext(typeof(PDIFeatherTrackingDbContext))]
     [Migration("20230214163430_AddModuleSeeder")]
@@ -22,7 +22,7 @@ namespace WeightScanAPI.Migrations
                 .HasAnnotation("ProductVersion", "7.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("WeightScanAPI.DataModel.ModuleAccess", b =>
+            modelBuilder.Entity("PDI_Feather_Tracking_API.DataModel.ModuleAccess", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -36,7 +36,7 @@ namespace WeightScanAPI.Migrations
                     b.ToTable("ModuleAccess");
                 });
 
-            modelBuilder.Entity("WeightScanAPI.Models.InventoryRecords", b =>
+            modelBuilder.Entity("PDI_Feather_Tracking_API.Models.InventoryRecords", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -86,7 +86,7 @@ namespace WeightScanAPI.Migrations
                     b.ToTable("InventoryRecords");
                 });
 
-            modelBuilder.Entity("WeightScanAPI.Models.Module", b =>
+            modelBuilder.Entity("PDI_Feather_Tracking_API.Models.Module", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -101,7 +101,7 @@ namespace WeightScanAPI.Migrations
                     b.ToTable("Module");
                 });
 
-            modelBuilder.Entity("WeightScanAPI.Models.SkuType", b =>
+            modelBuilder.Entity("PDI_Feather_Tracking_API.Models.SkuType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -131,7 +131,7 @@ namespace WeightScanAPI.Migrations
                     b.ToTable("SkuType");
                 });
 
-            modelBuilder.Entity("WeightScanAPI.Models.TareWeightSetting", b =>
+            modelBuilder.Entity("PDI_Feather_Tracking_API.Models.TareWeightSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -172,7 +172,7 @@ namespace WeightScanAPI.Migrations
                         });
                 });
 
-            modelBuilder.Entity("WeightScanAPI.Models.User", b =>
+            modelBuilder.Entity("PDI_Feather_Tracking_API.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -234,7 +234,7 @@ namespace WeightScanAPI.Migrations
                         });
                 });
 
-            modelBuilder.Entity("WeightScanAPI.Models.UserLevel", b =>
+            modelBuilder.Entity("PDI_Feather_Tracking_API.Models.UserLevel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -311,9 +311,9 @@ namespace WeightScanAPI.Migrations
                         });
                 });
 
-            modelBuilder.Entity("WeightScanAPI.Models.InventoryRecords", b =>
+            modelBuilder.Entity("PDI_Feather_Tracking_API.Models.InventoryRecords", b =>
                 {
-                    b.HasOne("WeightScanAPI.Models.SkuType", "SkuType")
+                    b.HasOne("PDI_Feather_Tracking_API.Models.SkuType", "SkuType")
                         .WithMany("InventoryRecords")
                         .HasForeignKey("SkuTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -322,9 +322,9 @@ namespace WeightScanAPI.Migrations
                     b.Navigation("SkuType");
                 });
 
-            modelBuilder.Entity("WeightScanAPI.Models.User", b =>
+            modelBuilder.Entity("PDI_Feather_Tracking_API.Models.User", b =>
                 {
-                    b.HasOne("WeightScanAPI.Models.UserLevel", "UserLevel")
+                    b.HasOne("PDI_Feather_Tracking_API.Models.UserLevel", "UserLevel")
                         .WithMany("Users")
                         .HasForeignKey("UserLevelId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -333,21 +333,21 @@ namespace WeightScanAPI.Migrations
                     b.Navigation("UserLevel");
                 });
 
-            modelBuilder.Entity("WeightScanAPI.Models.UserLevel", b =>
+            modelBuilder.Entity("PDI_Feather_Tracking_API.Models.UserLevel", b =>
                 {
-                    b.HasOne("WeightScanAPI.DataModel.ModuleAccess", "ModuleAccess")
+                    b.HasOne("PDI_Feather_Tracking_API.DataModel.ModuleAccess", "ModuleAccess")
                         .WithMany()
                         .HasForeignKey("ModuleAccessid");
 
                     b.Navigation("ModuleAccess");
                 });
 
-            modelBuilder.Entity("WeightScanAPI.Models.SkuType", b =>
+            modelBuilder.Entity("PDI_Feather_Tracking_API.Models.SkuType", b =>
                 {
                     b.Navigation("InventoryRecords");
                 });
 
-            modelBuilder.Entity("WeightScanAPI.Models.UserLevel", b =>
+            modelBuilder.Entity("PDI_Feather_Tracking_API.Models.UserLevel", b =>
                 {
                     b.Navigation("Users");
                 });

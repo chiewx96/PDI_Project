@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace WeightScanAPI.Controllers
+namespace PDI_Feather_Tracking_API.Controllers
 {
     [ApiController]
     [Route("[controller]")]

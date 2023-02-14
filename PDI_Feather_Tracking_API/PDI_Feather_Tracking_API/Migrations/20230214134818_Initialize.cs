@@ -6,7 +6,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace WeightScanAPI.Migrations
+namespace PDI_Feather_Tracking_API.Migrations
 {
     /// <inheritdoc />
     public partial class Initialize : Migration

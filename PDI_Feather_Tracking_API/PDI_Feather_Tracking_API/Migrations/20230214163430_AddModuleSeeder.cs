@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace WeightScanAPI.Migrations
+namespace PDI_Feather_Tracking_API.Migrations
 {
     /// <inheritdoc />
     public partial class AddModuleSeeder : Migration

@@ -1,7 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using PDI_Feather_Tracking_WPF.DataModel;
 
-namespace PDI_Feather_Tracking_API.Models
+namespace PDI_Feather_Tracking_WPF.Models
 {
     public class SkuType
     {

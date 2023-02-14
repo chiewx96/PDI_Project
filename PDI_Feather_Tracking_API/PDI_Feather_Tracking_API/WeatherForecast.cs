@@ -1,4 +1,4 @@
-namespace WeightScanAPI
+namespace PDI_Feather_Tracking_API
 {
     public class WeatherForecast
     {

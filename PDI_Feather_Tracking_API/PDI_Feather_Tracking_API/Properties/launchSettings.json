@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "WeightScanAPI": {
+    "PDI_Feather_Tracking_API": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
