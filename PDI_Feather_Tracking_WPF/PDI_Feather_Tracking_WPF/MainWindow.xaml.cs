@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PDI_Feather_Tracking_WPF.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,40 @@ namespace PDI_Feather_Tracking_WPF
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainViewModel();
+
+        }
+
+        private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void MenuToggleButton_OnClick(object sender, RoutedEventArgs e)
+        {
+
+
+        }
+
+        private void MenuDarkModeButton_Click(object sender, RoutedEventArgs e)
+        {
+
+
+        }
+
+        private void FlowDirectionButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuPopupButton_OnClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void OnSelectedItemChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+
         }
     }
 }
