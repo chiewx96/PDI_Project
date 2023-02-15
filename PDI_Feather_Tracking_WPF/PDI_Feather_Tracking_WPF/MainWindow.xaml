@@ -32,11 +32,10 @@
                             <TextBox x:Name="DemoItemsSearchBox" Width="200" Margin="16,4" materialDesign:HintAssist.Hint="Search" 
                                      materialDesign:TextFieldAssist.DecorationVisibility="Collapsed" materialDesign:TextFieldAssist.HasClearButton="True" 
                                      DockPanel.Dock="Top" Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignOutlinedTextBox}"/>
-
                             <ListBox x:Name="DemoItemsListBox"
                    Margin="0,16,0,16"
                    AutomationProperties.Name="DemoPagesListBox"
-                   ItemsSource="{Binding DemoItems}"
+                   ItemsSource="{Binding MenuItems}"
                    PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp"
                    SelectedIndex="{Binding SelectedIndex}"
                    SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}"
