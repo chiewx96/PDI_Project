@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -21,28 +22,32 @@ namespace PDI_Feather_Tracking_WPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-            DataContext = new MainViewModel();
+        MainViewModel _mainViewModel;
 
+        public MainViewModel MainViewModel
+        {
+            get { return _mainViewModel; }
+        }
+
+
+        public MainWindow(MainViewModel mainViewModel)
+        {
+            _mainViewModel = mainViewModel;
+            DataContext = _mainViewModel;
+            InitializeComponent();
         }
 
         private void UIElement_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            var dependencyObject = Mouse.Captured as DependencyObject;
 
-        }
+            while (dependencyObject != null)
+            {
+                if (dependencyObject is ScrollBar) return;
+                dependencyObject = VisualTreeHelper.GetParent(dependencyObject);
+            }
 
-        private void MenuToggleButton_OnClick(object sender, RoutedEventArgs e)
-        {
-
-
-        }
-
-        private void MenuDarkModeButton_Click(object sender, RoutedEventArgs e)
-        {
-
-
+            MenuToggleButton.IsChecked = false;
         }
 
         private void FlowDirectionButton_Click(object sender, RoutedEventArgs e)
@@ -56,8 +61,6 @@ namespace PDI_Feather_Tracking_WPF
         }
 
         private void OnSelectedItemChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-
-        }
+            => MainScrollViewer.ScrollToHome();
     }
 }

@@ -10,22 +10,20 @@ public class MenuItem : ViewModelBase
     private readonly Type _contentType;
     private readonly object? _dataContext;
 
-    private object? _content;
+    private UserControl? _content;
     private ScrollBarVisibility _horizontalScrollBarVisibilityRequirement = ScrollBarVisibility.Auto;
     private ScrollBarVisibility _verticalScrollBarVisibilityRequirement = ScrollBarVisibility.Auto;
     private Thickness _marginRequirement = new(16);
 
-    public MenuItem(string name, Type contentType, object? dataContext = null)
+    public MenuItem(string name, Type contentType, UserControl content)
     {
         Name = name;
         _contentType = contentType;
-        _dataContext = dataContext;
+        _content = content;
     }
 
     public string Name { get; }
-
-
-    public object? Content => _content ??= CreateContent();
+    public UserControl Content => _content;
 
     public ScrollBarVisibility HorizontalScrollBarVisibilityRequirement
     {
@@ -45,14 +43,4 @@ public class MenuItem : ViewModelBase
         set => _marginRequirement = value;
     }
 
-    private object? CreateContent()
-    {
-        var content = Activator.CreateInstance(_contentType);
-        if (_dataContext != null && content is FrameworkElement element)
-        {
-            element.DataContext = _dataContext;
-        }
-
-        return content;
-    }
 }

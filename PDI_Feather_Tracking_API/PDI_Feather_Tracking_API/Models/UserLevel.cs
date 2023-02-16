@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using PDI_Feather_Tracking_API.DataModel;
 
 namespace PDI_Feather_Tracking_API.Models
 {
@@ -17,7 +16,7 @@ namespace PDI_Feather_Tracking_API.Models
         [DefaultValue(true)]
         public bool Status{ get; set; }
         
-        public ModuleAccess? ModuleAccess{ get; set; }
+        public string? ModuleAccess{ get; set; }
         
         [Required]
         public int CreatedBy{ get; set; }

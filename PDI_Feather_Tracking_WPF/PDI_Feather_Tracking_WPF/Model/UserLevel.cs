@@ -17,9 +17,9 @@ namespace PDI_Feather_Tracking_WPF.Models
 
         [DefaultValue(true)]
         public bool Status{ get; set; }
-        
-        public ModuleAccess? ModuleAccess{ get; set; }
-        
+
+        public string? ModuleAccess { get; set; }
+
         [Required]
         public int CreatedBy{ get; set; }
 
