@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PDI_Feather_Tracking_API.DataModel;
 
 namespace PDI_Feather_Tracking_API.Models
 {
