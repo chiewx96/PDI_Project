@@ -6,7 +6,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace PDI_Feather_Tracking_API.Migrations
+namespace PDIFeatherTrackingAPI.Migrations
 {
     /// <inheritdoc />
     public partial class Initialize : Migration
@@ -28,20 +28,6 @@ namespace PDI_Feather_Tracking_API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Module", x => x.Id);
-                })
-                .Annotation("MySQL:Charset", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "ModuleAccess",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    status = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ModuleAccess", x => x.id);
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -91,7 +77,7 @@ namespace PDI_Feather_Tracking_API.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext", nullable: false),
                     Status = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    ModuleAccessid = table.Column<int>(type: "int", nullable: true),
+                    ModuleAccess = table.Column<string>(type: "longtext", nullable: true),
                     CreatedBy = table.Column<int>(type: "int", nullable: false),
                     UpdatedBy = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
@@ -100,11 +86,6 @@ namespace PDI_Feather_Tracking_API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserLevels", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserLevels_ModuleAccess_ModuleAccessid",
-                        column: x => x.ModuleAccessid,
-                        principalTable: "ModuleAccess",
-                        principalColumn: "id");
                 })
                 .Annotation("MySQL:Charset", "utf8mb4");
 
@@ -171,33 +152,28 @@ namespace PDI_Feather_Tracking_API.Migrations
             migrationBuilder.InsertData(
                 table: "TareWeightSetting",
                 columns: new[] { "Id", "ChildCount", "CreatedAt", "CreatedBy", "UpdatedAt", "UpdatedBy", "Weight" },
-                values: new object[] { 1, 0, new DateTime(2023, 2, 14, 21, 48, 18, 131, DateTimeKind.Local).AddTicks(5501), 1, new DateTime(2023, 2, 14, 21, 48, 18, 131, DateTimeKind.Local).AddTicks(5502), 1, 0m });
+                values: new object[] { 1, 0, new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(308), 1, new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(309), 1, 0m });
 
             migrationBuilder.InsertData(
                 table: "UserLevels",
-                columns: new[] { "Id", "CreatedAt", "CreatedBy", "ModuleAccessid", "Name", "Status", "UpdatedAt", "UpdatedBy" },
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "ModuleAccess", "Name", "Status", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 2, 14, 21, 48, 18, 91, DateTimeKind.Local).AddTicks(5641), 1, null, "SysAdmin", true, new DateTime(2023, 2, 14, 21, 48, 18, 91, DateTimeKind.Local).AddTicks(5648), 1 },
-                    { 2, new DateTime(2023, 2, 14, 21, 48, 18, 91, DateTimeKind.Local).AddTicks(5650), 1, null, "Admin", true, new DateTime(2023, 2, 14, 21, 48, 18, 91, DateTimeKind.Local).AddTicks(5651), 1 },
-                    { 3, new DateTime(2023, 2, 14, 21, 48, 18, 91, DateTimeKind.Local).AddTicks(5652), 1, null, "Supervisor", true, new DateTime(2023, 2, 14, 21, 48, 18, 91, DateTimeKind.Local).AddTicks(5652), 1 },
-                    { 4, new DateTime(2023, 2, 14, 21, 48, 18, 91, DateTimeKind.Local).AddTicks(5654), 1, null, "Operator", true, new DateTime(2023, 2, 14, 21, 48, 18, 91, DateTimeKind.Local).AddTicks(5654), 1 }
+                    { 1, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5370), 1, null, "SysAdmin", true, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5378), 1 },
+                    { 2, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5380), 1, null, "Admin", true, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5380), 1 },
+                    { 3, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5382), 1, null, "Supervisor", true, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5382), 1 },
+                    { 4, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5384), 1, null, "Operator", true, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5384), 1 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "EmployeeNo", "IsSignedIn", "Password", "Status", "UpdatedAt", "UpdatedBy", "UserLevelId", "Username" },
-                values: new object[] { 1, new DateTime(2023, 2, 14, 21, 48, 18, 131, DateTimeKind.Local).AddTicks(5239), 1, "SA001", false, "r77qptZQaXl51i54y9wiaU98SMQTu65/pfjH/izK4al+13dg", true, new DateTime(2023, 2, 14, 21, 48, 18, 131, DateTimeKind.Local).AddTicks(5251), 1, 1, "sysadmin" });
+                values: new object[] { 1, new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(182), 1, "SA001", false, "2yw689CCSPkvtkj6VNBpug==", true, new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(188), 1, 1, "sysadmin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_InventoryRecords_SkuTypeId",
                 table: "InventoryRecords",
                 column: "SkuTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserLevels_ModuleAccessid",
-                table: "UserLevels",
-                column: "ModuleAccessid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_UserLevelId",
@@ -225,9 +201,6 @@ namespace PDI_Feather_Tracking_API.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserLevels");
-
-            migrationBuilder.DropTable(
-                name: "ModuleAccess");
         }
     }
 }

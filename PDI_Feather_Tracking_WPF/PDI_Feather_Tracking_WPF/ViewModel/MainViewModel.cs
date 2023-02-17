@@ -28,9 +28,12 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         TareWeightView _tareWeightView;
         UserLevelView _userLevelView;
         UserView _userView;
+        LoginViewModel _loginViewModel; 
+        LoginView _loginView;
 
         public MainViewModel(FeatherDbContext dbContext, HomeView homeView, SkuTypeSettingView skuTypeSettingView,
-            TareWeightView tareWeightView, UserLevelView userLevelView, UserView userView)
+            TareWeightView tareWeightView, UserLevelView userLevelView, UserView userView,
+            LoginViewModel loginViewModel, LoginView loginView)
         {
             MenuItems = new ObservableCollection<MenuItem>();
             #region Constructor Assigning
@@ -40,7 +43,10 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             _tareWeightView = tareWeightView;
             _userLevelView = userLevelView;
             _userView = userView;
+            _loginViewModel = loginViewModel;
+            _loginView = loginView;
             #endregion
+            ShowLogin();
 
             foreach (var item in GenerateMenuItems().OrderBy(i => i.Name))
             {
@@ -54,7 +60,6 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 _ =>
                 {
                     SelectedIndex = 0;
-
                 });
         }
 
@@ -84,6 +89,12 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                     "Sku Type",
                     typeof(SkuTypeSettingView), _skuTypeSettingView);
 
+        }
+
+        private void ShowLogin()
+        {
+            if (_loginView != null && _loginViewModel.CurrentUser == null)
+                _loginView.Show();
         }
         #endregion
 

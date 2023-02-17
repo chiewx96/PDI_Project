@@ -50,16 +50,6 @@ namespace PDI_Feather_Tracking_WPF
             MenuToggleButton.IsChecked = false;
         }
 
-        private void FlowDirectionButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void MenuPopupButton_OnClick(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void OnSelectedItemChanged(object sender, DependencyPropertyChangedEventArgs e)
             => MainScrollViewer.ScrollToHome();
     }

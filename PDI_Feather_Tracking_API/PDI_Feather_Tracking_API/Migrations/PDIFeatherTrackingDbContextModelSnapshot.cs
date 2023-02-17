@@ -147,9 +147,9 @@ namespace PDIFeatherTrackingAPI.Migrations
                         {
                             Id = 1,
                             ChildCount = 0,
-                            CreatedAt = new DateTime(2023, 2, 17, 1, 20, 32, 654, DateTimeKind.Local).AddTicks(722),
+                            CreatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(308),
                             CreatedBy = 1,
-                            UpdatedAt = new DateTime(2023, 2, 17, 1, 20, 32, 654, DateTimeKind.Local).AddTicks(723),
+                            UpdatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(309),
                             UpdatedBy = 1,
                             Weight = 0m
                         });
@@ -204,13 +204,13 @@ namespace PDIFeatherTrackingAPI.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 2, 17, 1, 20, 32, 654, DateTimeKind.Local).AddTicks(341),
+                            CreatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(182),
                             CreatedBy = 1,
                             EmployeeNo = "SA001",
                             IsSignedIn = false,
-                            Password = "jXpIBK5Y/okx6e3tDfKTIASl6ciNv+W1xSAfnj7VGDZThIIb",
+                            Password = "2yw689CCSPkvtkj6VNBpug==",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 17, 1, 20, 32, 654, DateTimeKind.Local).AddTicks(353),
+                            UpdatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(188),
                             UpdatedBy = 1,
                             UserLevelId = 1,
                             Username = "sysadmin"
@@ -253,41 +253,41 @@ namespace PDIFeatherTrackingAPI.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 2, 17, 1, 20, 32, 614, DateTimeKind.Local).AddTicks(7751),
+                            CreatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5370),
                             CreatedBy = 1,
                             Name = "SysAdmin",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 17, 1, 20, 32, 614, DateTimeKind.Local).AddTicks(7763),
+                            UpdatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5378),
                             UpdatedBy = 1
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2023, 2, 17, 1, 20, 32, 614, DateTimeKind.Local).AddTicks(7766),
+                            CreatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5380),
                             CreatedBy = 1,
                             Name = "Admin",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 17, 1, 20, 32, 614, DateTimeKind.Local).AddTicks(7766),
+                            UpdatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5380),
                             UpdatedBy = 1
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2023, 2, 17, 1, 20, 32, 614, DateTimeKind.Local).AddTicks(7767),
+                            CreatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5382),
                             CreatedBy = 1,
                             Name = "Supervisor",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 17, 1, 20, 32, 614, DateTimeKind.Local).AddTicks(7768),
+                            UpdatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5382),
                             UpdatedBy = 1
                         },
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2023, 2, 17, 1, 20, 32, 614, DateTimeKind.Local).AddTicks(7769),
+                            CreatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5384),
                             CreatedBy = 1,
                             Name = "Operator",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 17, 1, 20, 32, 614, DateTimeKind.Local).AddTicks(7770),
+                            UpdatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5384),
                             UpdatedBy = 1
                         });
                 });

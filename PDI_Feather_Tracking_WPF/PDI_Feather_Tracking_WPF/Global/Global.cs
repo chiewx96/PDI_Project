@@ -1,15 +1,35 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using PDI_Feather_Tracking_WPF.Global;
+using PDI_Feather_Tracking_WPF.Models;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EFWeightScan
+namespace PDI_Feather_Tracking_WPF
 {
-    public  class General
+    public class General
     {
         private const string EncryptionKey = "PDI_Feather_Tracking";
+
+        public static User? TryLogin(string username, string password, ref FeatherDbContext dbContext)
+        {
+            if (dbContext != null)
+            {
+                var targetUser = dbContext.Users.AsNoTracking()
+                     .Where(z => z.Username == username)
+                     .FirstOrDefault();
+                if (targetUser != null && !targetUser.IsSignedIn)
+                {
+                    var unhashed = Decrypt(targetUser?.Password);
+                    return password == unhashed ? targetUser : null;
+                }
+            }
+            return null;
+        }
 
         public static string Encrypt(string clearText)
         {
@@ -52,6 +72,5 @@ namespace EFWeightScan
             }
             return cipherText;
         }
-
     }
 }

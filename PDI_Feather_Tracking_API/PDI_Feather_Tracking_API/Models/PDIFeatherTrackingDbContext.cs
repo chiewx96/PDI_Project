@@ -49,7 +49,7 @@ public partial class PDIFeatherTrackingDbContext : DbContext
             );
 
         modelBuilder.Entity<User>().HasData(
-            new User { Id = 1, Username = "sysadmin", Password = General.HashPassword("abc123"), EmployeeNo = "SA001", Status = true, UserLevelId = 1, CreatedBy = 1, UpdatedBy = 1, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now }
+            new User { Id = 1, Username = "sysadmin", Password = General.Encrypt("abc123"), EmployeeNo = "SA001", Status = true, UserLevelId = 1, CreatedBy = 1, UpdatedBy = 1, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now }
             );
 
         modelBuilder.Entity<TareWeightSetting>().HasData(

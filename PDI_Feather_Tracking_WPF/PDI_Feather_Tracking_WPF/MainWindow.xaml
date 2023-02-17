@@ -49,10 +49,10 @@
                                   Mode="PrimaryMid">
                             <DockPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <ToggleButton x:Name="MenuToggleButton"
-                            AutomationProperties.Name="HamburgerToggleButton"
-                            IsChecked="False"
-                            Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
+                                    <ToggleButton x:Name="MenuToggleButton" 
+                                                  AutomationProperties.Name="HamburgerToggleButton"
+                                                  IsChecked="False"
+                                                  Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
 
                                     <!--<Button Margin="16,0,0,0" 
                                             materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}" 
