@@ -5,12 +5,14 @@ using Newtonsoft.Json.Linq;
 using PDI_Feather_Tracking_WPF.Global;
 using PDI_Feather_Tracking_WPF.Model;
 using PDI_Feather_Tracking_WPF.Models;
+using PDI_Feather_Tracking_WPF.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Markup;
 
 namespace PDI_Feather_Tracking_WPF.ViewModel
@@ -18,21 +20,27 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
     public class UserLevelViewModel : ViewModelBase
     {
         FeatherDbContext _dbContext;
+        ConfirmationViewModel _confirmationViewModel;
+        Confirmation _confirmation;
 
-        public UserLevelViewModel(FeatherDbContext dbContext)
+        public UserLevelViewModel(FeatherDbContext dbContext, ConfirmationViewModel confirmationViewModel, Confirmation confirmation)
         {
             _dbContext = dbContext;
+            _confirmationViewModel = confirmationViewModel;
+            _confirmation = confirmation;
             populate_user_rights();
             populate_all_modules();
             update_module_status_from_db();
+            saveCommand = new Command(save_module_access);
+            createCommand = new Command(create_new_user_level);
+            deleteCommand = new Command(delete_user_level);
         }
-
 
         #region Private Methods
         private void populate_user_rights()
         {
             UserLevels = _dbContext.UserLevels.AsNoTracking().ToList();
-            SelectedUserLevel = UserLevels.First().Id;
+            SelectedUserLevel = UserLevels.First();
         }
 
         private void populate_all_modules()
@@ -46,21 +54,57 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         private void update_module_status_from_db()
         {
-            string? module_access_from_db = _dbContext.UserLevels.Where(x => x.Id == SelectedUserLevel).First().ModuleAccess;
+            string? module_access_from_db = _dbContext.UserLevels.AsNoTracking().Where(x => x.Id == SelectedUserLevel.Id).First().ModuleAccess;
             if (module_access_from_db != null)
             {
                 ModuleAccess = JsonConvert.DeserializeObject<List<ModuleAccess>>(module_access_from_db);
             }
         }
 
-        private void save_module_access()
+        private void save_module_access(Object? obj)
         {
-            var selected_user_level = _dbContext.UserLevels.Where(z => z.Id == SelectedUserLevel).First();
+            var selected_user_level = _dbContext.UserLevels.Where(z => z.Id == SelectedUserLevel.Id).First();
             selected_user_level.ModuleAccess = JsonConvert.SerializeObject(ModuleAccess);
+            selected_user_level.Name = SelectedUserLevel.Name;
             //selected_user_level.UpdatedBy();
             selected_user_level.UpdatedAt = DateTime.Now;
             _dbContext.SaveChanges();
         }
+
+        private void create_new_user_level(object? obj)
+        {
+            var sample_access = _dbContext.UserLevels.AsNoTracking().Where(x => x.Id == SelectedUserLevel.Id).First().ModuleAccess;
+            var user_lvl = new UserLevel()
+            {
+                ModuleAccess = sample_access,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                //CreatedBy
+                Name = "New Role",
+                Status = true
+            };
+            _dbContext.Add(user_lvl);
+            _dbContext.SaveChanges();
+            populate_user_rights();
+        }
+
+        private void delete_user_level(object? obj)
+        {
+            if (SelectedUserLevel != null)
+            {
+                _confirmationViewModel.set("Are you sure want to delete this user level?", confirm_delete_user_level);
+                _confirmation.Show();
+            }
+        }
+
+        private void confirm_delete_user_level()
+        {
+            _dbContext.Remove(SelectedUserLevel);
+            _dbContext.SaveChanges();
+            populate_user_rights();
+        }
+
+
         #endregion
 
         #region Components
@@ -76,27 +120,44 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             }
         }
 
+        private UserLevel _selectedUserLevel = new UserLevel();
+
+        public UserLevel SelectedUserLevel
+        {
+            get { return _selectedUserLevel; }
+            set
+            {
+                if (value != null)
+                {
+                    _selectedUserLevel = value;
+                    update_module_status_from_db();
+                    RaisePropertyChanged(nameof(SelectedUserLevel));
+                }
+            }
+        }
+
         private List<ModuleAccess> _moduleAccess = new List<ModuleAccess>();
 
         public List<ModuleAccess> ModuleAccess
         {
             get { return _moduleAccess; }
-            set { _moduleAccess = value; RaisePropertyChanged(nameof(SelectedUserLevel)); }
+            set { _moduleAccess = value; RaisePropertyChanged(nameof(ModuleAccess)); }
         }
 
 
-        private int selectedUserLevel;
+        private Command saveCommand;
 
-        public int SelectedUserLevel
-        {
-            get { return selectedUserLevel; }
-            set
-            {
-                selectedUserLevel = value;
-                update_module_status_from_db();
-                RaisePropertyChanged(nameof(SelectedUserLevel));
-            }
-        }
+        public Command SaveCommand => saveCommand;
+
+
+        private Command createCommand;
+
+        public Command CreateCommand => createCommand;
+
+
+        private Command deleteCommand;
+
+        public Command DeleteCommand => deleteCommand;
 
 
         #endregion

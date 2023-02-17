@@ -3,10 +3,68 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:PDI_Feather_Tracking_WPF.View"
+             xmlns:converter="clr-namespace:PDI_Feather_Tracking_WPF.Converter"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:Behaviors="clr-namespace:PDI_Feather_Tracking_WPF.Behavior"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-        
+
+    <UserControl.Resources>
+        <converter:ComboBoxesToComboClassConverter x:Key="ComboBoxesToComboClassConverter" />
+    </UserControl.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock>New contact:</TextBlock>
+        <TextBox Grid.Row="1"
+             Margin="0,6,0,0"
+             wpf:HintAssist.Hint="Package Number"
+             FontSize="18" Name="number"
+             Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+            <i:Interaction.Behaviors>
+                <Behaviors:TextBoxInputBehavior InputMode="DigitInput"/>
+            </i:Interaction.Behaviors>
+        </TextBox>
+        <TextBox Grid.Row="2"
+             Margin="0,8,0,0"
+             wpf:HintAssist.Hint="Tare Weight"
+             FontSize="16" Name="weight"
+             Style="{StaticResource MaterialDesignFloatingHintTextBox}" >
+            <i:Interaction.Behaviors>
+                <Behaviors:TextBoxInputBehavior InputMode="DecimalInput"/>
+            </i:Interaction.Behaviors>
+        </TextBox>
+        <StackPanel Grid.Row="3"
+                Margin="0,16,0,0"
+                Orientation="Horizontal">
+            <Button Command="{x:Static wpf:DialogHost.CloseDialogCommand}"
+              IsDefault="True"
+              Style="{StaticResource MaterialDesignFlatButton}">
+                <Button.CommandParameter>
+                    <MultiBinding Converter="{StaticResource ComboBoxesToComboClassConverter}">
+                        <Binding ElementName="number" Path="Text"/>
+                        <Binding ElementName="weight" Path="Text"/>
+                    </MultiBinding>
+                </Button.CommandParameter>
+                Save
+            </Button>
+            <Button Margin="8,0,0,0"
+              Command="{x:Static wpf:DialogHost.CloseDialogCommand}"
+              IsCancel="True"
+              Style="{StaticResource MaterialDesignFlatButton}">
+                <Button.CommandParameter>
+                    <system:Boolean>False</system:Boolean>
+                </Button.CommandParameter>
+                Cancel
+            </Button>
+        </StackPanel>
     </Grid>
 </UserControl>

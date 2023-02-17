@@ -9,5 +9,21 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 {
     public class TareWeightViewModel : ViewModelBase
     {
-    }
+		private int childCount;
+
+		public int ChildCount
+		{
+			get { return childCount; }
+			set { childCount = value; }
+		}
+
+		private decimal tareWeight;
+
+		public decimal TareWeight
+		{
+			get { return tareWeight; }
+			set { tareWeight = value; }
+		}
+
+	}
 }
