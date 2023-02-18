@@ -31,7 +31,7 @@ namespace PDI_Feather_Tracking_WPF.View
         {
             if (DataContext is ICloseWindows vm)
             {
-                vm.Close += () => this.Hide();
+                vm.Action += () => this.Hide();
             }
         }
     }

@@ -61,7 +61,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         {
             CancelButtonProgress = 0;
             dispatcherTimer.Stop();
-            Close?.Invoke();
+            Action?.Invoke();
         }
 
         private double _cancelButtonProgress;
@@ -111,6 +111,6 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             }
         }
 
-        public Action Close { get; set; }
+        public Action Action { get; set; }
     }
 }

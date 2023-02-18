@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Messaging;
 using PDI_Feather_Tracking_WPF.Global;
 using PDI_Feather_Tracking_WPF.Interfaces;
 using PDI_Feather_Tracking_WPF.Models;
@@ -17,9 +18,14 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         public LoginViewModel(FeatherDbContext dbContext)
         {
+            Messenger.Default.Register<string>(this, _ =>
+            {
+                if (_ == General.CloseWindow)
+                    LogoutAction?.Invoke();
+            });
             _dbContext = dbContext;
             LoginCommand = new Command(login_action);
-            CloseCommand = new Command((e) => Close?.Invoke());
+            CloseCommand = new Command((e) => Action?.Invoke());
             LogoutAction = new Action(() => set_user(null));
         }
 
@@ -33,19 +39,27 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 ErrorLogin = true;
                 RaisePropertyChanged(nameof(ErrorLogin));
             }
-            else Close?.Invoke();
+            else
+            {
+                PasswordTextContent = string.Empty;
+                PasswordDisplayContent = string.Empty;
+                Action?.Invoke(); // close login window.
+            }
 
         }
 
         private void set_user(User? user)
         {
-            _currentUser = user;
-            if (user != null)
-            {
+            if (user == null && CurrentUser != null)
+                _dbContext.Users.Where(x => x.Username == CurrentUser.Username).First().IsSignedIn = false;
+            else if (user != null && CurrentUser == null)
                 _dbContext.Users.Where(x => x.Username == user.Username).First().IsSignedIn = true;
-                _dbContext.SaveChanges();
-            }
+            else
+                throw new InvalidOperationException();
+            _dbContext.SaveChanges();
+            _currentUser = user;
             RaisePropertyChanged(nameof(CurrentUser));
+            Messenger.Default.Send<LoginViewModel>(this);
         }
 
         private void reset_error()
@@ -58,7 +72,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         #region Property
         public Action LogoutAction { get; set; }
 
-        public Action Close { get; set; }
+        public Action Action { get; set; }
 
         public ICommand LoginCommand { get; set; }
 

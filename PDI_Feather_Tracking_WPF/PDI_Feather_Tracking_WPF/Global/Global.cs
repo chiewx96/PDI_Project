@@ -14,6 +14,7 @@ namespace PDI_Feather_Tracking_WPF
     public class General
     {
         private const string EncryptionKey = "PDI_Feather_Tracking";
+        public const string CloseWindow = "CloseWindow";
 
         public static User? TryLogin(string username, string password, ref FeatherDbContext dbContext)
         {

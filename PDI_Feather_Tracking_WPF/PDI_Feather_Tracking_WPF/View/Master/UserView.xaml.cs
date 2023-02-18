@@ -22,12 +22,9 @@ namespace PDI_Feather_Tracking_WPF.View
     public partial class UserView : UserControl
     {
 
-        UserViewModel _userViewModel;
 
-        public UserView(UserViewModel userViewModel)
+        public UserView()
         {
-            _userViewModel = userViewModel;
-            DataContext = _userViewModel;
             InitializeComponent();
         }
     }

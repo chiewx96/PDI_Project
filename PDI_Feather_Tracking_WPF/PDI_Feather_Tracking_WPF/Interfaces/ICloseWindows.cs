@@ -8,6 +8,6 @@ namespace PDI_Feather_Tracking_WPF.Interfaces
 {
     public interface ICloseWindows
     {
-        Action Close { get; set; }
+        Action Action { get; set; }
     }
 }
