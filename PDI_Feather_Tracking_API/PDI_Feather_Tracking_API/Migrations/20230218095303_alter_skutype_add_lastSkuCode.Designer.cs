@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PDI_Feather_Tracking_API.Models;
 
@@ -10,9 +11,11 @@ using PDI_Feather_Tracking_API.Models;
 namespace PDIFeatherTrackingAPI.Migrations
 {
     [DbContext(typeof(PDIFeatherTrackingDbContext))]
-    partial class PDIFeatherTrackingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230218095303_alter_skutype_add_lastSkuCode")]
+    partial class alterskutypeaddlastSkuCode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

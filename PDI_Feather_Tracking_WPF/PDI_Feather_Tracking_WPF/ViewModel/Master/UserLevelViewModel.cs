@@ -20,12 +20,14 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
     public class UserLevelViewModel : ViewModelBase
     {
         FeatherDbContext _dbContext;
+        LoginViewModel _loginViewModel;
         ConfirmationViewModel _confirmationViewModel;
         Confirmation _confirmation;
 
-        public UserLevelViewModel(FeatherDbContext dbContext, ConfirmationViewModel confirmationViewModel, Confirmation confirmation)
+        public UserLevelViewModel(FeatherDbContext dbContext, LoginViewModel loginViewModel, ConfirmationViewModel confirmationViewModel, Confirmation confirmation)
         {
             _dbContext = dbContext;
+            _loginViewModel = loginViewModel;
             _confirmationViewModel = confirmationViewModel;
             _confirmation = confirmation;
             populate_user_rights();
@@ -39,7 +41,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         #region Private Methods
         private void populate_user_rights()
         {
-            UserLevels = _dbContext.UserLevels.AsNoTracking().ToList();
+            UserLevels = _dbContext.UserLevels.AsNoTracking().Where(x => x.Status).ToList();
             SelectedUserLevel = UserLevels.First();
         }
 
@@ -66,7 +68,8 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             var selected_user_level = _dbContext.UserLevels.Where(z => z.Id == SelectedUserLevel.Id).First();
             selected_user_level.ModuleAccess = JsonConvert.SerializeObject(ModuleAccess);
             selected_user_level.Name = SelectedUserLevel.Name;
-            //selected_user_level.UpdatedBy();
+            selected_user_level.CreatedBy = _loginViewModel.CurrentUser?.Id ?? 0;
+            selected_user_level.UpdatedBy = _loginViewModel.CurrentUser?.Id ?? 0;
             selected_user_level.UpdatedAt = DateTime.Now;
             _dbContext.SaveChanges();
         }
@@ -79,7 +82,8 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 ModuleAccess = sample_access,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                //CreatedBy
+                CreatedBy = _loginViewModel.CurrentUser?.Id ?? 0,
+                UpdatedBy = _loginViewModel.CurrentUser?.Id ?? 0,
                 Name = "New Role",
                 Status = true
             };
@@ -99,8 +103,12 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         private void confirm_delete_user_level()
         {
-            _dbContext.Remove(SelectedUserLevel);
-            _dbContext.SaveChanges();
+            var item = _dbContext.UserLevels.Where(x => x.Id == SelectedUserLevel.Id).FirstOrDefault();
+            if (item != null)
+            {
+                item.Status = false;
+                _dbContext.SaveChanges();
+            }
             populate_user_rights();
         }
 

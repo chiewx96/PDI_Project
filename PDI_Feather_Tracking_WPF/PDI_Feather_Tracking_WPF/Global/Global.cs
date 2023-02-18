@@ -32,6 +32,27 @@ namespace PDI_Feather_Tracking_WPF
             return null;
         }
 
+        public static string GenerateRunningNumber(char sku_type_code, string? last_sku_code, int gross_weight)
+        {
+            string year_code = DateTime.Now.Year.ToString().Substring(2, 2);
+            string month_code = ((MonthEnum)DateTime.Now.Month).ToString();
+            if (last_sku_code == null || last_sku_code.Substring(0, 1) != month_code || last_sku_code.Substring(1, 2) != year_code)
+            {
+                // newly deployed || new month || new year
+                return $"{month_code}{year_code}{gross_weight}{sku_type_code.ToString()}00001";
+            }
+            else
+            {
+                if (int.TryParse(last_sku_code.Substring(7, 5), out int last_running_number))
+                {
+                    string current_number = (last_running_number + 1).ToString().PadLeft(5, '0');
+                    return $"{month_code}{year_code}{gross_weight}{sku_type_code.ToString()}{current_number}";
+                }
+            }
+            return string.Empty;
+        }
+
+        #region Encryption
         public static string Encrypt(string clearText)
         {
             byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
@@ -73,5 +94,6 @@ namespace PDI_Feather_Tracking_WPF
             }
             return cipherText;
         }
+        #endregion
     }
 }

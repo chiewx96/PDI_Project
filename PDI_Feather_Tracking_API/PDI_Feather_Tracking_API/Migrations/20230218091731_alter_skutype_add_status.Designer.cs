@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PDI_Feather_Tracking_API.Models;
 
@@ -10,9 +11,11 @@ using PDI_Feather_Tracking_API.Models;
 namespace PDIFeatherTrackingAPI.Migrations
 {
     [DbContext(typeof(PDIFeatherTrackingDbContext))]
-    partial class PDIFeatherTrackingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230218091731_alter_skutype_add_status")]
+    partial class alterskutypeaddstatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,9 +106,6 @@ namespace PDIFeatherTrackingAPI.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("LastSkuCode")
-                        .HasColumnType("longtext");
-
                     b.Property<bool>("Status")
                         .HasColumnType("tinyint(1)");
 
@@ -153,9 +153,9 @@ namespace PDIFeatherTrackingAPI.Migrations
                         {
                             Id = 1,
                             ChildCount = 0,
-                            CreatedAt = new DateTime(2023, 2, 18, 17, 53, 3, 673, DateTimeKind.Local).AddTicks(5380),
+                            CreatedAt = new DateTime(2023, 2, 18, 17, 17, 30, 831, DateTimeKind.Local).AddTicks(4011),
                             CreatedBy = 1,
-                            UpdatedAt = new DateTime(2023, 2, 18, 17, 53, 3, 673, DateTimeKind.Local).AddTicks(5381),
+                            UpdatedAt = new DateTime(2023, 2, 18, 17, 17, 30, 831, DateTimeKind.Local).AddTicks(4012),
                             UpdatedBy = 1,
                             Weight = 0m
                         });
@@ -210,13 +210,13 @@ namespace PDIFeatherTrackingAPI.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 2, 18, 17, 53, 3, 673, DateTimeKind.Local).AddTicks(5330),
+                            CreatedAt = new DateTime(2023, 2, 18, 17, 17, 30, 831, DateTimeKind.Local).AddTicks(3960),
                             CreatedBy = 1,
                             EmployeeNo = "SA001",
                             IsSignedIn = false,
                             Password = "2yw689CCSPkvtkj6VNBpug==",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 18, 17, 53, 3, 673, DateTimeKind.Local).AddTicks(5333),
+                            UpdatedAt = new DateTime(2023, 2, 18, 17, 17, 30, 831, DateTimeKind.Local).AddTicks(3964),
                             UpdatedBy = 1,
                             UserLevelId = 1,
                             Username = "sysadmin"
@@ -259,41 +259,41 @@ namespace PDIFeatherTrackingAPI.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 2, 18, 17, 53, 3, 672, DateTimeKind.Local).AddTicks(1553),
+                            CreatedAt = new DateTime(2023, 2, 18, 17, 17, 30, 829, DateTimeKind.Local).AddTicks(9628),
                             CreatedBy = 1,
                             Name = "SysAdmin",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 18, 17, 53, 3, 672, DateTimeKind.Local).AddTicks(1561),
+                            UpdatedAt = new DateTime(2023, 2, 18, 17, 17, 30, 829, DateTimeKind.Local).AddTicks(9637),
                             UpdatedBy = 1
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2023, 2, 18, 17, 53, 3, 672, DateTimeKind.Local).AddTicks(1563),
+                            CreatedAt = new DateTime(2023, 2, 18, 17, 17, 30, 829, DateTimeKind.Local).AddTicks(9639),
                             CreatedBy = 1,
                             Name = "Admin",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 18, 17, 53, 3, 672, DateTimeKind.Local).AddTicks(1564),
+                            UpdatedAt = new DateTime(2023, 2, 18, 17, 17, 30, 829, DateTimeKind.Local).AddTicks(9639),
                             UpdatedBy = 1
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2023, 2, 18, 17, 53, 3, 672, DateTimeKind.Local).AddTicks(1565),
+                            CreatedAt = new DateTime(2023, 2, 18, 17, 17, 30, 829, DateTimeKind.Local).AddTicks(9640),
                             CreatedBy = 1,
                             Name = "Supervisor",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 18, 17, 53, 3, 672, DateTimeKind.Local).AddTicks(1566),
+                            UpdatedAt = new DateTime(2023, 2, 18, 17, 17, 30, 829, DateTimeKind.Local).AddTicks(9641),
                             UpdatedBy = 1
                         },
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2023, 2, 18, 17, 53, 3, 672, DateTimeKind.Local).AddTicks(1567),
+                            CreatedAt = new DateTime(2023, 2, 18, 17, 17, 30, 829, DateTimeKind.Local).AddTicks(9642),
                             CreatedBy = 1,
                             Name = "Operator",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 18, 17, 53, 3, 672, DateTimeKind.Local).AddTicks(1568),
+                            UpdatedAt = new DateTime(2023, 2, 18, 17, 17, 30, 829, DateTimeKind.Local).AddTicks(9643),
                             UpdatedBy = 1
                         });
                 });

@@ -67,6 +67,9 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 MenuItems.Add(item);
             }
             SelectedItem = MenuItems.First();
+            _menuItemsView = CollectionViewSource.GetDefaultView(MenuItems);
+
+
         }
 
 
@@ -147,6 +150,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         #region Components
 
+        private readonly ICollectionView _menuItemsView;
         public ObservableCollection<MenuItem> MenuItems { get; }
 
         private MenuItem? _selectedItem;
