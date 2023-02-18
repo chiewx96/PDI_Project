@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
+using GalaSoft.MvvmLight.Messaging;
 
 namespace PDI_Feather_Tracking_WPF
 {
@@ -41,6 +42,12 @@ namespace PDI_Feather_Tracking_WPF
         {
             var mainWindow = serviceProvider.GetService<MainWindow>();
             mainWindow.Show();
+            mainWindow.Closed += Window_Closed;
+        }
+
+        private void Window_Closed(object? sender, EventArgs e)
+        {
+            Messenger.Default.Send<string>(General.CloseWindow);
         }
     }
 }

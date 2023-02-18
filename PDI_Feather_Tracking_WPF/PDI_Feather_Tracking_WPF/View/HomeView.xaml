@@ -4,13 +4,31 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PDI_Feather_Tracking_WPF.View"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <StackPanel VerticalAlignment="Center">
-            <Button Width="128" Command="{Binding ModifyTareWeightCommand}" 
-                    Content="Modify Tare Weight" />
-          
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right">
+            <Button Margin="10" Command="{Binding ModifyTareWeightCommand}" 
+                    Content="Tare Weight Setting" Visibility="{Binding TareWeightAccess, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+        </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"  
+                     Width="250"  FontSize="20" Margin="30"
+                     HorizontalAlignment="Center" VerticalAlignment="Center" 
+                     materialDesign:TextFieldAssist.SuffixText="kg"
+                     materialDesign:HintAssist.Hint="Gross Weight"/>
+
+            <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"  
+                     Width="250"  FontSize="20" 
+                     HorizontalAlignment="Center" VerticalAlignment="Center" 
+                     materialDesign:TextFieldAssist.SuffixText="kg"
+                     materialDesign:HintAssist.Hint="Nett Weight"/>
         </StackPanel>
 
     </Grid>

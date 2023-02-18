@@ -49,9 +49,14 @@ namespace PDI_Feather_Tracking_WPF
         private void OnSelectedItemChanged(object sender, DependencyPropertyChangedEventArgs e)
             => MainScrollViewer.ScrollToHome();
 
-        private void Window_Closed(object sender, EventArgs e)
+        private void FlowDirectionButton_Click(object sender, RoutedEventArgs e)
         {
-            Messenger.Default.Send<string>(General.CloseWindow);
+
+        }
+
+        private void MenuPopupButton_OnClick(object sender, RoutedEventArgs e)
+        {
+
         }
 
         private void RightDrawer_Hide(object sender, MouseButtonEventArgs e)

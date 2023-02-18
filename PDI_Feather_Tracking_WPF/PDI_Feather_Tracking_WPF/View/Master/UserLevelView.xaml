@@ -31,7 +31,7 @@
             <Button Grid.Column="2" Margin="5" Content="Delete" Command="{Binding DeleteCommand}"/>
             <Button Grid.Column="2" Margin="5" Content="Save" Command="{Binding SaveCommand}"/>
         </StackPanel>
-        <DataGrid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" AutoGenerateColumns="False" CanUserAddRows="True" HeadersVisibility="All" 
+        <DataGrid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="All" 
                   ItemsSource="{Binding ModuleAccess}">
             <DataGrid.Columns>
 

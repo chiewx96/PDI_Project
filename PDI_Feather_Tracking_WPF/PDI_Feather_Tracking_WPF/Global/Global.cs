@@ -1,8 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PDI_Feather_Tracking_WPF.Global;
+using PDI_Feather_Tracking_WPF.Model;
 using PDI_Feather_Tracking_WPF.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -50,6 +53,25 @@ namespace PDI_Feather_Tracking_WPF
                 }
             }
             return string.Empty;
+        }
+
+        public static bool CheckAccessibility(User? currentUser, ModuleEnum? moduleEnum)
+        {
+            if (moduleEnum == null || currentUser == null || currentUser.UserLevel == null)
+                return false;
+            try
+            {
+                var _access_json = currentUser.UserLevel.ModuleAccess;
+                List<ModuleAccess> _access = JsonConvert.DeserializeObject<List<ModuleAccess>>(_access_json);
+                ModuleAccess _target = _access.Where(x => x.Module.Id == (int)moduleEnum).First();
+                return _target.Status == 1 ? true : false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(nameof(CheckAccessibility));
+                Debug.WriteLine(ex.Message);
+                return false;
+            }
         }
 
         #region Encryption

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PDI_Feather_Tracking_WPF.Global
 {
-    enum MonthEnum
+    public enum MonthEnum 
     {
         A = 1, // January
         B,
@@ -20,5 +20,19 @@ namespace PDI_Feather_Tracking_WPF.Global
         J,
         K,
         L = 12 // December
+    }
+
+    public enum ModuleEnum
+    {
+        user_level = 1,
+        user,
+        sku_type,
+        tare_weight_setting,
+        incoming,
+        outgoing,
+        reporting_weight_list,
+        reporting_sku_incoming,
+        reporting_sku_outgoing,
+        reporting_on_hand_balance
     }
 }

@@ -30,19 +30,17 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         FeatherDbContext _dbContext;
         HomeView _homeView;
         SkuTypeSettingView _skuTypeSettingView;
-        TareWeightView _tareWeightView;
         UserLevelView _userLevelView;
         UserView _userView;
         LoginViewModel _loginViewModel;
         LoginView _loginView;
 
-        public MainViewModel(FeatherDbContext dbContext, HomeView homeView, SkuTypeSettingView skuTypeSettingView,
-            TareWeightView tareWeightView, UserLevelView userLevelView, UserView userView,
-            LoginViewModel loginViewModel, LoginView loginView)
+        public MainViewModel(FeatherDbContext dbContext, HomeView homeView, SkuTypeSettingView skuTypeSettingView, 
+            UserLevelView userLevelView, UserView userView, LoginViewModel loginViewModel, LoginView loginView)
         {
-            Messenger.Default.Register<LoginViewModel>(this, _ =>
+            Messenger.Default.Register<User?>(this, _ =>
             {
-                LoginViewModel = _;
+                CurrentUser = _;
             });
 
             MenuItems = new ObservableCollection<MenuItem>();
@@ -50,7 +48,6 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             _dbContext = dbContext;
             _homeView = homeView;
             _skuTypeSettingView = skuTypeSettingView;
-            _tareWeightView = tareWeightView;
             _userLevelView = userLevelView;
             _userView = userView;
             _loginViewModel = loginViewModel;
@@ -67,9 +64,6 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 MenuItems.Add(item);
             }
             SelectedItem = MenuItems.First();
-            _menuItemsView = CollectionViewSource.GetDefaultView(MenuItems);
-
-
         }
 
 
@@ -80,31 +74,27 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         {
             yield return new MenuItem(
                "Home",
-               typeof(HomeView), _homeView);
-
-            yield return new MenuItem(
-                "Tare Weight",
-                typeof(TareWeightView), _tareWeightView);
+               typeof(HomeView), _homeView) ;
 
             yield return new MenuItem(
                 "User",
-                typeof(UserView), _userView);
+                typeof(UserView), _userView, ModuleEnum.user);
 
 
             yield return new MenuItem(
                         "User Level",
-                        typeof(UserLevelView), _userLevelView);
+                        typeof(UserLevelView), _userLevelView, ModuleEnum.user_level);
 
 
             yield return new MenuItem(
                     "Sku Type",
-                    typeof(SkuTypeSettingView), _skuTypeSettingView);
+                    typeof(SkuTypeSettingView), _skuTypeSettingView, ModuleEnum.sku_type);
 
         }
 
         private void show_login()
         {
-            if (_loginView != null && _loginViewModel.CurrentUser == null)
+            if (_loginView != null && _currentUser == null)
             {
                 _loginView.ShowDialog();
                 _loginView.Focus();
@@ -117,10 +107,10 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             {
                 if (NewPassword != string.Empty)
                 {
-                    var current_user = _dbContext.Users.Where(x => x.Id == _loginViewModel.CurrentUser.Id).First();
+                    var current_user = _dbContext.Users.Where(x => x.Id == CurrentUser.Id).First();
                     current_user.Password = General.Encrypt(NewPassword);
                     current_user.UpdatedAt = DateTime.Now;
-                    current_user.UpdatedBy = _loginViewModel.CurrentUser.Id;
+                    current_user.UpdatedBy = CurrentUser.Id;
                     _dbContext.SaveChanges();
                     Message = "Password saved successfully";
                     reset_message(3);
@@ -150,7 +140,6 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         #region Components
 
-        private readonly ICollectionView _menuItemsView;
         public ObservableCollection<MenuItem> MenuItems { get; }
 
         private MenuItem? _selectedItem;
@@ -195,14 +184,14 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             set { message = value; RaisePropertyChanged(nameof(Message)); }
         }
 
-
-        public LoginViewModel LoginViewModel
+        private User? _currentUser;
+        public User? CurrentUser
         {
-            get { return _loginViewModel; }
+            get { return _currentUser; }
             private set
             {
-                _loginViewModel = value;
-                RaisePropertyChanged(nameof(LoginViewModel));
+                _currentUser = value;
+                RaisePropertyChanged(nameof(CurrentUser));
             }
         }
 
@@ -223,7 +212,6 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         private ICommand _logout;
 
         public ICommand Logout => _logout;
-
 
         #endregion
     }

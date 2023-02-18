@@ -9,7 +9,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace PDIFeatherTrackingAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class Initialize : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -39,6 +39,8 @@ namespace PDIFeatherTrackingAPI.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Code = table.Column<string>(type: "varchar(1)", nullable: false),
                     Description = table.Column<string>(type: "longtext", nullable: true),
+                    LastSkuCode = table.Column<string>(type: "longtext", nullable: true),
+                    Status = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     CreatedBy = table.Column<int>(type: "int", nullable: false),
                     UpdatedBy = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false),
@@ -150,25 +152,42 @@ namespace PDIFeatherTrackingAPI.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.InsertData(
+                table: "Module",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "user-level" },
+                    { 2, "user" },
+                    { 3, "sku-type" },
+                    { 4, "tare-weight-setting" },
+                    { 5, "incoming" },
+                    { 6, "outgoing" },
+                    { 7, "reporting-weight-list" },
+                    { 8, "reporting-sku-incoming" },
+                    { 9, "reporting-sku-outgoing" },
+                    { 10, "reporting-on-hand-balance" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "TareWeightSetting",
                 columns: new[] { "Id", "ChildCount", "CreatedAt", "CreatedBy", "UpdatedAt", "UpdatedBy", "Weight" },
-                values: new object[] { 1, 0, new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(308), 1, new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(309), 1, 0m });
+                values: new object[] { 1, 0, new DateTime(2023, 2, 18, 18, 31, 37, 775, DateTimeKind.Local).AddTicks(1444), 1, new DateTime(2023, 2, 18, 18, 31, 37, 775, DateTimeKind.Local).AddTicks(1445), 1, 0m });
 
             migrationBuilder.InsertData(
                 table: "UserLevels",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "ModuleAccess", "Name", "Status", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5370), 1, null, "SysAdmin", true, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5378), 1 },
-                    { 2, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5380), 1, null, "Admin", true, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5380), 1 },
-                    { 3, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5382), 1, null, "Supervisor", true, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5382), 1 },
-                    { 4, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5384), 1, null, "Operator", true, new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5384), 1 }
+                    { 1, new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7493), 1, null, "SysAdmin", true, new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7501), 1 },
+                    { 2, new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7503), 1, null, "Admin", true, new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7504), 1 },
+                    { 3, new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7505), 1, null, "Supervisor", true, new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7505), 1 },
+                    { 4, new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7507), 1, null, "Operator", true, new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7507), 1 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "EmployeeNo", "IsSignedIn", "Password", "Status", "UpdatedAt", "UpdatedBy", "UserLevelId", "Username" },
-                values: new object[] { 1, new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(182), 1, "SA001", false, "2yw689CCSPkvtkj6VNBpug==", true, new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(188), 1, 1, "sysadmin" });
+                values: new object[] { 1, new DateTime(2023, 2, 18, 18, 31, 37, 775, DateTimeKind.Local).AddTicks(1396), 1, "SA001", false, "2yw689CCSPkvtkj6VNBpug==", true, new DateTime(2023, 2, 18, 18, 31, 37, 775, DateTimeKind.Local).AddTicks(1398), 1, 1, "sysadmin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_InventoryRecords_SkuTypeId",

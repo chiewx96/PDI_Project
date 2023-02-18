@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace PDI_Feather_Tracking_WPF.ViewModel
@@ -21,7 +22,11 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             Messenger.Default.Register<string>(this, _ =>
             {
                 if (_ == General.CloseWindow)
-                    LogoutAction?.Invoke();
+                {
+                    var closingTask = Task.Run(() => LogoutAction?.Invoke());
+                    closingTask.Wait();
+                    Environment.Exit(0);
+                }
             });
             _dbContext = dbContext;
             LoginCommand = new Command(login_action);
@@ -51,15 +56,17 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         private void set_user(User? user)
         {
             if (user == null && CurrentUser != null)
-                _dbContext.Users.Where(x => x.Username == CurrentUser.Username).First().IsSignedIn = false;
+                _dbContext.Users.Where(x => x.Username == CurrentUser.Username && x.Status).First().IsSignedIn = false;
             else if (user != null && CurrentUser == null)
-                _dbContext.Users.Where(x => x.Username == user.Username).First().IsSignedIn = true;
+                _dbContext.Users.Where(x => x.Username == user.Username && x.Status).First().IsSignedIn = true;
             else
                 throw new InvalidOperationException();
+            if (user != null)
+            {
+                user.UserLevel = _dbContext.UserLevels.Where(x => x.Id == user.UserLevelId).First();
+            }
             _dbContext.SaveChanges();
-            _currentUser = user;
-            RaisePropertyChanged(nameof(CurrentUser));
-            Messenger.Default.Send<LoginViewModel>(this);
+            CurrentUser = user;
         }
 
         private void reset_error()
@@ -83,6 +90,12 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         public User? CurrentUser
         {
             get { return _currentUser; }
+            private set
+            {
+                _currentUser = value;
+                RaisePropertyChanged(nameof(CurrentUser));
+                Messenger.Default.Send(CurrentUser);
+            }
         }
 
         private string _usernameTextContent = string.Empty;

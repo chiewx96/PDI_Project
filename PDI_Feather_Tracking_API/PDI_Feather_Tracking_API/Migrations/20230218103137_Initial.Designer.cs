@@ -11,8 +11,8 @@ using PDI_Feather_Tracking_API.Models;
 namespace PDIFeatherTrackingAPI.Migrations
 {
     [DbContext(typeof(PDIFeatherTrackingDbContext))]
-    [Migration("20230217183436_Initialize")]
-    partial class Initialize
+    [Migration("20230218103137_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -85,6 +85,58 @@ namespace PDIFeatherTrackingAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Module");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "user-level"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "user"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "sku-type"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "tare-weight-setting"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "incoming"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "outgoing"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "reporting-weight-list"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "reporting-sku-incoming"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "reporting-sku-outgoing"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "reporting-on-hand-balance"
+                        });
                 });
 
             modelBuilder.Entity("PDI_Feather_Tracking_API.Models.SkuType", b =>
@@ -105,6 +157,12 @@ namespace PDIFeatherTrackingAPI.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
+
+                    b.Property<string>("LastSkuCode")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -150,9 +208,9 @@ namespace PDIFeatherTrackingAPI.Migrations
                         {
                             Id = 1,
                             ChildCount = 0,
-                            CreatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(308),
+                            CreatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 775, DateTimeKind.Local).AddTicks(1444),
                             CreatedBy = 1,
-                            UpdatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(309),
+                            UpdatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 775, DateTimeKind.Local).AddTicks(1445),
                             UpdatedBy = 1,
                             Weight = 0m
                         });
@@ -207,13 +265,13 @@ namespace PDIFeatherTrackingAPI.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(182),
+                            CreatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 775, DateTimeKind.Local).AddTicks(1396),
                             CreatedBy = 1,
                             EmployeeNo = "SA001",
                             IsSignedIn = false,
                             Password = "2yw689CCSPkvtkj6VNBpug==",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 657, DateTimeKind.Local).AddTicks(188),
+                            UpdatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 775, DateTimeKind.Local).AddTicks(1398),
                             UpdatedBy = 1,
                             UserLevelId = 1,
                             Username = "sysadmin"
@@ -256,41 +314,41 @@ namespace PDIFeatherTrackingAPI.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5370),
+                            CreatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7493),
                             CreatedBy = 1,
                             Name = "SysAdmin",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5378),
+                            UpdatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7501),
                             UpdatedBy = 1
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5380),
+                            CreatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7503),
                             CreatedBy = 1,
                             Name = "Admin",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5380),
+                            UpdatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7504),
                             UpdatedBy = 1
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5382),
+                            CreatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7505),
                             CreatedBy = 1,
                             Name = "Supervisor",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5382),
+                            UpdatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7505),
                             UpdatedBy = 1
                         },
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5384),
+                            CreatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7507),
                             CreatedBy = 1,
                             Name = "Operator",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 18, 2, 34, 36, 655, DateTimeKind.Local).AddTicks(5384),
+                            UpdatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7507),
                             UpdatedBy = 1
                         });
                 });

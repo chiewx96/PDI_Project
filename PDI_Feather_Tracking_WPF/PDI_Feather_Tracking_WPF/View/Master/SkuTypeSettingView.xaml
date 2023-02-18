@@ -31,9 +31,8 @@
                 <DataGridTemplateColumn Header="Action" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}},
-                                              Path=DataContext.DeleteCommand}"
-                            CommandParameter="{Binding}"/>
+                            <Button Content="Delete" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
+                                              Path=DataContext.DeleteCommand}" CommandParameter="{Binding}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -41,7 +40,7 @@
                 <materialDesign:DataGridTextColumn Header="Sku Type Code" Binding="{Binding Code}" EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" 
                                                    ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"/>
 
-                <DataGridTextColumn Header="Last Sku Number" Binding="{Binding LastSkuCode}"
+                <DataGridTextColumn Header="Last Sku Number" Binding="{Binding LastSkuCode}" IsReadOnly="True"
                                     ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"/>
             
                 <materialDesign:DataGridTextColumn Header="Description" Binding="{Binding Description}" EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" 

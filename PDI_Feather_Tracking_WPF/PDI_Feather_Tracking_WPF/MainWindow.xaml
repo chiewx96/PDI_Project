@@ -15,7 +15,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        Title="PDI Feather Tracking" Height="450" Width="800" Closing="Window_Closed">
+        Title="PDI Feather Tracking">
     <Window.Resources>
         <converter:EmployeeNoConverter x:Key="EmployeeNoConverter"/>
         <converter:UserToVisibilityConverter x:Key="UserToVisibilityConverter"/>
@@ -26,7 +26,7 @@
             <materialDesign:DialogHost DialogTheme="Inherit"
                              Identifier="RootDialog">
 
-                <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}" 
+                <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}"
                                            IsRightDrawerOpen="{Binding ElementName=LoggedInButton,Path=IsChecked}">
                     <materialDesign:DrawerHost.LeftDrawerContent>
                         <DockPanel MinWidth="220">
@@ -51,24 +51,26 @@
                     </materialDesign:DrawerHost.LeftDrawerContent>
 
                     <materialDesign:DrawerHost.RightDrawerContent>
-                        <UniformGrid MinWidth="220" Columns="1" Rows="5" Margin="5">
-                            <Button Command="{Binding ChangePassword}" Content="Change Password" Grid.Row="0"/>
-                            <TextBlock Text="{Binding Message}" Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
-                            <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  
+                        <!--<ScrollViewer VerticalScrollBarVisibility="Auto">-->
+                            <UniformGrid MinWidth="220" Columns="1" Rows="5" Margin="5">
+                                <Button Command="{Binding ChangePassword}" Content="Change Password" Grid.Row="0"/>
+                                <TextBlock Text="{Binding Message}" Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+                                <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  
                                      Style="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"  
                                      Width="250"  FontSize="20" 
                                      HorizontalAlignment="Center" VerticalAlignment="Center" 
                                      Text="{Binding NewPassword, UpdateSourceTrigger=PropertyChanged}" 
                                      Visibility="{Binding ChangePasswordMode, Converter={StaticResource BooleanToVisibilityConverter}}"
                                      materialDesign:HintAssist.Hint="New Password"/>
-                            <Button Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                                <Button Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Top" 
                                     materialDesign:ButtonProgressAssist.IsIndicatorVisible="True" Width="200" Height="50" 
                                     Command="{Binding SaveChangedPassword}"
                                     Style="{StaticResource MaterialDesignOutlinedButton}"
                                     Visibility="{Binding ChangePasswordMode, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Content="Save New Password"/>
-                            <Button  Grid.Row="3" Command="{Binding Logout}" Content="Logout" PreviewMouseLeftButtonUp="RightDrawer_Hide"/>
-                        </UniformGrid>
+                                <Button  Grid.Row="3" Command="{Binding Logout}" Content="Logout" PreviewMouseLeftButtonUp="RightDrawer_Hide"/>
+                            </UniformGrid>
+                        <!--</ScrollViewer>-->
                     </materialDesign:DrawerHost.RightDrawerContent>
 
                     <DockPanel>
@@ -87,7 +89,7 @@
                                 <Button DockPanel.Dock="Right" Height="40"
                                         Command="{Binding ShowLogin}" 
                                         Style="{StaticResource MaterialDesignFlatSecondaryLightBgButton}"
-                                        Visibility="{Binding LoginViewModel, Converter={StaticResource InverseUserToVisibilityConverter}}"
+                                        Visibility="{Binding CurrentUser, Converter={StaticResource InverseUserToVisibilityConverter}}"
                                         Background="White" Foreground="MediumPurple">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Height="30" Width="30" VerticalAlignment="Center"  Kind="AccountCircle" Margin="0,0,10,0"/>
@@ -97,11 +99,11 @@
 
                                 <ToggleButton DockPanel.Dock="Right" Height="40" IsChecked="False" x:Name="LoggedInButton"
                                               Style="{StaticResource MaterialDesignFlatSecondaryLightBgButton}"
-                                              Visibility="{Binding LoginViewModel, Converter={StaticResource UserToVisibilityConverter}}"
+                                              Visibility="{Binding CurrentUser, Converter={StaticResource UserToVisibilityConverter}}"
                                               Foreground="White" Background="MediumPurple">
                                     <StackPanel Orientation="Horizontal">
                                         <materialDesign:PackIcon Height="30" Width="30" VerticalAlignment="Center"  Kind="AccountCircle" Margin="0,0,10,0"/>
-                                        <TextBlock Text="{Binding LoginViewModel, Converter={StaticResource EmployeeNoConverter}}" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding CurrentUser, Converter={StaticResource EmployeeNoConverter}}" VerticalAlignment="Center"/>
                                     </StackPanel>
                                 </ToggleButton>
 
@@ -121,7 +123,7 @@
                             <ScrollViewer x:Name="MainScrollViewer" Grid.Row="1" materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True" 
                                           HorizontalScrollBarVisibility="{Binding SelectedItem.HorizontalScrollBarVisibilityRequirement, FallbackValue=Disabled}" 
                                           VerticalScrollBarVisibility="{Binding SelectedItem.VerticalScrollBarVisibilityRequirement, FallbackValue=Disabled}">
-                                <ContentControl DataContext="{Binding SelectedItem}" 
+                                <ContentControl DataContext="{Binding SelectedItem}" Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"
                                                 DataContextChanged="OnSelectedItemChanged" />
                             </ScrollViewer>
 

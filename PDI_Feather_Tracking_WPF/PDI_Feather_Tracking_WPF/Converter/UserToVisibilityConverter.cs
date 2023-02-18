@@ -15,7 +15,7 @@ namespace PDI_Feather_Tracking_WPF.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value != null && value is LoginViewModel vm && vm.CurrentUser != null)
+            if (value != null && value is User vm && vm != null)
             {
                 return Visibility.Visible;
             }
@@ -32,7 +32,7 @@ namespace PDI_Feather_Tracking_WPF.Converter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value != null && value is LoginViewModel vm && vm.CurrentUser != null)
+            if (value != null && value is User vm && vm != null)
             {
                 return Visibility.Collapsed;
             }

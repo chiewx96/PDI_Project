@@ -9,6 +9,7 @@
              xmlns:converter="clr-namespace:PDI_Feather_Tracking_WPF.Converter"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:Behaviors="clr-namespace:PDI_Feather_Tracking_WPF.Behavior"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
@@ -23,7 +24,6 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBlock>New contact:</TextBlock>
         <TextBox Grid.Row="1"
              Margin="0,6,0,0"
              wpf:HintAssist.Hint="Package Number"
@@ -37,6 +37,7 @@
              Margin="0,8,0,0"
              wpf:HintAssist.Hint="Tare Weight"
              FontSize="16" Name="weight"
+             materialDesign:TextFieldAssist.SuffixText="kg"
              Style="{StaticResource MaterialDesignFloatingHintTextBox}" >
             <i:Interaction.Behaviors>
                 <Behaviors:TextBoxInputBehavior InputMode="DecimalInput"/>

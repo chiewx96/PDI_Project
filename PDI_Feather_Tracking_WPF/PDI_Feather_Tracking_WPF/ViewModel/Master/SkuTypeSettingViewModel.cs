@@ -6,8 +6,6 @@ using PDI_Feather_Tracking_WPF.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace PDI_Feather_Tracking_WPF.ViewModel
@@ -28,6 +26,9 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             DeleteCommand = new Command(_ => delete_item(_));
             CreateCommand = new Command(_ => create_new_sku_type());
             SaveCommand = new Command(_ => save_all_items());
+            RaisePropertyChanged(nameof(DeleteCommand));
+            RaisePropertyChanged(nameof(CreateCommand));
+            RaisePropertyChanged(nameof(SaveCommand));
             refresh_view();
         }
 
@@ -37,25 +38,15 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         {
             foreach (var z in SkuTypeSettings)
             {
-                if (z.Id > 0)
+                var selected = _dbContext.SkuType.Where(x => x.Id == z.Id).First();
+                if (selected.Code != z.Code || selected.Description != z.Description)
                 {
-                    var selected = _dbContext.SkuType.Where(x => x.Id == z.Id).First();
-                    if (selected.Code != z.Code || selected.Description != z.Description)
-                    {
-                        selected.Code = z.Code;
-                        selected.Description = z.Description;
-                        selected.UpdatedBy = _loginViewModel.CurrentUser?.Id ?? 0;
-                        selected.UpdatedAt = DateTime.Now;
-                    }
+                    selected.Code = z.Code;
+                    selected.Description = z.Description;
+                    selected.UpdatedBy = _loginViewModel.CurrentUser?.Id ?? 0;
+                    selected.UpdatedAt = DateTime.Now;
                 }
-                else
-                {
-                    z.CreatedAt = DateTime.Now;
-                    z.UpdatedAt = DateTime.Now;
-                    z.CreatedBy = _loginViewModel.CurrentUser?.Id ?? 0;
-                    z.UpdatedBy = _loginViewModel.CurrentUser?.Id ?? 0;
-                    _dbContext.Add(z);
-                }
+
             }
             _dbContext.SaveChanges();
             refresh_view();
@@ -63,17 +54,23 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         private void refresh_view()
         {
-            SkuTypeSettings = _dbContext.SkuType.Where(z => z.Status).AsNoTracking().ToList();
+            SkuTypeSettings = _dbContext.SkuType.AsNoTracking().Where(z => z.Status).ToList();
         }
 
         private void create_new_sku_type()
         {
-            SkuTypeSettings.Add(new SkuType
+            _dbContext.SkuType.Add(new SkuType
             {
-                Id = 0,
                 Code = '-',
-                Description = "Please enter description."
+                Description = "Please enter description.",
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                CreatedBy = _loginViewModel.CurrentUser?.Id ?? 0,
+                UpdatedBy = _loginViewModel.CurrentUser?.Id ?? 0,
+                Status = true
             });
+            _dbContext.SaveChanges();
+            refresh_view();
         }
 
         private void delete_item(object? obj)
@@ -89,23 +86,24 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         {
             if (_ is SkuType vm)
             {
-                var target = _dbContext.SkuType.Find(vm);
+                var target = _dbContext.SkuType.Where(z=>z.Id == vm.Id).First();
                 target.Status = false;
                 target.UpdatedBy = _loginViewModel.CurrentUser?.Id ?? 0;
                 target.UpdatedAt = DateTime.Now;
                 _dbContext.SaveChanges();
+                refresh_view();
             }
         }
 
         #endregion
 
         #region Property
-        private List<SkuType> skuTypeSettings = new List<SkuType>();
+        private List<SkuType> _skuTypeSettings = new List<SkuType>();
 
         public List<SkuType> SkuTypeSettings
         {
-            get { return skuTypeSettings; }
-            set { skuTypeSettings = value; RaisePropertyChanged(nameof(SkuTypeSettings)); }
+            get { return _skuTypeSettings; }
+            set { _skuTypeSettings = value; RaisePropertyChanged(nameof(SkuTypeSettings)); }
         }
 
 
