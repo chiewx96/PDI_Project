@@ -31,7 +31,7 @@
                 <DataGridTemplateColumn Header="Action" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="Delete" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
+                            <Button Content="{materialDesign:PackIcon Kind=Delete}" Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
                                               Path=DataContext.DeleteCommand}" CommandParameter="{Binding}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

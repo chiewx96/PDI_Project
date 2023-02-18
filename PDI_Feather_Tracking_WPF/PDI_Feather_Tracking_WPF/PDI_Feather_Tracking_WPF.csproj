@@ -20,6 +20,9 @@
     <Compile Update="View\Master\SkuTypeSettingView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\Master\CreateUserView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\Master\UserLevelView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

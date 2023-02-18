@@ -4,9 +4,84 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PDI_Feather_Tracking_WPF.View"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converter="clr-namespace:PDI_Feather_Tracking_WPF.Converter"
+             xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converter:TareWeightSettingBindingConverter x:Key="TareWeightSettingBindingConverter" />
+    </UserControl.Resources>
     <Grid>
-        <TextBlock>askdjbdsajklfd</TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <Button Grid.Column="2" Margin="5" Content="Create" Command="{Binding CreateNewUserCommand}"/>
+
+            <ComboBox Margin="0,8,0,0" wpf:HintAssist.Hint="Employee No" Name="user_level" SelectedValuePath="Id"
+                      Width="300" Style="{StaticResource MaterialDesignOutlinedComboBox}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding FilterCommand}">
+                            <i:InvokeCommandAction.CommandParameter>
+                                <MultiBinding Converter="{StaticResource TareWeightSettingBindingConverter}">
+                                    <Binding ElementName="user_level" Path="SelectedValuePath"/>
+                                    <Binding ElementName="emp_no" Path="Text"/>
+                                </MultiBinding>
+                            </i:InvokeCommandAction.CommandParameter>
+                        </i:InvokeCommandAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ComboBox>
+
+            <TextBox Margin="50,8,0,0" wpf:HintAssist.Hint="Employee No" FontSize="16" Name="emp_no" Width="300"
+                     Style="{StaticResource MaterialDesignFloatingHintTextBox}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="TextChanged">
+                        <i:InvokeCommandAction Command="{Binding FilterCommand}">
+                            <i:InvokeCommandAction.CommandParameter>
+                                <MultiBinding Converter="{StaticResource TareWeightSettingBindingConverter}">
+                                    <Binding ElementName="user_level" Path="SelectedValuePath"/>
+                                    <Binding ElementName="emp_no" Path="Text"/>
+                                </MultiBinding>
+                            </i:InvokeCommandAction.CommandParameter>
+                        </i:InvokeCommandAction>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
+
+        </StackPanel>
+
+        <DataGrid Grid.Row="1" Grid.ColumnSpan="2" AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="All" 
+                  ItemsSource="{Binding Users}" >
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Action" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="{materialDesign:PackIcon Kind=Delete}"  Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
+                                              Path=DataContext.DeleteCommand}" CommandParameter="{Binding}"/>
+                                <Button Content="{materialDesign:PackIcon Kind=ContentSave}"  Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
+                                              Path=DataContext.SaveCommand}" CommandParameter="{Binding}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <materialDesign:DataGridTextColumn Header="Employee No" Binding="{Binding EmployeeNo}" EditingElementStyle="{StaticResource MaterialDesignDataGridTextColumnPopupEditingStyle}" 
+                                                   ElementStyle="{StaticResource MaterialDesignDataGridTextColumnStyle}"/>
+
+                <DataGridComboBoxColumn Header="User Level" ItemsSource="{Binding UserLevels}" DisplayMemberPath="Name" SelectedItemBinding="{Binding UserLevel}"/>
+
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

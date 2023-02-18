@@ -29,9 +29,11 @@ namespace PDI_Feather_Tracking_WPF
             services.AddSingleton<HomeViewModel>();
             services.AddSingleton<HomeView>();
 
-
             services.AddSingleton<Confirmation>();
             services.AddSingleton<ConfirmationViewModel>();
+
+            services.AddSingleton<CreateUserView>();
+            services.AddSingleton<CreateUserViewModel>();
 
             services.AddSingleton<LoginView>();
             services.AddSingleton<LoginViewModel>();
