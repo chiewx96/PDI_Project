@@ -79,11 +79,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         private void readLabel()
         {
-            if (_templatePath != null)
-            {
-                var result = Printer_Library.Main.ReadLabelDocument(_templatePath);
-                Debug.WriteLine(result);
-            }
+           
         }
 
         #endregion
