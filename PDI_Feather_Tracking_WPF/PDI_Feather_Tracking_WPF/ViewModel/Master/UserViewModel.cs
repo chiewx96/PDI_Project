@@ -2,8 +2,6 @@
 using GalaSoft.MvvmLight.Messaging;
 using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1.X509;
-using PDI_Feather_Tracking_WPF.Dto;
 using PDI_Feather_Tracking_WPF.Global;
 using PDI_Feather_Tracking_WPF.Interfaces;
 using PDI_Feather_Tracking_WPF.Models;
@@ -12,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Security.RightsManagement;
 using System.Windows.Input;
 
 namespace PDI_Feather_Tracking_WPF.ViewModel
@@ -73,7 +70,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 EmployeeNo = newUser.EmployeeNo,
                 Username = newUser.EmployeeNo,
                 UserLevelId = newUser.UserLevelId,
-                Password = General.Encrypt("abc123"),
+                Password = EncryptionHelper.Encrypt("abc123"),
                 UpdatedAt = DateTime.Now,
                 CreatedAt = DateTime.Now,
                 UpdatedBy = CurrentUser?.Id ?? 0,
@@ -175,7 +172,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         {
 
             var selected = _dbContext.Users.Where(x => x.Id == user.Id).First();
-            selected.Password = General.Encrypt("abc123");
+            selected.Password = EncryptionHelper.Encrypt("abc123");
             selected.UpdatedBy = CurrentUser?.Id ?? 0;
             selected.UpdatedAt = DateTime.Now;
             _dbContext.SaveChanges();

@@ -1,10 +1,14 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using MaterialDesignThemes.Wpf;
+using Microsoft.Extensions.Configuration;
 using PDI_Feather_Tracking_WPF.Global;
 using PDI_Feather_Tracking_WPF.Models;
 using PDI_Feather_Tracking_WPF.View;
 using System;
+using System.Configuration;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
 
@@ -14,10 +18,20 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
     {
         TareWeightView _tareWeightView;
         FeatherDbContext _dbContext;
-        public HomeViewModel(FeatherDbContext dbContext, TareWeightView tareWeightView)
+        private readonly IConfiguration _configuration;
+        string? _printerName;
+        string? _templatePath;
+        public HomeViewModel(FeatherDbContext dbContext, TareWeightView tareWeightView, IConfiguration configuration)
         {
             Messenger.Default.Register<User?>(this,
                 refresh_tare_weight_access);
+
+            //var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+            //    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+            _configuration = configuration;
+            _printerName = _configuration.GetSection("PrinterName").Value;
+            _templatePath = _configuration.GetSection("TemplatePath").Value;
             _tareWeightView = tareWeightView;
             _dbContext = dbContext;
             refresh_tare_weight_setting();
@@ -63,10 +77,21 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             TareWeightAccess = General.CheckAccessibility(obj, ModuleEnum.tare_weight_setting);
         }
 
+        private void readLabel()
+        {
+            if (_templatePath != null)
+            {
+                var result = Printer_Library.Main.ReadLabelDocument(_templatePath);
+                Debug.WriteLine(result);
+            }
+        }
+
         #endregion
 
         #region Property
         public ICommand ModifyTareWeightCommand => new Command(show_dialog);
+
+        public ICommand TestingCommand => new Command(_ => readLabel());
 
         private TareWeightSetting tareWeightSetting = new TareWeightSetting();
 

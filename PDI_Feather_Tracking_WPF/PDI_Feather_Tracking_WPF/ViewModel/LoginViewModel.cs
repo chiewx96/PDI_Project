@@ -59,8 +59,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 _dbContext.Users.Where(x => x.Username == CurrentUser.Username && x.Status).First().IsSignedIn = false;
             else if (user != null && CurrentUser == null)
                 _dbContext.Users.Where(x => x.Username == user.Username && x.Status).First().IsSignedIn = true;
-            else
-                throw new InvalidOperationException();
+    
             if (user != null)
             {
                 user.UserLevel = _dbContext.UserLevels.Where(x => x.Id == user.UserLevelId).First();

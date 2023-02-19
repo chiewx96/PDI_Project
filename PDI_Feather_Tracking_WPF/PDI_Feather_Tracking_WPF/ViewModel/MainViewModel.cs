@@ -108,7 +108,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 if (NewPassword != string.Empty)
                 {
                     var current_user = _dbContext.Users.Where(x => x.Id == CurrentUser.Id).First();
-                    current_user.Password = General.Encrypt(NewPassword);
+                    current_user.Password = EncryptionHelper.Encrypt(NewPassword);
                     current_user.UpdatedAt = DateTime.Now;
                     current_user.UpdatedBy = CurrentUser.Id;
                     _dbContext.SaveChanges();

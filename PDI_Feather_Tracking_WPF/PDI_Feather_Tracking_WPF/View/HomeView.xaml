@@ -16,6 +16,11 @@
             <Button Margin="10" Command="{Binding ModifyTareWeightCommand}" 
                     Content="Tare Weight Setting" Visibility="{Binding TareWeightAccess, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
+            <Button Margin="10" Command="{Binding TestingCommand}" 
+                    Content="Testing"/>
+
+
+
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"  

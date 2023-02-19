@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using PDI_Feather_Tracking_WPF.View;
 using PDI_Feather_Tracking_WPF.ViewModel;
 using System;
@@ -11,8 +12,10 @@ namespace PDI_Feather_Tracking_WPF
 {
     public static class ServiceConfiguration
     {
-        public static void ConfigureService(ref Microsoft.Extensions.DependencyInjection.ServiceCollection services)
+        public static void ConfigureService(ref Microsoft.Extensions.DependencyInjection.ServiceCollection services, IConfiguration Configuration)
         {
+
+            services.AddSingleton<IConfiguration>(Configuration);
 
             services.AddSingleton<TareWeightView>();
             services.AddSingleton<TareWeightViewModel>();

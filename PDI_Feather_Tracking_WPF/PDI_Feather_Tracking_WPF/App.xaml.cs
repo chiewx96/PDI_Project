@@ -1,14 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PDI_Feather_Tracking_WPF.Global;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.EntityFrameworkCore;
 using GalaSoft.MvvmLight.Messaging;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace PDI_Feather_Tracking_WPF
 {
@@ -20,10 +17,19 @@ namespace PDI_Feather_Tracking_WPF
     public partial class App : Application
     {
         private ServiceProvider serviceProvider;
+        private string connectionString;
+        public IConfiguration Configuration { get; private set; }
 
         public App()
         {
             ServiceCollection services = new ServiceCollection();
+
+            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+            Configuration = builder.Build();
+            connectionString = Configuration.GetConnectionString("PDIFeatherTracking")?.ToString() ?? string.Empty;
+
             ConfigureServices(services);
             serviceProvider = services.BuildServiceProvider();
         }
@@ -32,10 +38,10 @@ namespace PDI_Feather_Tracking_WPF
         {
             services.AddDbContext<FeatherDbContext>(options =>
             {
-                options.UseMySQL("server=localhost;port=3306;database=feather-tracking;user=root;password=root");
+                options.UseMySQL(connectionString);
             });
 
-            ServiceConfiguration.ConfigureService(ref services);
+            ServiceConfiguration.ConfigureService(ref services, Configuration);
         }
 
         private void OnStartup(object sender, StartupEventArgs e)
