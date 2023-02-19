@@ -5,17 +5,19 @@ using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Asn1.X509;
 using PDI_Feather_Tracking_WPF.Dto;
 using PDI_Feather_Tracking_WPF.Global;
+using PDI_Feather_Tracking_WPF.Interfaces;
 using PDI_Feather_Tracking_WPF.Models;
 using PDI_Feather_Tracking_WPF.View;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Security.RightsManagement;
 using System.Windows.Input;
 
 namespace PDI_Feather_Tracking_WPF.ViewModel
 {
-    public class UserViewModel : ViewModelBase
+    public class UserViewModel : ViewModelBase, IAction
     {
         FeatherDbContext _dbContext;
         CreateUserView _createUserView;
@@ -32,7 +34,17 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             _confirmation = confirmation;
             Messenger.Default.Register<User?>(this,
                 refresh_current_user);
+            Messenger.Default.Register<List<UserLevel>>(this, refresh_user_levels);
             refresh_user_list();
+            refresh_user_levels();
+        }
+
+        private void refresh_user_levels(List<UserLevel> obj = null)
+        {
+            if (obj != null)
+                UserLevels = obj;
+            else
+                UserLevels = _dbContext.UserLevels.AsNoTracking().Where(x => x.Status).ToList();
         }
 
 
@@ -72,18 +84,24 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             refresh_user_list();
         }
 
-        private void refresh_user_list(int? user_level = null, string? employee_no = null)
+        private void refresh_user_list(string? employee_no = null, int? user_level = null)
         {
             try
             {
                 if (user_level != null && employee_no != null)
-                    Users = _dbContext.Users.AsNoTracking().Where(z => z.Status && z.Id > 1 && z.EmployeeNo == employee_no && z.UserLevelId == user_level).ToList();
+                    users = _dbContext.Users.AsNoTracking().Where(z => z.Status && z.Id > 1 && z.EmployeeNo.StartsWith(employee_no) && z.UserLevelId == user_level).ToList();
                 else if (user_level != null)
-                    Users = _dbContext.Users.AsNoTracking().Where(z => z.Status && z.Id > 1 && z.UserLevelId == user_level).ToList();
+                    users = _dbContext.Users.AsNoTracking().Where(z => z.Status && z.Id > 1 && z.UserLevelId == user_level).ToList();
                 else if (employee_no != null)
-                    Users = _dbContext.Users.AsNoTracking().Where(z => z.Status && z.Id > 1 && z.EmployeeNo == employee_no).ToList();
+                    users = _dbContext.Users.AsNoTracking().Where(z => z.Status && z.Id > 1 && z.EmployeeNo.StartsWith(employee_no)).ToList();
                 else
-                    Users = _dbContext.Users.AsNoTracking().Where(z => z.Status && z.Id > 1).ToList();
+                    users = _dbContext.Users.AsNoTracking().Where(z => z.Status && z.Id > 1).ToList();
+
+                users.ForEach(x =>
+                {
+                    x.UserLevel = _dbContext.UserLevels.AsNoTracking().Where(z => z.Status && z.Id == x.UserLevelId).First();
+                });
+                RaisePropertyChanged(nameof(Users));
             }
             catch (Exception ex)
             {
@@ -115,9 +133,9 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         private void filter_user_by_parameter(object? obj)
         {
-            if (obj is UserFilterDTO vm)
+            if (obj is User vm)
             {
-                refresh_user_list(vm.user_level, vm.empNo);
+                refresh_user_list(vm.EmployeeNo, vm.UserLevelId);
             }
             else refresh_user_list();
 
@@ -130,11 +148,18 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 var selected = _dbContext.Users.Where(x => x.Id == user.Id).First();
                 selected.EmployeeNo = user.EmployeeNo;
                 selected.Username = user.EmployeeNo;
+                selected.UserLevelId = user.UserLevelId;
                 selected.UpdatedBy = CurrentUser?.Id ?? 0;
                 selected.UpdatedAt = DateTime.Now;
                 _dbContext.SaveChanges();
             }
             refresh_user_list();
+        }
+
+        private void clear_filter(object? obj)
+        {
+            refresh_user_list();
+            Action?.Invoke();
         }
 
         #endregion
@@ -149,12 +174,14 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         public ICommand SaveCommand => new Command(save_user);
 
+        public ICommand RefreshCommand => new Command(clear_filter);
+
         private List<User> users = new List<User>();
 
-        public List<User> Users
+        public ObservableCollection<User> Users
         {
-            get { return users; }
-            set { users = value; RaisePropertyChanged(nameof(Users)); }
+            get { return new ObservableCollection<User>(users); }
+            set { users = value.ToList(); RaisePropertyChanged(nameof(Users)); }
         }
 
         private User? currentUser;
@@ -164,6 +191,16 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             get { return currentUser; }
             set { currentUser = value; RaisePropertyChanged(nameof(CurrentUser)); }
         }
+
+        private List<UserLevel> userLevels;
+
+        public List<UserLevel> UserLevels
+        {
+            get { return userLevels; }
+            set { userLevels = value; RaisePropertyChanged(nameof(UserLevels)); }
+        }
+
+        public Action Action { get; set; }
 
 
         #endregion

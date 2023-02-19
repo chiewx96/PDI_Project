@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace PDI_Feather_Tracking_WPF.ViewModel
 {
-    public class LoginViewModel : ViewModelBase, ICloseWindows
+    public class LoginViewModel : ViewModelBase, IAction
     {
         FeatherDbContext _dbContext;
 

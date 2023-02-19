@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PDI_Feather_Tracking_WPF.Interfaces
 {
-    public interface ICloseWindows
+    public interface IAction
     {
         Action Action { get; set; }
     }

@@ -10,7 +10,7 @@ using System.Windows.Threading;
 
 namespace PDI_Feather_Tracking_WPF.ViewModel
 {
-    public class ConfirmationViewModel : ViewModelBase, ICloseWindows
+    public class ConfirmationViewModel : ViewModelBase, IAction
     {
         Action _confirmAction;
         DispatcherTimer dispatcherTimer;

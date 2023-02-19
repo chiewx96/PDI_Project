@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -43,6 +44,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         {
             UserLevels = _dbContext.UserLevels.AsNoTracking().Where(x => x.Status).ToList();
             SelectedUserLevel = UserLevels.First();
+            Messenger.Default.Send(UserLevels);
         }
 
         private void populate_all_modules()
@@ -72,6 +74,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             selected_user_level.UpdatedBy = _loginViewModel.CurrentUser?.Id ?? 0;
             selected_user_level.UpdatedAt = DateTime.Now;
             _dbContext.SaveChanges();
+            populate_user_rights();
         }
 
         private void create_new_user_level(object? obj)

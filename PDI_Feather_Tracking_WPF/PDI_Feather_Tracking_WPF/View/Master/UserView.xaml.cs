@@ -1,4 +1,5 @@
-﻿using PDI_Feather_Tracking_WPF.ViewModel;
+﻿using PDI_Feather_Tracking_WPF.Interfaces;
+using PDI_Feather_Tracking_WPF.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,18 @@ namespace PDI_Feather_Tracking_WPF.View
         {
             DataContext = userViewModel;
             InitializeComponent();
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(DataContext is IAction vm)
+            {
+                vm.Action += () =>
+                {
+                    user_level.SelectedItem = null;
+                    emp_no.Text = string.Empty;
+                };
+            }
         }
     }
 }

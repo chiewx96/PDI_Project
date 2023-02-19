@@ -20,11 +20,11 @@ namespace PDI_Feather_Tracking_WPF
             services.AddSingleton<SkuTypeSettingView>();
             services.AddSingleton<SkuTypeSettingViewModel>();
 
-            services.AddSingleton<UserLevelView>();
-            services.AddSingleton<UserLevelViewModel>();
-
             services.AddSingleton<UserView>();
             services.AddSingleton<UserViewModel>();
+
+            services.AddSingleton<UserLevelView>();
+            services.AddSingleton<UserLevelViewModel>();
 
             services.AddSingleton<HomeViewModel>();
             services.AddSingleton<HomeView>();
