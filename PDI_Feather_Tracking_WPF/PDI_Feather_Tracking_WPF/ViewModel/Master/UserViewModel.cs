@@ -162,6 +162,25 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             Action?.Invoke();
         }
 
+        private void reset_password(object? obj)
+        {
+            if (obj is User vm)
+            {
+                _confirmationViewModel.set($"Are you sure want to reset user {vm.EmployeeNo}'s password?", () => confirm_reset_password(vm));
+                _confirmation.Show();
+            }
+        }
+
+        private void confirm_reset_password(User user)
+        {
+
+            var selected = _dbContext.Users.Where(x => x.Id == user.Id).First();
+            selected.Password = General.Encrypt("abc123");
+            selected.UpdatedBy = CurrentUser?.Id ?? 0;
+            selected.UpdatedAt = DateTime.Now;
+            _dbContext.SaveChanges();
+            RefreshCommand.Execute(null);
+        }
         #endregion
 
 
@@ -171,6 +190,8 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         public ICommand DeleteCommand => new Command(delete_user);
 
         public ICommand FilterCommand => new Command(filter_user_by_parameter);
+
+        public ICommand ResetCommand => new Command(reset_password);
 
         public ICommand SaveCommand => new Command(save_user);
 

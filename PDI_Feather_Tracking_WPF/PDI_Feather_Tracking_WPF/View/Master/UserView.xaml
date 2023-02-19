@@ -75,6 +75,8 @@
                                               Path=DataContext.DeleteCommand}" CommandParameter="{Binding}" Margin="5"/>
                                 <Button Content="{materialDesign:PackIcon Kind=ContentSave}"  Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
                                               Path=DataContext.SaveCommand}" CommandParameter="{Binding}" Margin="5"/>
+                                <Button Content="{materialDesign:PackIcon Kind=LockReset}"  Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}},
+                                              Path=DataContext.ResetCommand}" CommandParameter="{Binding}" Margin="5"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
