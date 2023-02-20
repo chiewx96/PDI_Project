@@ -59,7 +59,7 @@ namespace PDI_Feather_Tracking_Service.GeneralService
                         // Process the data sent by the client.
                         data = data.ToUpper();
 
-                        string response_text = "PDI_Feather_Tracking_Service";
+                        string response_text = "success";
                         byte[] msg = System.Text.Encoding.ASCII.GetBytes(response_text);
 
                         // Send back a response.

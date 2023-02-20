@@ -14,12 +14,22 @@ namespace PDI_Feather_Tracking_Service
         /// </summary>
         static void Main()
         {
-            ServiceBase[] ServicesToRun;
+
+#if (!DEBUG)
+
+     ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
             {
                 new PrintingService()
             };
             ServiceBase.Run(ServicesToRun);
+
+#else
+
+            PrintingService myServ = new PrintingService();
+            myServ.Start();
+#endif
+          
         }
     }
 }

@@ -32,7 +32,8 @@
             // PDI_Feather_Tracking_Service
             // 
             this.ServiceName = "PDI_Feather_Tracking_Service";
-
+            //this.servicein.Description = "My First Service demo";
+            //this.serviceInstaller1.DisplayName = "MyFirstService.Demo";
         }
 
         #endregion

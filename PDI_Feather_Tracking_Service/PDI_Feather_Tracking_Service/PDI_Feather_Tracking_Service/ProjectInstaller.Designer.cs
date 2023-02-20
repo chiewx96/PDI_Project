@@ -30,6 +30,8 @@
         {
             this.serviceProcessInstaller1 = new System.ServiceProcess.ServiceProcessInstaller();
             this.serviceInstaller1 = new System.ServiceProcess.ServiceInstaller();
+            this.serviceInstaller1.Description = "PDI_Feather_Tracking_Service for label printing";
+            this.serviceInstaller1.DisplayName = "PDI_Feather_Tracking_Service";
             // 
             // serviceProcessInstaller1
             // 
