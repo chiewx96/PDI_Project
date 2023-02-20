@@ -11,30 +11,55 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right">
-            <Button Margin="10" Command="{Binding ModifyTareWeightCommand}" 
-                    Content="Tare Weight Setting" Visibility="{Binding TareWeightAccess, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-
-            <Button Margin="10" Command="{Binding TestingCommand}" 
-                    Content="Testing"/>
-
-
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Orientation="Horizontal">
+            <Button Margin="0 0 -30 0" Command="{Binding ModifyTareWeightCommand}"
+                    Style="{StaticResource MaterialDesignFloatingActionLightButton}"  Background="Transparent"
+                    BorderBrush="Transparent"
+                    Visibility="{Binding TareWeightAccess, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Thunder"/>
+                </StackPanel>
+            </Button>
+            <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"  
+                     Width="100"  FontSize="10" Margin="20"  IsReadOnly="True"
+                     HorizontalAlignment="Right" VerticalAlignment="Top" 
+                     materialDesign:TextFieldAssist.SuffixText="kg"
+                     materialDesign:HintAssist.Hint="Tare Weight" Text="{Binding TareWeight, Mode=OneWay}"/>
 
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"  
-                     Width="250"  FontSize="20" Margin="30"
-                     HorizontalAlignment="Center" VerticalAlignment="Center" 
-                     materialDesign:TextFieldAssist.SuffixText="kg"
-                     materialDesign:HintAssist.Hint="Gross Weight"/>
 
             <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"  
-                     Width="250"  FontSize="20" 
+                     Width="250"  FontSize="20" Margin="30" IsReadOnly="True"
                      HorizontalAlignment="Center" VerticalAlignment="Center" 
                      materialDesign:TextFieldAssist.SuffixText="kg"
-                     materialDesign:HintAssist.Hint="Nett Weight"/>
+                     materialDesign:HintAssist.Hint="Gross Weight" Text="{Binding GrossWeight, Mode=OneWay}"/>
+
+            <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"  
+                     Width="250"  FontSize="20" IsReadOnly="True"
+                     HorizontalAlignment="Center" VerticalAlignment="Center" 
+                     materialDesign:TextFieldAssist.SuffixText="kg"
+                     materialDesign:HintAssist.Hint="Nett Weight" Text="{Binding NettWeight, Mode=OneWay}"/>
+
+            <ScrollViewer VerticalAlignment="Center" Margin="30">
+                <StackPanel Orientation="Vertical" Margin="20">
+
+                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                          ItemsSource="{Binding SkuTypes}" SelectedItem="{Binding SelectedSkuType}" 
+                          DisplayMemberPath="Code"/>
+
+                    <Button Margin="10" Command="{Binding RecordCommand}"
+                    Content="Record"/>
+
+                    <Button Margin="10" Command="{Binding TestCommand}"
+                    Content="Generate"/>
+                </StackPanel>
+            </ScrollViewer>
         </StackPanel>
+        <TextBlock Grid.Row="2" Text="{Binding Logger}" IsEnabled="False" Style="{StaticResource MaterialDesignBody1TextBlock}">
+        </TextBlock>
 
     </Grid>
 </UserControl>

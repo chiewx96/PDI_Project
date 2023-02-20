@@ -4,6 +4,7 @@ using MaterialDesignThemes.Wpf;
 using MaterialDesignThemes.Wpf.Transitions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PDI_Feather_Tracking_WPF.Global;
+using PDI_Feather_Tracking_WPF.Helper;
 using PDI_Feather_Tracking_WPF.Interfaces;
 using PDI_Feather_Tracking_WPF.Models;
 using PDI_Feather_Tracking_WPF.View;
@@ -64,6 +65,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 MenuItems.Add(item);
             }
             SelectedItem = MenuItems.First();
+
         }
 
 

@@ -15,13 +15,12 @@ namespace PDI_Feather_Tracking_Service.GeneralService
 
         private bool isServerEnabled = false;
 
-        public TcpService(Action<object> action)
+        public TcpService(Action<object> action, int port)
         {
             server = null;
             try
             {
                 // Set the TcpListener on port 13000.
-                Int32 port = 13000;
                 IPAddress localAddr = IPAddress.Parse("127.0.0.1");
 
                 // TcpListener server = new TcpListener(port);
@@ -43,28 +42,36 @@ namespace PDI_Feather_Tracking_Service.GeneralService
                     // You could also use server.AcceptSocket() here.
                     using TcpClient client = server.AcceptTcpClient();
                     Debug.WriteLine("Connected!");
-
-                    data = null;
-
-                    // Get a stream object for reading and writing
-                    NetworkStream stream = client.GetStream();
-                    int i;
-                    // Loop to receive all the data sent by the client.
-                    while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
+                    while (client.Connected)
                     {
-                        // Translate data bytes to a ASCII string.
-                        data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-                        action($"Received: {data}");
+                        try
+                        {
+                            data = null;
+                            // Get a stream object for reading and writing
+                            NetworkStream stream = client.GetStream();
+                            int i;
+                            // Loop to receive all the data sent by the client.
+                            while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
+                            {
+                                // Translate data bytes to a ASCII string.
+                                data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
+                                action($"Received: {data}"); // so something on data received.
 
-                        // Process the data sent by the client.
-                        data = data.ToUpper();
+                                // Process the data sent by the client.
+                                data = data.ToUpper();
 
-                        string response_text = "success";
-                        byte[] msg = System.Text.Encoding.ASCII.GetBytes(response_text);
+                                string response_text = "success";
+                                byte[] msg = System.Text.Encoding.ASCII.GetBytes(response_text);
 
-                        // Send back a response.
-                        stream.Write(msg, 0, msg.Length);
-                        Debug.WriteLine("Sent: {0}", data);
+                                // Send back a response.
+                                stream.Write(msg, 0, msg.Length);
+                                Debug.WriteLine("Sent: {0}", data);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            action(e.Message);
+                        }
                     }
                 }
             }
@@ -83,7 +90,7 @@ namespace PDI_Feather_Tracking_Service.GeneralService
         public void Dispose()
         {
             server.Stop();
-            isServerEnabled= false;
+            isServerEnabled = false;
             server = null;
         }
     }

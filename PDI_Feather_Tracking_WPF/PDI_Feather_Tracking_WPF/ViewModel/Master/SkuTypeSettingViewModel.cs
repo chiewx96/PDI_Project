@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Messaging;
 using Microsoft.EntityFrameworkCore;
 using PDI_Feather_Tracking_WPF.Global;
 using PDI_Feather_Tracking_WPF.Models;
@@ -55,6 +56,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         private void refresh_view()
         {
             SkuTypeSettings = _dbContext.SkuType.AsNoTracking().Where(z => z.Status).ToList();
+            Messenger.Default.Send(new SkuType());
         }
 
         private void create_new_sku_type()

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PDI_Feather_Tracking_WPF.Helper;
 using PDI_Feather_Tracking_WPF.View;
 using PDI_Feather_Tracking_WPF.ViewModel;
 using System;
@@ -14,7 +15,6 @@ namespace PDI_Feather_Tracking_WPF
     {
         public static void ConfigureService(ref Microsoft.Extensions.DependencyInjection.ServiceCollection services, IConfiguration Configuration)
         {
-
             services.AddSingleton<IConfiguration>(Configuration);
 
             services.AddSingleton<TareWeightView>();
@@ -43,6 +43,7 @@ namespace PDI_Feather_Tracking_WPF
 
             services.AddSingleton<MainViewModel>();
             services.AddSingleton<MainWindow>();
+
         }
     }
 }

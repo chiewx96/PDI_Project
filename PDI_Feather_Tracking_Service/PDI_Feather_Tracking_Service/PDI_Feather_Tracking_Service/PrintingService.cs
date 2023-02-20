@@ -18,11 +18,6 @@ namespace PDI_Feather_Tracking_Service
 {
     public partial class PrintingService : ServiceBase
     {
-        //private const string filePath = "D:/Desktop/Log.txt";
-        private const string filePath = "C:\\Users\\GMT-NB11\\Documents\\Debug\\Log.txt";
-
-
-        private IPEndPoint iPEndPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8080);
         private TcpService TcpService;
 
         public PrintingService()
@@ -32,14 +27,13 @@ namespace PDI_Feather_Tracking_Service
 
         public void Start()
         {
-            TcpService tcpService = new TcpService(log_request);
+            TcpService tcpService = new TcpService(log_request, Global.PrintServicePort);
 
         }
 
         protected override void OnStart(string[] args)
         {
-            TcpService tcpService = new TcpService(log_request);
-
+            TcpService tcpService = new TcpService(log_request, Global.PrintServicePort);
         }
 
         protected override void OnStop()
@@ -51,14 +45,13 @@ namespace PDI_Feather_Tracking_Service
         {
             try
             {
-                if (!System.IO.File.Exists(filePath))
-                    System.IO.File.Create(filePath);
+                if (!System.IO.File.Exists(Global.LogFilePath))
+                    System.IO.File.Create(Global.LogFilePath);
                 StringBuilder sb = new StringBuilder();
                 //sb.AppendLine($"Date:{DateTime.Now.Date}");
                 //sb.AppendLine($"Time:{DateTime.Now.TimeOfDay}");
-                sb.AppendLine($"Time:{DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss")}");
-                sb.AppendLine(sender.ToString());
-                using (StreamWriter sw = System.IO.File.AppendText(filePath))
+                sb.AppendLine($"Time:{DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss")} Event : {sender.ToString()}");
+                using (StreamWriter sw = System.IO.File.AppendText(Global.LogFilePath))
                 {
                     sw.WriteLine(sb.ToString());
                 }
