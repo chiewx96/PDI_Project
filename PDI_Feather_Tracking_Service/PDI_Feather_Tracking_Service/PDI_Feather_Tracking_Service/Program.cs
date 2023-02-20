@@ -20,7 +20,8 @@ namespace PDI_Feather_Tracking_Service
         
         static void Main()
         {
-            string folderpath = "C:\\Users\\GMT-NB11\\Project\\PDI\\PDI-Feather-Tracking\\PDI_Feather_Tracking_WPF\\PDI_Feather_Tracking_WPF\\bin\\Debug\\net6.0-windows";
+            //string folderpath = "C:\\Users\\GMT-NB11\\Project\\PDI\\PDI-Feather-Tracking\\PDI_Feather_Tracking_WPF\\PDI_Feather_Tracking_WPF\\bin\\Debug\\net6.0-windows";
+            string folderpath = "D:\\Projects\\PDI_Feather_Tracking\\PDI_Feather_Tracking_WPF\\PDI_Feather_Tracking_WPF\\bin\\Debug\\net6.0-windows";
             var builder = new ConfigurationBuilder().SetBasePath(folderpath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 

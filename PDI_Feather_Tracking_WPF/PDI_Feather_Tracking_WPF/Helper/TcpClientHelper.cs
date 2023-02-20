@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -32,7 +33,7 @@ namespace PDI_Feather_Tracking_WPF.Helper
             }
         }
 
-        public string SendData(string content)
+        public string SendData(string content, decimal gross_weight)
         {
             try
             {
@@ -45,7 +46,13 @@ namespace PDI_Feather_Tracking_WPF.Helper
                     //Read Response
                     using var reader = new StreamReader(networkStream, Encoding.UTF8);
 
-                    byte[] bytes = Encoding.UTF8.GetBytes(content);
+                    var dict = new Dictionary<string, string>()
+                    {
+                        {"batch_no", content },
+                        {"gross_weight", gross_weight.ToString() },
+
+                    };
+                    byte[] bytes = Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(dict));
                     networkStream.Write(bytes, 0, bytes.Length);
 
                     content = reader.ReadToEnd();
