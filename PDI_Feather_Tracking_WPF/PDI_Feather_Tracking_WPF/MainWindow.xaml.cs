@@ -1,4 +1,5 @@
-﻿using PDI_Feather_Tracking_WPF.ViewModel;
+﻿using GalaSoft.MvvmLight.Messaging;
+using PDI_Feather_Tracking_WPF.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,16 +24,11 @@ namespace PDI_Feather_Tracking_WPF
     public partial class MainWindow : Window
     {
         MainViewModel _mainViewModel;
-
-        public MainViewModel MainViewModel
-        {
-            get { return _mainViewModel; }
-        }
-
-
-        public MainWindow(MainViewModel mainViewModel)
+        LoginViewModel _loginViewModel;
+        public MainWindow(MainViewModel mainViewModel, LoginViewModel loginViewModel)
         {
             _mainViewModel = mainViewModel;
+            _loginViewModel = loginViewModel;
             DataContext = _mainViewModel;
             InitializeComponent();
         }
@@ -50,6 +46,9 @@ namespace PDI_Feather_Tracking_WPF
             MenuToggleButton.IsChecked = false;
         }
 
+        private void OnSelectedItemChanged(object sender, DependencyPropertyChangedEventArgs e)
+            => MainScrollViewer.ScrollToHome();
+
         private void FlowDirectionButton_Click(object sender, RoutedEventArgs e)
         {
 
@@ -60,7 +59,9 @@ namespace PDI_Feather_Tracking_WPF
 
         }
 
-        private void OnSelectedItemChanged(object sender, DependencyPropertyChangedEventArgs e)
-            => MainScrollViewer.ScrollToHome();
+        private void RightDrawer_Hide(object sender, MouseButtonEventArgs e)
+        {
+            LoggedInButton.IsChecked = false;
+        }
     }
 }

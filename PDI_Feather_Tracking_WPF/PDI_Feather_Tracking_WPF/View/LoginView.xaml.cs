@@ -12,33 +12,26 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace PDI_Feather_Tracking_WPF.View
 {
     /// <summary>
-    /// Interaction logic for UserView.xaml
+    /// Interaction logic for LoginView.xaml
     /// </summary>
-    public partial class UserView : UserControl
+    public partial class LoginView : Window
     {
-
-
-        public UserView(UserViewModel userViewModel)
+        public LoginView(LoginViewModel loginViewModel)
         {
-            DataContext = userViewModel;
+            DataContext = loginViewModel;
             InitializeComponent();
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if(DataContext is IAction vm)
+            if (DataContext is IAction vm)
             {
-                vm.Action += () =>
-                {
-                    user_level.SelectedItem = null;
-                    emp_no.Text = string.Empty;
-                };
+                vm.Action += () => this.Hide();
             }
         }
     }

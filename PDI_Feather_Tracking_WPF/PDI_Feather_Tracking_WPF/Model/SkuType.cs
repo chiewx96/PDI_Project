@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,6 +16,12 @@ namespace PDI_Feather_Tracking_WPF.Models
         public char Code{ get; set; }
 
         public string? Description{ get; set; }
+
+        public string? LastSkuCode { get; set; }
+
+        [Required]
+        [DefaultValue(true)]
+        public bool Status { get; set; }
 
         [Required]
         public int CreatedBy { get; set; }

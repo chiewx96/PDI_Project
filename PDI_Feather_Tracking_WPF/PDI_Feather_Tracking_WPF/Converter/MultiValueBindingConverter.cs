@@ -9,7 +9,7 @@ using System.Windows.Data;
 
 namespace PDI_Feather_Tracking_WPF.Converter
 {
-    class ComboBoxesToComboClassConverter : IMultiValueConverter
+    class TareWeightSettingBindingConverter : IMultiValueConverter
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

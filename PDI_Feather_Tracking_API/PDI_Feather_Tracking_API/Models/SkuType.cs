@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PDI_Feather_Tracking_API.Models
@@ -10,9 +11,15 @@ namespace PDI_Feather_Tracking_API.Models
         public int Id { get; set; }
 
         [Required]
-        public char Code{ get; set; }
+        public char Code { get; set; }
 
-        public string? Description{ get; set; }
+        public string? Description { get; set; }
+
+        public string? LastSkuCode { get; set; }
+
+        [Required]
+        [DefaultValue(true)]
+        public bool Status { get; set; }
 
         [Required]
         public int CreatedBy { get; set; }

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDI_Feather_Tracking_WPF", "PDI_Feather_Tracking_WPF\PDI_Feather_Tracking_WPF.csproj", "{4A31EFA6-55E3-477D-B3F8-36C0072E999B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PDI_Feather_Tracking_Service", "PDI_Feather_Tracking_Service\PDI_Feather_Tracking_Service.csproj", "{8EF98FE9-90AF-4EC8-969E-C10F5DE9635B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{4A31EFA6-55E3-477D-B3F8-36C0072E999B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4A31EFA6-55E3-477D-B3F8-36C0072E999B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4A31EFA6-55E3-477D-B3F8-36C0072E999B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4A31EFA6-55E3-477D-B3F8-36C0072E999B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EF98FE9-90AF-4EC8-969E-C10F5DE9635B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EF98FE9-90AF-4EC8-969E-C10F5DE9635B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EF98FE9-90AF-4EC8-969E-C10F5DE9635B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EF98FE9-90AF-4EC8-969E-C10F5DE9635B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {E888D2C9-718B-4167-82A9-74330A76E9F6}
+		SolutionGuid = {86468C3A-71D3-498E-938B-29E6EEAAB90D}
 	EndGlobalSection
 EndGlobal

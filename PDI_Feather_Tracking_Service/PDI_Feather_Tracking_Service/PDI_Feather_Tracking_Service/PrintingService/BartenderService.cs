@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PDI_Feather_Tracking_WPF.Interfaces
+namespace PDI_Feather_Tracking_Service
 {
-    public interface ICloseWindows
+    internal class BartenderService
     {
-        Action Close { get; set; }
+        
     }
 }

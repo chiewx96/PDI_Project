@@ -1,11 +1,12 @@
-﻿using System;
+﻿using GalaSoft.MvvmLight;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PDI_Feather_Tracking_WPF.Models
 {
-    public class User
+    public class User : ViewModelBase
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

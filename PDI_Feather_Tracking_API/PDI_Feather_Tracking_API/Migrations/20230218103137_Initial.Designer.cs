@@ -8,11 +8,11 @@ using PDI_Feather_Tracking_API.Models;
 
 #nullable disable
 
-namespace PDI_Feather_Tracking_API.Migrations
+namespace PDIFeatherTrackingAPI.Migrations
 {
     [DbContext(typeof(PDIFeatherTrackingDbContext))]
-    [Migration("20230214163430_AddModuleSeeder")]
-    partial class AddModuleSeeder
+    [Migration("20230218103137_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,20 +21,6 @@ namespace PDI_Feather_Tracking_API.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            modelBuilder.Entity("PDI_Feather_Tracking_API.DataModel.ModuleAccess", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("status")
-                        .HasColumnType("int");
-
-                    b.HasKey("id");
-
-                    b.ToTable("ModuleAccess");
-                });
 
             modelBuilder.Entity("PDI_Feather_Tracking_API.Models.InventoryRecords", b =>
                 {
@@ -99,6 +85,58 @@ namespace PDI_Feather_Tracking_API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Module");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "user-level"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "user"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "sku-type"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "tare-weight-setting"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "incoming"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "outgoing"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "reporting-weight-list"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "reporting-sku-incoming"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "reporting-sku-outgoing"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            Name = "reporting-on-hand-balance"
+                        });
                 });
 
             modelBuilder.Entity("PDI_Feather_Tracking_API.Models.SkuType", b =>
@@ -119,6 +157,12 @@ namespace PDI_Feather_Tracking_API.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
+
+                    b.Property<string>("LastSkuCode")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -164,9 +208,9 @@ namespace PDI_Feather_Tracking_API.Migrations
                         {
                             Id = 1,
                             ChildCount = 0,
-                            CreatedAt = new DateTime(2023, 2, 15, 0, 34, 30, 529, DateTimeKind.Local).AddTicks(3084),
+                            CreatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 775, DateTimeKind.Local).AddTicks(1444),
                             CreatedBy = 1,
-                            UpdatedAt = new DateTime(2023, 2, 15, 0, 34, 30, 529, DateTimeKind.Local).AddTicks(3084),
+                            UpdatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 775, DateTimeKind.Local).AddTicks(1445),
                             UpdatedBy = 1,
                             Weight = 0m
                         });
@@ -221,13 +265,13 @@ namespace PDI_Feather_Tracking_API.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 2, 15, 0, 34, 30, 529, DateTimeKind.Local).AddTicks(2796),
+                            CreatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 775, DateTimeKind.Local).AddTicks(1396),
                             CreatedBy = 1,
                             EmployeeNo = "SA001",
                             IsSignedIn = false,
-                            Password = "Q/iS86IdHUgC3V8frPyd61GB+jqnhwtyE8AI9ijFed37IFyX",
+                            Password = "2yw689CCSPkvtkj6VNBpug==",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 15, 0, 34, 30, 529, DateTimeKind.Local).AddTicks(2810),
+                            UpdatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 775, DateTimeKind.Local).AddTicks(1398),
                             UpdatedBy = 1,
                             UserLevelId = 1,
                             Username = "sysadmin"
@@ -246,8 +290,8 @@ namespace PDI_Feather_Tracking_API.Migrations
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ModuleAccessid")
-                        .HasColumnType("int");
+                    b.Property<string>("ModuleAccess")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -264,49 +308,47 @@ namespace PDI_Feather_Tracking_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ModuleAccessid");
-
                     b.ToTable("UserLevels");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 2, 15, 0, 34, 30, 489, DateTimeKind.Local).AddTicks(7925),
+                            CreatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7493),
                             CreatedBy = 1,
                             Name = "SysAdmin",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 15, 0, 34, 30, 489, DateTimeKind.Local).AddTicks(7932),
+                            UpdatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7501),
                             UpdatedBy = 1
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2023, 2, 15, 0, 34, 30, 489, DateTimeKind.Local).AddTicks(7934),
+                            CreatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7503),
                             CreatedBy = 1,
                             Name = "Admin",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 15, 0, 34, 30, 489, DateTimeKind.Local).AddTicks(7935),
+                            UpdatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7504),
                             UpdatedBy = 1
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2023, 2, 15, 0, 34, 30, 489, DateTimeKind.Local).AddTicks(7936),
+                            CreatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7505),
                             CreatedBy = 1,
                             Name = "Supervisor",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 15, 0, 34, 30, 489, DateTimeKind.Local).AddTicks(7937),
+                            UpdatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7505),
                             UpdatedBy = 1
                         },
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2023, 2, 15, 0, 34, 30, 489, DateTimeKind.Local).AddTicks(7938),
+                            CreatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7507),
                             CreatedBy = 1,
                             Name = "Operator",
                             Status = true,
-                            UpdatedAt = new DateTime(2023, 2, 15, 0, 34, 30, 489, DateTimeKind.Local).AddTicks(7939),
+                            UpdatedAt = new DateTime(2023, 2, 18, 18, 31, 37, 773, DateTimeKind.Local).AddTicks(7507),
                             UpdatedBy = 1
                         });
                 });
@@ -331,15 +373,6 @@ namespace PDI_Feather_Tracking_API.Migrations
                         .IsRequired();
 
                     b.Navigation("UserLevel");
-                });
-
-            modelBuilder.Entity("PDI_Feather_Tracking_API.Models.UserLevel", b =>
-                {
-                    b.HasOne("PDI_Feather_Tracking_API.DataModel.ModuleAccess", "ModuleAccess")
-                        .WithMany()
-                        .HasForeignKey("ModuleAccessid");
-
-                    b.Navigation("ModuleAccess");
                 });
 
             modelBuilder.Entity("PDI_Feather_Tracking_API.Models.SkuType", b =>

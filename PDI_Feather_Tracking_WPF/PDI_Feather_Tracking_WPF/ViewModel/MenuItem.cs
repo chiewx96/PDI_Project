@@ -1,4 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Messaging;
+using PDI_Feather_Tracking_WPF.Global;
+using PDI_Feather_Tracking_WPF.Models;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,21 +12,35 @@ public class MenuItem : ViewModelBase
 {
     private readonly Type _contentType;
     private readonly object? _dataContext;
+    private readonly ModuleEnum? _moduleEnum;
 
-    private UserControl? _content;
-    private ScrollBarVisibility _horizontalScrollBarVisibilityRequirement = ScrollBarVisibility.Auto;
-    private ScrollBarVisibility _verticalScrollBarVisibilityRequirement = ScrollBarVisibility.Auto;
-    private Thickness _marginRequirement = new(16);
 
-    public MenuItem(string name, Type contentType, UserControl content)
+    public MenuItem(string name, Type contentType, UserControl content, ModuleEnum? moduleEnum = null)
     {
+        if (moduleEnum != null)
+        {
+            Messenger.Default.Register<User?>(this, update_module_access);
+            _moduleEnum = moduleEnum;
+        }
         Name = name;
         _contentType = contentType;
         _content = content;
     }
 
+    private void update_module_access(User? obj)
+    {
+        IsVisible = General.CheckAccessibility(obj, _moduleEnum);
+    }
+
+    #region Property
+
     public string Name { get; }
+
+    private UserControl? _content;
+
     public UserControl Content => _content;
+
+    private ScrollBarVisibility _horizontalScrollBarVisibilityRequirement = ScrollBarVisibility.Auto;
 
     public ScrollBarVisibility HorizontalScrollBarVisibilityRequirement
     {
@@ -31,11 +48,15 @@ public class MenuItem : ViewModelBase
         set => _horizontalScrollBarVisibilityRequirement = value;
     }
 
+    private ScrollBarVisibility _verticalScrollBarVisibilityRequirement = ScrollBarVisibility.Auto;
+
     public ScrollBarVisibility VerticalScrollBarVisibilityRequirement
     {
         get => _verticalScrollBarVisibilityRequirement;
         set => _verticalScrollBarVisibilityRequirement = value;
     }
+
+    private Thickness _marginRequirement = new(16);
 
     public Thickness MarginRequirement
     {
@@ -43,4 +64,13 @@ public class MenuItem : ViewModelBase
         set => _marginRequirement = value;
     }
 
+    private bool isVisible = false;
+
+    public bool IsVisible
+    {
+        get { return isVisible; }
+        set { isVisible = value; RaisePropertyChanged(nameof(IsVisible)); }
+    }
+
+    #endregion
 }

@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EFWeightScan
+namespace PDI_Feather_Tracking_WPF
 {
-    public  class General
+    class EncryptionHelper
     {
         private const string EncryptionKey = "PDI_Feather_Tracking";
 
@@ -52,6 +53,5 @@ namespace EFWeightScan
             }
             return cipherText;
         }
-
     }
 }

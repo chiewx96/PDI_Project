@@ -1,14 +1,15 @@
 ﻿using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Messaging;
 using MaterialDesignThemes.Wpf;
+using Microsoft.Extensions.Configuration;
 using PDI_Feather_Tracking_WPF.Global;
 using PDI_Feather_Tracking_WPF.Models;
 using PDI_Feather_Tracking_WPF.View;
 using System;
-using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace PDI_Feather_Tracking_WPF.ViewModel
@@ -17,11 +18,25 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
     {
         TareWeightView _tareWeightView;
         FeatherDbContext _dbContext;
-        public HomeViewModel(FeatherDbContext dbContext, TareWeightView tareWeightView)
+        private readonly IConfiguration _configuration;
+        string? _printerName;
+        string? _templatePath;
+        public HomeViewModel(FeatherDbContext dbContext, TareWeightView tareWeightView, IConfiguration configuration)
         {
+            Messenger.Default.Register<User?>(this,
+                refresh_tare_weight_access);
+
+            //var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory())
+            //    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+            _configuration = configuration;
+            _printerName = _configuration.GetSection("PrinterName").Value;
+            _templatePath = _configuration.GetSection("TemplatePath").Value;
             _tareWeightView = tareWeightView;
             _dbContext = dbContext;
+            refresh_tare_weight_setting();
         }
+
 
         #region private methods
         private async void show_dialog(object? _)
@@ -56,12 +71,25 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 // write log
             }
         }
+
+        private void refresh_tare_weight_access(User? obj)
+        {
+            TareWeightAccess = General.CheckAccessibility(obj, ModuleEnum.tare_weight_setting);
+        }
+
+        private void readLabel()
+        {
+           
+        }
+
         #endregion
 
         #region Property
         public ICommand ModifyTareWeightCommand => new Command(show_dialog);
 
-        private TareWeightSetting tareWeightSetting;
+        public ICommand TestingCommand => new Command(_ => readLabel());
+
+        private TareWeightSetting tareWeightSetting = new TareWeightSetting();
 
         public TareWeightSetting TareWeightSetting
         {
@@ -69,7 +97,13 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             set { tareWeightSetting = value; RaisePropertyChanged(nameof(TareWeightSetting)); }
         }
 
+        private bool tareWeightAccess = false;
 
+        public bool TareWeightAccess
+        {
+            get { return tareWeightAccess; }
+            set { tareWeightAccess = value; RaisePropertyChanged(nameof(TareWeightAccess)); }
+        }
         #endregion
     }
 }

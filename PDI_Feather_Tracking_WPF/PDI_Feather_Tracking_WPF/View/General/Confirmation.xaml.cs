@@ -29,9 +29,9 @@ namespace PDI_Feather_Tracking_WPF.View
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if(DataContext is ICloseWindows vm)
+            if(DataContext is IAction vm)
             {
-                vm.Close += () => this.Hide();
+                vm.Action += () => this.Hide();
             }
         }
     }

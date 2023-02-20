@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PDI_Feather_Tracking_WPF"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:converter="clr-namespace:PDI_Feather_Tracking_WPF.Converter"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -13,13 +15,19 @@
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         mc:Ignorable="d"
-        Title="PDI Feather Tracking" Height="450" Width="800">
+        Title="PDI Feather Tracking">
+    <Window.Resources>
+        <converter:EmployeeNoConverter x:Key="EmployeeNoConverter"/>
+        <converter:UserToVisibilityConverter x:Key="UserToVisibilityConverter"/>
+        <converter:InverseUserToVisibilityConverter x:Key="InverseUserToVisibilityConverter"/>
+    </Window.Resources>
     <Grid>
         <StackPanel>
             <materialDesign:DialogHost DialogTheme="Inherit"
                              Identifier="RootDialog">
 
-                <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}">
+                <materialDesign:DrawerHost IsLeftDrawerOpen="{Binding ElementName=MenuToggleButton, Path=IsChecked}"
+                                           IsRightDrawerOpen="{Binding ElementName=LoggedInButton,Path=IsChecked}">
                     <materialDesign:DrawerHost.LeftDrawerContent>
                         <DockPanel MinWidth="220">
                             <ToggleButton Margin="16" HorizontalAlignment="Right" DockPanel.Dock="Top" 
@@ -42,6 +50,29 @@
                         </DockPanel>
                     </materialDesign:DrawerHost.LeftDrawerContent>
 
+                    <materialDesign:DrawerHost.RightDrawerContent>
+                        <!--<ScrollViewer VerticalScrollBarVisibility="Auto">-->
+                            <UniformGrid MinWidth="220" Columns="1" Rows="5" Margin="5">
+                                <Button Command="{Binding ChangePassword}" Content="Change Password" Grid.Row="0"/>
+                                <TextBlock Text="{Binding Message}" Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+                                <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  
+                                     Style="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"  
+                                     Width="250"  FontSize="20" 
+                                     HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                     Text="{Binding NewPassword, UpdateSourceTrigger=PropertyChanged}" 
+                                     Visibility="{Binding ChangePasswordMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                     materialDesign:HintAssist.Hint="New Password"/>
+                                <Button Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="True" Width="200" Height="50" 
+                                    Command="{Binding SaveChangedPassword}"
+                                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                                    Visibility="{Binding ChangePasswordMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    Content="Save New Password"/>
+                                <Button  Grid.Row="3" Command="{Binding Logout}" Content="Logout" PreviewMouseLeftButtonUp="RightDrawer_Hide"/>
+                            </UniformGrid>
+                        <!--</ScrollViewer>-->
+                    </materialDesign:DrawerHost.RightDrawerContent>
+
                     <DockPanel>
                         <materialDesign:ColorZone Padding="16"
                                   materialDesign:ElevationAssist.Elevation="Dp4"
@@ -49,45 +80,36 @@
                                   Mode="PrimaryMid">
                             <DockPanel>
                                 <StackPanel Orientation="Horizontal">
-                                    <ToggleButton x:Name="MenuToggleButton"
-                            AutomationProperties.Name="HamburgerToggleButton"
-                            IsChecked="False"
-                            Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
-
-                                    <!--<Button Margin="16,0,0,0" 
-                                            materialDesign:RippleAssist.Feedback="{Binding RelativeSource={RelativeSource Self}, Path=Foreground, Converter={StaticResource BrushRoundConverter}}" 
-                                            Command="{Binding HomeCommand}" Content="{materialDesign:PackIcon Kind=Home, Size=24}" 
-                                            Foreground="{Binding RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}, Path=(TextElement.Foreground)}" 
-                                            Style="{StaticResource MaterialDesignToolButton}" ToolTip="Home" />-->
+                                    <ToggleButton x:Name="MenuToggleButton" 
+                                                  AutomationProperties.Name="HamburgerToggleButton"
+                                                  IsChecked="False"
+                                                  Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
                                 </StackPanel>
 
-                                <materialDesign:PopupBox DockPanel.Dock="Right"
-                                     PlacementMode="BottomAndAlignRightEdges"
-                                     StaysOpen="False">
-
-                                    <StackPanel>
-                                        <Grid Margin="10">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition />
-                                                <RowDefinition />
-                                                <RowDefinition />
-                                            </Grid.RowDefinitions>
-                                            <TextBlock Margin="0,0,10,0" Text="Login" />
-                                        </Grid>
+                                <Button DockPanel.Dock="Right" Height="40"
+                                        Command="{Binding ShowLogin}" 
+                                        Style="{StaticResource MaterialDesignFlatSecondaryLightBgButton}"
+                                        Visibility="{Binding CurrentUser, Converter={StaticResource InverseUserToVisibilityConverter}}"
+                                        Background="White" Foreground="MediumPurple">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Height="30" Width="30" VerticalAlignment="Center"  Kind="AccountCircle" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Login" VerticalAlignment="Center"/>
                                     </StackPanel>
-                                </materialDesign:PopupBox>
+                                </Button>
 
-                                <TextBlock Margin="-152,0,0,0"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       AutomationProperties.Name="PDI Feather Tracking"
-                       FontSize="22"
-                       Text="PDI Feather Tracking" />
+                                <ToggleButton DockPanel.Dock="Right" Height="40" IsChecked="False" x:Name="LoggedInButton"
+                                              Style="{StaticResource MaterialDesignFlatSecondaryLightBgButton}"
+                                              Visibility="{Binding CurrentUser, Converter={StaticResource UserToVisibilityConverter}}"
+                                              Foreground="White" Background="MediumPurple">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Height="30" Width="30" VerticalAlignment="Center"  Kind="AccountCircle" Margin="0,0,10,0"/>
+                                        <TextBlock Text="{Binding CurrentUser, Converter={StaticResource EmployeeNoConverter}}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </ToggleButton>
+
+
+                                <TextBlock Margin="-152,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                           FontSize="22" Text="PDI Feather Tracking" />
                             </DockPanel>
                         </materialDesign:ColorZone>
 
@@ -101,9 +123,7 @@
                             <ScrollViewer x:Name="MainScrollViewer" Grid.Row="1" materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True" 
                                           HorizontalScrollBarVisibility="{Binding SelectedItem.HorizontalScrollBarVisibilityRequirement, FallbackValue=Disabled}" 
                                           VerticalScrollBarVisibility="{Binding SelectedItem.VerticalScrollBarVisibilityRequirement, FallbackValue=Disabled}">
-                                <ContentControl Margin="{Binding MarginRequirement, FallbackValue=16}" 
-                                                Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}" 
-                                                DataContext="{Binding SelectedItem}" 
+                                <ContentControl DataContext="{Binding SelectedItem}" Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"
                                                 DataContextChanged="OnSelectedItemChanged" />
                             </ScrollViewer>
 
