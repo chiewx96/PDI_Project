@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Threading;
 
 namespace PDI_Feather_Tracking_Service.GeneralService
 {
@@ -15,7 +16,7 @@ namespace PDI_Feather_Tracking_Service.GeneralService
 
         private bool isServerEnabled = false;
 
-        public TcpService(Action<object> action, int port)
+        public TcpService(Action<object> action, Action<object> log_action, int port)
         {
             server = null;
             try
@@ -42,37 +43,37 @@ namespace PDI_Feather_Tracking_Service.GeneralService
                     // You could also use server.AcceptSocket() here.
                     using TcpClient client = server.AcceptTcpClient();
                     Debug.WriteLine("Connected!");
-                    while (client.Connected)
+
+
+                    data = null;
+                    // Get a stream object for reading and writing
+                    NetworkStream stream = client.GetStream();
+                    int i;
+                    // Loop to receive all the data sent by the client.
+                    try
                     {
-                        try
+                        while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
                         {
-                            data = null;
-                            // Get a stream object for reading and writing
-                            NetworkStream stream = client.GetStream();
-                            int i;
-                            // Loop to receive all the data sent by the client.
-                            while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
-                            {
-                                // Translate data bytes to a ASCII string.
-                                data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-                                action($"Received: {data}"); // so something on data received.
+                            // Translate data bytes to a ASCII string.
+                            data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
+                            string request_text = $"Received : {data}";
+                            string response_text = $"Sent : PDI_FEATHER_SERVICE[{data}]";
+                            action(data); // so something on data received.
 
-                                // Process the data sent by the client.
-                                data = data.ToUpper();
+                            byte[] msg = System.Text.Encoding.ASCII.GetBytes(response_text);
 
-                                string response_text = "success";
-                                byte[] msg = System.Text.Encoding.ASCII.GetBytes(response_text);
-
-                                // Send back a response.
-                                stream.Write(msg, 0, msg.Length);
-                                Debug.WriteLine("Sent: {0}", data);
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            action(e.Message);
+                            // Send back a response.
+                            stream.Write(msg, 0, msg.Length);
+                            log_action(response_text);
                         }
                     }
+                    catch (Exception e)
+                    {
+                        log_action(e.Message);
+                    }
+
+                    log_action("disconnected");
+
                 }
             }
             catch (SocketException e)

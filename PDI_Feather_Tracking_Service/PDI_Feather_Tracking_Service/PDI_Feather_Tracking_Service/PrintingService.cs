@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 using System.Timers;
 using PDI_Feather_Tracking_Service.GeneralService;
 using static System.Net.WebRequestMethods;
+using Seagull.BarTender.Print;
+using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace PDI_Feather_Tracking_Service
 {
@@ -27,13 +30,14 @@ namespace PDI_Feather_Tracking_Service
 
         public void Start()
         {
-            TcpService tcpService = new TcpService(log_request, Global.PrintServicePort);
+            //PrintLabel("C239876Sample");
+            TcpService tcpService = new TcpService(PrintLabel, log_request, Global.PrintServicePort);
 
         }
 
         protected override void OnStart(string[] args)
         {
-            TcpService tcpService = new TcpService(log_request, Global.PrintServicePort);
+            TcpService tcpService = new TcpService(PrintLabel, log_request, Global.PrintServicePort);
         }
 
         protected override void OnStop()
@@ -62,6 +66,30 @@ namespace PDI_Feather_Tracking_Service
             }
 
             // TODO: Insert monitoring activities here.
+        }
+
+        public void readLabel(object? sender)
+        {
+            LabelFormatDocument item = BartenderService.ReadLabelDocument(Global.LabelTemplatePath);
+            log_request(item);
+        }
+
+        public void PrintLabel(object sender)
+        {
+            try
+            {
+                if (sender is string json_string)
+                {
+                    var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(json_string);
+                    string result = BartenderService.Print(json["batch_no"], json["gross_weight"],
+                        Global.LabelTemplatePath, Global.PrinterName);
+                    log_request(result);
+                }
+            }
+            catch (Exception e)
+            {
+                log_request(e.Message);
+            }
         }
     }
 }

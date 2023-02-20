@@ -154,14 +154,20 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         private void handle_print_label(string label_no)
         {
-            string response = _tcpClientHelper.SendData(label_no);
-            log(response);
+            if (_tcpClientHelper != null)
+            {
+                string response = _tcpClientHelper.SendData(label_no, decimal.Round(GrossWeight, 2));
+                log(response);
+            }
         }
 
         private void setup_weighing_machine_connection()
         {
-            _serialCommunicationHelper.Set(receive_weighing_machine_input, 500);
-            _serialCommunicationHelper.Start();
+            if (_serialCommunicationHelper != null)
+            {
+                _serialCommunicationHelper.Set(receive_weighing_machine_input, 500);
+                _serialCommunicationHelper.Start();
+            }
         }
 
         private void receive_weighing_machine_input(object sender, SerialDataReceivedEventArgs e)
