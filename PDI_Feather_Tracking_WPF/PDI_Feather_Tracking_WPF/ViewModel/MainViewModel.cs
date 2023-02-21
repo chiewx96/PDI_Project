@@ -59,14 +59,18 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             _showLogin = new Command(_ => show_login());
             _changePassword = new Command(_ => ChangePasswordMode = true);
             _saveChangedPassword = new Command(_ => save_changed_password());
-            _logout = new Command(_ => Messenger.Default.Send<string>(General.CloseWindow));
-            show_login();
+            _logout = new Command(_ =>
+            {
+                Messenger.Default.Send<User>(null);
+                SelectedItem = MenuItems.First();
+            });
 
             foreach (var item in GenerateMenuItems().OrderBy(i => i.Name))
             {
                 MenuItems.Add(item);
             }
             SelectedItem = MenuItems.First();
+            show_login();
 
         }
 
@@ -97,7 +101,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
             yield return new MenuItem(
                     "Report",
-                    typeof(ReportView), _reportView, ModuleEnum.reporting_sku_outgoing);
+                    typeof(ReportView), _reportView, ModuleEnum.reporting);
 
         }
 
@@ -122,7 +126,6 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                     current_user.UpdatedBy = CurrentUser.Id;
                     _dbContext.SaveChanges();
                     General.SendNotifcation("Password changed success");
-                    reset_message(3);
                     NewPassword = string.Empty;
                     ChangePasswordMode = false;
                 }

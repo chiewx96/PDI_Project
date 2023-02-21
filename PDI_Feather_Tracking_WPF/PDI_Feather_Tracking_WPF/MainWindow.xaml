@@ -21,6 +21,7 @@
         <converter:EmployeeNoConverter x:Key="EmployeeNoConverter"/>
         <converter:UserToVisibilityConverter x:Key="UserToVisibilityConverter"/>
         <converter:InverseUserToVisibilityConverter x:Key="InverseUserToVisibilityConverter"/>
+        <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
     <Grid>
         <StackPanel>
@@ -34,19 +35,30 @@
                             <ToggleButton Margin="16" HorizontalAlignment="Right" DockPanel.Dock="Top" 
                                           IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" 
                                           Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
-                            <ListBox x:Name="DemoItemsListBox" Margin="0,16,0,16" AutomationProperties.Name="DemoPagesListBox" 
+                            <ListBox x:Name="DemoItemsListBox" Margin="0,16,0,16" AutomationProperties.Name="DemoPagesListBox" DisplayMemberPath="Name"
                                      ItemsSource="{Binding MenuItems}" PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp" 
-                                     SelectedIndex="{Binding SelectedIndex}" SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}" 
-                                     Style="{StaticResource MaterialDesignNavigationPrimaryListBox}">
+                                     SelectedIndex="{Binding SelectedIndex}" SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}">
                                 <ListBox.Resources>
                                     <Style TargetType="ScrollBar" BasedOn="{StaticResource MaterialDesignScrollBarMinimal}" />
+                                    <!--<Style TargetType="ListBoxItem" BasedOn="{StaticResource MaterialDesignNavigationPrimaryListBox}" />-->
                                 </ListBox.Resources>
-                                <ListBox.ItemTemplate>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource MaterialDesignNavigationListBoxItem}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsVisible}" Value="False">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+
+                                <!--<ListBox.ItemTemplate>
                                     <DataTemplate DataType="domain:DemoItem">
                                         <TextBlock Margin="24,4,0,4" AutomationProperties.AutomationId="DemoItemPage" 
-                                                   Text="{Binding Name}" />
+                                                   Text="{Binding Name}" Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" IsHitTestVisible="{Binding IsVisible}" IsEnabled="{Binding IsVisible}">
+                                        </TextBlock>
                                     </DataTemplate>
-                                </ListBox.ItemTemplate>
+                                </ListBox.ItemTemplate>-->
                             </ListBox>
                         </DockPanel>
                     </materialDesign:DrawerHost.LeftDrawerContent>
@@ -127,7 +139,7 @@
                                                 DataContextChanged="OnSelectedItemChanged">
                                 </ContentControl>
                             </ScrollViewer>
-                        
+
                             <view:Notification x:Name="MainSnackbar" VerticalAlignment="Bottom"/>
                         </Grid>
                     </DockPanel>

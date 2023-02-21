@@ -59,7 +59,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 _dbContext.Users.Where(x => x.Username == CurrentUser.Username && x.Status).First().IsSignedIn = false;
             else if (user != null && CurrentUser == null)
                 _dbContext.Users.Where(x => x.Username == user.Username && x.Status).First().IsSignedIn = true;
-    
+
             if (user != null)
             {
                 user.UserLevel = _dbContext.UserLevels.Where(x => x.Id == user.UserLevelId).First();
@@ -93,7 +93,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             {
                 _currentUser = value;
                 RaisePropertyChanged(nameof(CurrentUser));
-                Messenger.Default.Send(CurrentUser);
+                //Messenger.Default.Send(CurrentUser);
             }
         }
 
@@ -156,7 +156,19 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         public bool ErrorLogin { get; set; }
 
+        private bool isVisible;
 
+        public bool IsVisible
+        {
+            get { return isVisible; }
+            set
+            {
+                isVisible = value;
+                if (!value)
+                    Messenger.Default.Send(CurrentUser);
+                RaisePropertyChanged(nameof(CurrentUser));
+            }
+        }
         #endregion
 
     }

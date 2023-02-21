@@ -8,7 +8,7 @@
         xmlns:converter="clr-namespace:PDI_Feather_Tracking_WPF.Converter"
         mc:Ignorable="d" Loaded="Window_Loaded"
         Background="{DynamicResource MaterialDesignPaper}"
-        Title="LoginView" Height="450" Width="500" WindowStyle="None">
+        Title="LoginView" Height="450" Width="500" WindowStyle="None" Visibility="{Binding IsVisible, Mode=OneWayToSource,Converter={StaticResource BooleanToVisibilityConverter}}">
 
     <Window.Resources>
         <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />

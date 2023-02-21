@@ -30,10 +30,7 @@ namespace PDI_Feather_Tracking_WPF.Global
         tare_weight_setting,
         incoming,
         outgoing,
-        reporting_weight_list,
-        reporting_sku_incoming,
-        reporting_sku_outgoing,
-        reporting_on_hand_balance
+        reporting,
     }
 
     public enum ReportTypesEnum
