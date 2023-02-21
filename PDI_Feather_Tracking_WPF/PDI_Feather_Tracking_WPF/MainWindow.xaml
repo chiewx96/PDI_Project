@@ -7,6 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:converter="clr-namespace:PDI_Feather_Tracking_WPF.Converter"
+        xmlns:view="clr-namespace:PDI_Feather_Tracking_WPF.View"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -52,24 +53,24 @@
 
                     <materialDesign:DrawerHost.RightDrawerContent>
                         <!--<ScrollViewer VerticalScrollBarVisibility="Auto">-->
-                            <UniformGrid MinWidth="220" Columns="1" Rows="5" Margin="5">
-                                <Button Command="{Binding ChangePassword}" Content="Change Password" Grid.Row="0"/>
-                                <TextBlock Text="{Binding Message}" Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
-                                <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  
+                        <UniformGrid MinWidth="220" Columns="1" Rows="5" Margin="5">
+                            <Button Command="{Binding ChangePassword}" Content="Change Password" Grid.Row="0"/>
+                            <TextBlock Text="{Binding Message}" Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+                            <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  
                                      Style="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"  
                                      Width="250"  FontSize="20" 
                                      HorizontalAlignment="Center" VerticalAlignment="Center" 
                                      Text="{Binding NewPassword, UpdateSourceTrigger=PropertyChanged}" 
                                      Visibility="{Binding ChangePasswordMode, Converter={StaticResource BooleanToVisibilityConverter}}"
                                      materialDesign:HintAssist.Hint="New Password"/>
-                                <Button Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                            <Button Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Top" 
                                     materialDesign:ButtonProgressAssist.IsIndicatorVisible="True" Width="200" Height="50" 
                                     Command="{Binding SaveChangedPassword}"
                                     Style="{StaticResource MaterialDesignOutlinedButton}"
                                     Visibility="{Binding ChangePasswordMode, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Content="Save New Password"/>
-                                <Button  Grid.Row="3" Command="{Binding Logout}" Content="Logout" PreviewMouseLeftButtonUp="RightDrawer_Hide"/>
-                            </UniformGrid>
+                            <Button  Grid.Row="3" Command="{Binding Logout}" Content="Logout" PreviewMouseLeftButtonUp="RightDrawer_Hide"/>
+                        </UniformGrid>
                         <!--</ScrollViewer>-->
                     </materialDesign:DrawerHost.RightDrawerContent>
 
@@ -124,7 +125,9 @@
                                           HorizontalScrollBarVisibility="{Binding SelectedItem.HorizontalScrollBarVisibilityRequirement, FallbackValue=Disabled}" 
                                           VerticalScrollBarVisibility="{Binding SelectedItem.VerticalScrollBarVisibilityRequirement, FallbackValue=Disabled}">
                                 <ContentControl DataContext="{Binding SelectedItem}" Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"
-                                                DataContextChanged="OnSelectedItemChanged" />
+                                                DataContextChanged="OnSelectedItemChanged">
+                                    <view:Notification/>
+                                </ContentControl>
                             </ScrollViewer>
 
                         </Grid>

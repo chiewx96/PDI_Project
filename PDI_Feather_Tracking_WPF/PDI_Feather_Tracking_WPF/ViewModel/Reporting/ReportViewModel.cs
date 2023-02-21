@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -76,6 +77,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         private void generateReport(object? obj)
         {
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             string path = "C:\\Users\\GMT-NB11\\Documents";
             if (SelectedReportType != null)
             {
@@ -94,7 +96,16 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
                 if (action != null)
                 {
-                    Task.Run(action).ContinueWith(_ => Debug.WriteLine("completed"));
+                    try
+                    {
+                        Task.Run(action, cancellationTokenSource.Token).ContinueWith(_ => General.SendNotifcation("Report Generated Successfully"));
+                        cancellationTokenSource.CancelAfter(5000);
+                    }
+                    catch (TaskCanceledException taskCancelledException)
+                    {
+                        // log
+                        General.SendNotifcation("Report generate failure");
+                    }
                 }
             }
         }

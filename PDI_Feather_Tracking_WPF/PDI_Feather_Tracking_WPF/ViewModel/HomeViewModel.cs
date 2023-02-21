@@ -15,6 +15,8 @@ using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace PDI_Feather_Tracking_WPF.ViewModel
@@ -24,9 +26,9 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         TareWeightView _tareWeightView;
         TareWeightViewModel _tareWeightViewModel;
         FeatherDbContext _dbContext;
-        TcpClientHelper _tcpClientHelper;
         Confirmation _confirmation;
         ConfirmationViewModel _confirmationViewModel;
+        TcpClientHelper _tcpClientHelper;
         SerialCommunicationHelper _serialCommunicationHelper;
         int _printService = 0;
         int _weightService = 0;
@@ -156,8 +158,23 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         {
             if (_tcpClientHelper != null)
             {
-                string response = _tcpClientHelper.SendData(label_no, decimal.Round(GrossWeight, 2));
-                log(response);
+                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+                try
+                {
+                    Task.Run(() =>
+                    {
+                        string response = _tcpClientHelper.SendData(label_no, decimal.Round(GrossWeight, 2));
+                        log(response);
+                    }, cancellationTokenSource.Token);
+                    cancellationTokenSource.CancelAfter(5000);
+                }
+                catch (TaskCanceledException taskCancelledException)
+                {
+                    // Log down fails.
+                    // Notify user failure
+                }
+                cancellationTokenSource.CancelAfter(5000);
+
             }
         }
 

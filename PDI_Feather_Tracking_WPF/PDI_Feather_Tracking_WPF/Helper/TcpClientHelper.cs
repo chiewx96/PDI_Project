@@ -28,7 +28,7 @@ namespace PDI_Feather_Tracking_WPF.Helper
             {
                 string ip = "127.0.0.1";
                 client.Connect(ip, port);
-                //AutoReconnectHandler(ip, port);
+                AutoReconnectHandler(ip, port);
                 Messenger.Default.Send(this);
             }
         }
