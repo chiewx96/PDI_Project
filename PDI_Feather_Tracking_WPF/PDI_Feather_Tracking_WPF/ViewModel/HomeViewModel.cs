@@ -196,6 +196,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         private void test_action(object? obj)
         {
             GrossWeight = Math.Round((decimal)General.RandomNumberBetween(250, 260), 4);
+            General.SendNotifcation($"Number generated {GrossWeight}");
         }
 
         private void log(params string[] content)

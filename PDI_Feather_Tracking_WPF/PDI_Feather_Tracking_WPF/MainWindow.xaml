@@ -116,20 +116,19 @@
 
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
-                            <!--<domain:DocumentationLinks DataContext="{Binding SelectedItem}" />-->
 
-                            <ScrollViewer x:Name="MainScrollViewer" Grid.Row="1" materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True" 
+                            <ScrollViewer x:Name="MainScrollViewer" materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True" 
                                           HorizontalScrollBarVisibility="{Binding SelectedItem.HorizontalScrollBarVisibilityRequirement, FallbackValue=Disabled}" 
                                           VerticalScrollBarVisibility="{Binding SelectedItem.VerticalScrollBarVisibilityRequirement, FallbackValue=Disabled}">
                                 <ContentControl DataContext="{Binding SelectedItem}" Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"
                                                 DataContextChanged="OnSelectedItemChanged">
-                                    <view:Notification/>
                                 </ContentControl>
                             </ScrollViewer>
-
+                        
+                            <view:Notification x:Name="MainSnackbar" VerticalAlignment="Bottom"/>
                         </Grid>
                     </DockPanel>
                 </materialDesign:DrawerHost>

@@ -10,15 +10,16 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 {
     public class NotificationViewModel : ViewModelBase
     {
+
         public NotificationViewModel()
         {
             Messenger.Default.Register<NotificationViewModel>(this, m => { Message = m.Message; });
         }
 
-        private void handle_reset_notification()
+        private async void handle_reset_notification()
         {
             int timeout = 2000;
-            Task.Delay(timeout);
+            await Task.Delay(timeout);
             Message = string.Empty;
         }
 
