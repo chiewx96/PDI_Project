@@ -89,6 +89,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             //item.UpdatedBy = 
             item.ChildCount = tareWeightViewModel.ChildCount;
             _dbContext.SaveChanges();
+            General.SendNotifcation("Tare Weight setting updated");
             refresh_tare_weight_setting();
         }
 
@@ -151,6 +152,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             _dbContext.SkuType.Where(x => x.Id == SelectedSkuType.Id).First().LastSkuCode = batch_no;
             SelectedSkuType.LastSkuCode = batch_no;
             _dbContext.SaveChanges();
+            General.SendNotifcation("Record Saved");
             handle_print_label(batch_no);
         }
 
@@ -165,11 +167,12 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                     {
                         string response = _tcpClientHelper.SendData(label_no, decimal.Round(GrossWeight, 2));
                         log(response);
-                    }, cancellationTokenSource.Token);
+                    }, cancellationTokenSource.Token).ContinueWith(_ => General.SendNotifcation($"Label printed successfully"));
                     cancellationTokenSource.CancelAfter(5000);
                 }
                 catch (TaskCanceledException taskCancelledException)
                 {
+                    General.SendNotifcation("Label failed to print");
                     // Log down fails.
                     // Notify user failure
                 }

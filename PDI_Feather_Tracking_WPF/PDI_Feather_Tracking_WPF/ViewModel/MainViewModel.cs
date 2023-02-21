@@ -37,7 +37,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         LoginView _loginView;
         ReportView _reportView;
 
-        public MainViewModel(FeatherDbContext dbContext, HomeView homeView, SkuTypeSettingView skuTypeSettingView, 
+        public MainViewModel(FeatherDbContext dbContext, HomeView homeView, SkuTypeSettingView skuTypeSettingView,
             UserLevelView userLevelView, UserView userView, LoginViewModel loginViewModel, LoginView loginView, ReportView reportView)
         {
             Messenger.Default.Register<User?>(this, _ =>
@@ -78,7 +78,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         {
             yield return new MenuItem(
                "Home",
-               typeof(HomeView), _homeView) ;
+               typeof(HomeView), _homeView);
 
             yield return new MenuItem(
                 "User",
@@ -121,7 +121,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                     current_user.UpdatedAt = DateTime.Now;
                     current_user.UpdatedBy = CurrentUser.Id;
                     _dbContext.SaveChanges();
-                    Message = "Password saved successfully";
+                    General.SendNotifcation("Password changed success");
                     reset_message(3);
                     NewPassword = string.Empty;
                     ChangePasswordMode = false;

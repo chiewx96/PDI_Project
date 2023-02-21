@@ -74,6 +74,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             selected_user_level.UpdatedBy = _loginViewModel.CurrentUser?.Id ?? 0;
             selected_user_level.UpdatedAt = DateTime.Now;
             _dbContext.SaveChanges();
+            General.SendNotifcation("Saved");
             populate_user_rights();
         }
 
@@ -92,6 +93,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             };
             _dbContext.Add(user_lvl);
             _dbContext.SaveChanges();
+            General.SendNotifcation("New user level Created");
             populate_user_rights();
         }
 
@@ -111,6 +113,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             {
                 item.Status = false;
                 _dbContext.SaveChanges();
+                General.SendNotifcation("Deleted");
             }
             populate_user_rights();
         }

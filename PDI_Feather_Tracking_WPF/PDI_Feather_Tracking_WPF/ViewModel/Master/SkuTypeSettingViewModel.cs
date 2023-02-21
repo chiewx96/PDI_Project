@@ -50,6 +50,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
             }
             _dbContext.SaveChanges();
+            General.SendNotifcation("Saved");
             refresh_view();
         }
 
@@ -57,6 +58,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         {
             SkuTypeSettings = _dbContext.SkuType.AsNoTracking().Where(z => z.Status).ToList();
             Messenger.Default.Send(new SkuType());
+            General.SendNotifcation("Refreshed");
         }
 
         private void create_new_sku_type()
@@ -72,6 +74,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 Status = true
             });
             _dbContext.SaveChanges();
+            General.SendNotifcation("New Sku Type Created");
             refresh_view();
         }
 
@@ -88,11 +91,12 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         {
             if (_ is SkuType vm)
             {
-                var target = _dbContext.SkuType.Where(z=>z.Id == vm.Id).First();
+                var target = _dbContext.SkuType.Where(z => z.Id == vm.Id).First();
                 target.Status = false;
                 target.UpdatedBy = _loginViewModel.CurrentUser?.Id ?? 0;
                 target.UpdatedAt = DateTime.Now;
                 _dbContext.SaveChanges();
+                General.SendNotifcation("Deleted");
                 refresh_view();
             }
         }
