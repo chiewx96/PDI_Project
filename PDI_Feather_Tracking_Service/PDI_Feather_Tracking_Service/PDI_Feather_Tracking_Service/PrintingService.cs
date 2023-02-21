@@ -81,7 +81,7 @@ namespace PDI_Feather_Tracking_Service
                 if (sender is string json_string)
                 {
                     var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(json_string);
-                    string result = BartenderService.Print(json["batch_no"], json["gross_weight"],
+                    string result = BartenderService.Print(json["batch_no"], json["gross_weight"], json_string,
                         Global.LabelTemplatePath, Global.PrinterName);
                     log_request(result);
                 }
