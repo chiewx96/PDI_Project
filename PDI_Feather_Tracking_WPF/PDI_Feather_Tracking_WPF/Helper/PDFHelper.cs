@@ -18,16 +18,16 @@ namespace PDI_Feather_Tracking_WPF.Helper
 
             // creating document object  
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            iTextSharp.text.Rectangle rec = new iTextSharp.text.Rectangle(PageSize.A4);
+            Rectangle rec = new Rectangle(PageSize.A4);
             rec.BackgroundColor = new BaseColor(System.Drawing.Color.Olive);
             Document doc = new Document(rec);
-            doc.SetPageSize(iTextSharp.text.PageSize.A4);
+            doc.SetPageSize(PageSize.A4);
             PdfWriter writer = PdfWriter.GetInstance(doc, ms);
             doc.Open();
 
             //Creating paragraph for header  
             BaseFont bfntHead = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-            iTextSharp.text.Font fntHead = new iTextSharp.text.Font(bfntHead, 16, 1, iTextSharp.text.BaseColor.BLUE);
+            Font fntHead = new Font(bfntHead, 16, 1, BaseColor.BLUE);
             //Paragraph prgHeading = new Paragraph();
             //prgHeading.Alignment = Element.ALIGN_LEFT;
             //prgHeading.Add(new Chunk("Dynamic Report PDF".ToUpper(), fntHead));
@@ -54,9 +54,9 @@ namespace PDI_Feather_Tracking_WPF.Helper
 
             for (int i = 0; i < data_table.Columns.Count; i++)
             {
-                string cellText = data_table.Columns[i].ColumnName;
+                string cellText = data_table.Columns[i].Caption;
                 PdfPCell cell = new PdfPCell();
-                cell.Phrase = new Phrase(cellText, new iTextSharp.text.Font(iTextSharp.text.Font.FontFamily.TIMES_ROMAN, 10, 1, new BaseColor(System.Drawing.ColorTranslator.FromHtml("#000000"))));
+                cell.Phrase = new Phrase(cellText, new Font(iTextSharp.text.Font.FontFamily.TIMES_ROMAN, 10, 1, new BaseColor(System.Drawing.ColorTranslator.FromHtml("#000000"))));
                 cell.BackgroundColor = new BaseColor(System.Drawing.ColorTranslator.FromHtml("#C8C8C8"));
                 //cell.Phrase = new Phrase(cellText, new Font(Font.FontFamily.TIMES_ROMAN, 10, 1, new BaseColor(grdStudent.HeaderStyle.ForeColor)));  
                 //cell.BackgroundColor = new BaseColor(grdStudent.HeaderStyle.BackColor);  

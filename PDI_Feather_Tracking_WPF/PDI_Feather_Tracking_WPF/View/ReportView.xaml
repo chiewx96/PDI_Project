@@ -1,0 +1,100 @@
+﻿<UserControl x:Class="PDI_Feather_Tracking_WPF.View.ReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PDI_Feather_Tracking_WPF.View"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converter="clr-namespace:PDI_Feather_Tracking_WPF.Converter"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converter:SearchReportConverter x:Key="SearchReportConverter"/>
+        <converter:PicConvertDateDisplay x:Key="PicConvertDateDisplay"/>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <Border>
+            <StackPanel Orientation="Horizontal">
+                <GroupBox Header="Incoming" Margin="10 0">
+                    <StackPanel>
+                        <DatePicker Width="100" Margin="5" materialDesign:HintAssist.Hint="From" 
+                        materialDesign:TextFieldAssist.HasClearButton="True" Name="dp_incomingFrom"/>
+
+                        <DatePicker Width="100" Margin="5" materialDesign:CalendarAssist.IsHeaderVisible="False" 
+                        materialDesign:HintAssist.Hint="To" Name="dp_incomingTo">
+                            <DatePicker.SelectedDate>
+                                <Binding Path="FutureValidatingDate" UpdateSourceTrigger="PropertyChanged"></Binding>
+                            </DatePicker.SelectedDate>
+                        </DatePicker>
+                    </StackPanel>
+                </GroupBox>
+                <GroupBox Header="Outgoing" Margin="10 0">
+                    <StackPanel>
+                        <DatePicker Width="100" Margin="5" materialDesign:HintAssist.Hint="From" 
+                        materialDesign:TextFieldAssist.HasClearButton="True" Name="dp_outgoingFrom"/>
+
+                        <DatePicker Width="100" Margin="5" materialDesign:CalendarAssist.IsHeaderVisible="False" 
+                        materialDesign:HintAssist.Hint="To" Name="dp_outgoingTo">
+                        </DatePicker>
+                    </StackPanel>
+                </GroupBox>
+                <StackPanel VerticalAlignment="Center">
+                    <ComboBox Width="100" Margin="15" ItemsSource="{Binding SkuTypes}"
+                      materialDesign:HintAssist.Hint="Sku" Name="cbb_sku_types" DisplayMemberPath="Code"/>
+                    <Button Margin="15" Command="{Binding SearchCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Margin="0, 2, 6, 0" Kind="Magnify" />
+                            <TextBlock Text="Search" />
+                        </StackPanel>
+                        <Button.CommandParameter>
+                            <MultiBinding Converter="{StaticResource SearchReportConverter}">
+                                <Binding ElementName="cbb_report_types" Path="SelectedValue"/>
+                                <Binding ElementName="cbb_sku_types" Path="SelectedValue"/>
+                                <Binding ElementName="dp_incomingFrom" Path="SelectedDate"/>
+                                <Binding ElementName="dp_incomingTo" Path="SelectedDate"/>
+                                <Binding ElementName="dp_outgoingFrom" Path="SelectedDate"/>
+                                <Binding ElementName="dp_outgoingTo" Path="SelectedDate"/>
+                            </MultiBinding>
+                        </Button.CommandParameter>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <GroupBox Grid.Column="1" Header="Generate Report">
+            <StackPanel >
+                <ComboBox Width="200" Margin="5" ItemsSource="{Binding ReportTypes}" SelectedItem="{Binding SelectedReportType}"
+                      materialDesign:HintAssist.Hint="Report Types" Name="cbb_report_types">
+                </ComboBox>
+                <Button Margin="15" Command="{Binding GenerateCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Margin="0, 2, 6, 0" Kind="FileOutline" />
+                        <TextBlock Text="Generate" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </GroupBox>
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
+            <DataGrid ItemsSource="{Binding FilteredInventories}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Batch No" Binding="{Binding BatchNo}"/>
+                    <DataGridTextColumn Header="Sku" Binding="{Binding SkuType.Code}"/>
+                    <DataGridTextColumn Header="Gross Weight" Binding="{Binding GrossWeight}"/>
+                    <DataGridTextColumn Header="Tare Weight" Binding="{Binding TareWeight}"/>
+                    <DataGridTextColumn Header="Nett Weight" Binding="{Binding NettWeight}"/>
+                    <DataGridTextColumn Header="Incoming Date" Binding="{Binding IncomingDateTime}"/>
+                    <DataGridTextColumn Header="Outgoing Date" Binding="{Binding .,Source={RelativeSource AncestorType=DataGrid}
+                        , Converter={StaticResource PicConvertDateDisplay}}" />
+                    <DataGridTextColumn Header="Outgoing PIC" Binding="{Binding OutgoingPic}" x:Name="dgc_pic"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </StackPanel>
+    </Grid>
+</UserControl>

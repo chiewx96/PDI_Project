@@ -24,13 +24,12 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         TareWeightView _tareWeightView;
         TareWeightViewModel _tareWeightViewModel;
         FeatherDbContext _dbContext;
-        private readonly IConfiguration _configuration;
-        string? _printerName;
-        string? _templatePath;
         TcpClientHelper _tcpClientHelper;
         Confirmation _confirmation;
         ConfirmationViewModel _confirmationViewModel;
         SerialCommunicationHelper _serialCommunicationHelper;
+        int _printService = 0;
+        int _weightService = 0;
 
         public HomeViewModel(FeatherDbContext dbContext, TareWeightView tareWeightView, TareWeightViewModel tareWeightViewModel,
              Confirmation confirmation, ConfirmationViewModel confirmationViewModel, IConfiguration configuration)
@@ -52,17 +51,18 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 _tcpClientHelper = _;
             });
 
-            _configuration = configuration;
-            _printerName = _configuration.GetSection("PrinterName").Value;
-            _templatePath = _configuration.GetSection("TemplatePath").Value;
             _tareWeightViewModel = tareWeightViewModel;
             _tareWeightView = tareWeightView;
             _dbContext = dbContext;
             _confirmation = confirmation;
             _confirmationViewModel = confirmationViewModel;
             refresh_tare_weight_setting();
-            _tcpClientHelper = new TcpClientHelper(configuration);
-            _serialCommunicationHelper = new SerialCommunicationHelper(configuration);
+            int.TryParse(configuration.GetSection("PrintService").Value, out _printService);
+            int.TryParse(configuration.GetSection("WeightService").Value, out _weightService);
+            if (_printService == 1)
+                _tcpClientHelper = new TcpClientHelper(configuration);
+            if (_weightService == 1)
+                _serialCommunicationHelper = new SerialCommunicationHelper(configuration);
         }
 
 

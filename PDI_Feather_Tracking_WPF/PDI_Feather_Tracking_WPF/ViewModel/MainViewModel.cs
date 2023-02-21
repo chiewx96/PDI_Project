@@ -35,9 +35,10 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         UserView _userView;
         LoginViewModel _loginViewModel;
         LoginView _loginView;
+        ReportView _reportView;
 
         public MainViewModel(FeatherDbContext dbContext, HomeView homeView, SkuTypeSettingView skuTypeSettingView, 
-            UserLevelView userLevelView, UserView userView, LoginViewModel loginViewModel, LoginView loginView)
+            UserLevelView userLevelView, UserView userView, LoginViewModel loginViewModel, LoginView loginView, ReportView reportView)
         {
             Messenger.Default.Register<User?>(this, _ =>
             {
@@ -53,6 +54,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             _userView = userView;
             _loginViewModel = loginViewModel;
             _loginView = loginView;
+            _reportView = reportView;
             #endregion
             _showLogin = new Command(_ => show_login());
             _changePassword = new Command(_ => ChangePasswordMode = true);
@@ -91,6 +93,11 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             yield return new MenuItem(
                     "Sku Type",
                     typeof(SkuTypeSettingView), _skuTypeSettingView, ModuleEnum.sku_type);
+
+
+            yield return new MenuItem(
+                    "Report",
+                    typeof(ReportView), _reportView, ModuleEnum.reporting_sku_outgoing);
 
         }
 

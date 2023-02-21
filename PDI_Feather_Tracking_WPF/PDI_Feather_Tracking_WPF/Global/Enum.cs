@@ -35,4 +35,12 @@ namespace PDI_Feather_Tracking_WPF.Global
         reporting_sku_outgoing,
         reporting_on_hand_balance
     }
+
+    public enum ReportTypesEnum
+    {
+        IncomingReport, //
+        OutgoingReport,
+        OnHandBalanceReport,
+        ActualWeightList //
+    }
 }

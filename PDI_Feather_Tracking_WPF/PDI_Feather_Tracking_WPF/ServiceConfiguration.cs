@@ -38,6 +38,9 @@ namespace PDI_Feather_Tracking_WPF
             services.AddSingleton<CreateUserView>();
             services.AddSingleton<CreateUserViewModel>();
 
+            services.AddSingleton<ReportView>();
+            services.AddSingleton<ReportViewModel>();
+
             services.AddSingleton<LoginView>();
             services.AddSingleton<LoginViewModel>();
 
