@@ -3,6 +3,7 @@ using GalaSoft.MvvmLight.Messaging;
 using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using PDI_Feather_Tracking_WPF.Global;
 using PDI_Feather_Tracking_WPF.Helper;
 using PDI_Feather_Tracking_WPF.Models;
@@ -165,7 +166,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 {
                     Task.Run(() =>
                     {
-                        string response = _tcpClientHelper.SendData(label_no, decimal.Round(GrossWeight, 2));
+                        string response = _tcpClientHelper.SendData(label_no, decimal.Round(GrossWeight, 2), decimal.Round(TareWeight, 2), decimal.Round(NettWeight, 2), CurrentUser.EmployeeNo, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                         log(response);
                     }, cancellationTokenSource.Token).ContinueWith(_ => General.SendNotifcation($"Label printed successfully"));
                     cancellationTokenSource.CancelAfter(5000);

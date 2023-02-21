@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Configuration;
 using MySqlX.XDevAPI;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,6 +21,8 @@ namespace PDI_Feather_Tracking_WPF.Helper
     {
         private TcpClient client;
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private string _ip;
+        private int _port;
 
         public TcpClientHelper(IConfiguration configuration)
         {
@@ -27,16 +30,24 @@ namespace PDI_Feather_Tracking_WPF.Helper
             if (int.TryParse(configuration.GetSection("PrintServicePort").Value, out int port))
             {
                 string ip = "127.0.0.1";
+                _ip = ip;
+                _port = port;
                 client.Connect(ip, port);
-                AutoReconnectHandler(ip, port);
+                //AutoReconnectHandler(ip, port);
                 Messenger.Default.Send(this);
             }
         }
 
-        public string SendData(string content, decimal gross_weight)
+        public string SendData(string content, decimal gross_weight, decimal tare_weight, decimal nett_weight, string employee_no, string date)
         {
             try
             {
+                
+                if (!client.Connected)
+                {
+                    client = new TcpClient();
+                    client.Connect(_ip, _port);
+                }
 
                 if (client.Connected)
                 {
@@ -50,9 +61,10 @@ namespace PDI_Feather_Tracking_WPF.Helper
                     {
                         {"batch_no", content },
                         {"gross_weight", gross_weight.ToString() },
-
+                        {"tare_weight", tare_weight.ToString() },
+                        {"incoming_date", date },
                     };
-                    byte[] bytes = Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(dict));
+                    byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(dict));
                     networkStream.Write(bytes, 0, bytes.Length);
 
                     content = reader.ReadToEnd();
@@ -64,6 +76,7 @@ namespace PDI_Feather_Tracking_WPF.Helper
             {
                 Debug.WriteLine(ex.Message);
             }
+            finally { client.Close(); }
             return content;
         }
 
