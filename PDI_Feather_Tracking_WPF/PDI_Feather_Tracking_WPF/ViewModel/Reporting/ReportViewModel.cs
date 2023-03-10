@@ -78,7 +78,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         private void generateReport(object? obj)
         {
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            string path = "C:\\Users\\GMT-NB11\\Documents";
+            string path = "C:\\Users\\chiew\\OneDrive\\Documents\\BarTender";
             if (SelectedReportType != null)
             {
                 Action action = null;
