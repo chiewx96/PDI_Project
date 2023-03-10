@@ -1,53 +1,24 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using EFWeightScan;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PDI_Feather_Tracking_API.Models;
+using PDI_Feather_Tracking_API.Models.RequestModel;
+using PDI_Feather_Tracking_API.Models.ResponseModel;
+using PDI_Feather_Tracking_API.Services.Services;
 
 namespace PDI_Feather_Tracking_API.Controllers
 {
-    // [Controller("User")]
     [ApiController]
+    [Route("[controller]")]
     public class UserController : Controller
     {
-        //private readonly InventoryDbContext dbContext = new InventoryDbContext();
+        private readonly UserService userService;
 
-        //// GET: UserController
-        //[HttpGet("search")]
-        //public List<User>? Index()
-        //{
-        //    var _list = dbContext.Users.AsNoTracking().ToList();
-        //    return _list;
-        //}
+        [HttpPost("login")]
+        public BooleanMessageModel Login(LoginModel loginModel)
+        {
+            return userService.TryLogin(loginModel);
+        }
 
-        //// GET: UserController/Details/5
-        //[HttpGet("details/{id}")]
-        //public ActionResult Details(int id)
-        //{
-        //    return View();
-        //}
-
-        //// GET: UserController/Create
-        //[HttpGet("details")]
-        //public ActionResult Create()
-        //{
-        //    return View();
-        //}
-
-        //// POST: UserController/Create
-        //[HttpPost("create")]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create(IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
-    
     }
 }

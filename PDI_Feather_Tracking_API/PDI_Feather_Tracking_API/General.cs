@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using PDI_Feather_Tracking_API.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -10,6 +12,23 @@ namespace EFWeightScan
     public  class General
     {
         private const string EncryptionKey = "PDI_Feather_Tracking";
+
+
+        public static User? TryLogin(string username, string password, ref PDIFeatherTrackingDbContext dbContext)
+        {
+            if (dbContext != null)
+            {
+                var targetUser = dbContext.Users.AsNoTracking()
+                     .Where(z => z.Username == username)
+                     .FirstOrDefault();
+                if (targetUser != null && !targetUser.IsSignedIn)
+                {
+                    var unhashed = Decrypt(targetUser?.Password);
+                    return password == unhashed ? targetUser : null;
+                }
+            }
+            return null;
+        }
 
         public static string Encrypt(string clearText)
         {
