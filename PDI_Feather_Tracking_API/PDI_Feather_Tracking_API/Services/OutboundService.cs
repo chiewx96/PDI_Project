@@ -1,15 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PDI_Feather_Tracking_API.Models;
 using PDI_Feather_Tracking_API.Models.ResponseModel;
-using PDI_Feather_Tracking_API.Services.Services;
 
-namespace PDI_Feather_Tracking_API.Services.ServicesImpl
+namespace PDI_Feather_Tracking_API.Services
 {
-    public class OutboundServiceImpl : OutboundService
+    public class OutboundService
     {
         private PDIFeatherTrackingDbContext dbContext;
 
-        public OutboundServiceImpl(PDIFeatherTrackingDbContext dbContext)
+        public OutboundService(PDIFeatherTrackingDbContext dbContext)
         {
             this.dbContext = dbContext;
         }

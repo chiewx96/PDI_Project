@@ -1,16 +1,16 @@
 ﻿using EFWeightScan;
+using Microsoft.EntityFrameworkCore;
 using PDI_Feather_Tracking_API.Models;
 using PDI_Feather_Tracking_API.Models.RequestModel;
 using PDI_Feather_Tracking_API.Models.ResponseModel;
-using PDI_Feather_Tracking_API.Services.Services;
 
-namespace PDI_Feather_Tracking_API.Services.ServicesImpl
+namespace PDI_Feather_Tracking_API.Services
 {
-    public class UserServiceImpl : UserService
+    public class UserService
     {
         private PDIFeatherTrackingDbContext dbContext;
 
-        public UserServiceImpl(PDIFeatherTrackingDbContext dbContext)
+        public UserService(PDIFeatherTrackingDbContext dbContext)
         {
             this.dbContext = dbContext;
         }
@@ -21,6 +21,10 @@ namespace PDI_Feather_Tracking_API.Services.ServicesImpl
             {
                 return new BooleanMessageModel(false, "Invalid login credentials");
             }
+            else if(General.LoggedInUser != null)
+            {
+                return new BooleanMessageModel(false, "User has been signed in");
+            }
             else
             {
                 var user = General.TryLogin(loginModel.username, loginModel.password, ref dbContext);
@@ -30,6 +34,29 @@ namespace PDI_Feather_Tracking_API.Services.ServicesImpl
                 }
             }
             return new BooleanMessageModel(true, "login success");
+        }
+
+        public BooleanMessageModel Logout()
+        {
+            if (General.Logout(ref dbContext))
+            {
+                return new BooleanMessageModel(true, "User signed out");
+            }
+            return new BooleanMessageModel(false, "Sign out operation fail. Contact admin.");
+        }
+
+        public bool LogoutAll()
+        {
+            try
+            {
+                dbContext.Users.ForEachAsync(z => z.IsSignedIn = false);
+                dbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
     }
 }

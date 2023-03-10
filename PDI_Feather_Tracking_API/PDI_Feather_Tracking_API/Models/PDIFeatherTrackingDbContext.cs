@@ -5,13 +5,6 @@ namespace PDI_Feather_Tracking_API.Models;
 
 public partial class PDIFeatherTrackingDbContext : DbContext
 {
-    //private readonly string _connectionString;
-    //private readonly IConfiguration _configuration;
-    //public PDIFeatherTrackingDbContext(IConfiguration configuration)
-    //{
-    //    _configuration = configuration;
-    //}
-
     public PDIFeatherTrackingDbContext(DbContextOptions<PDIFeatherTrackingDbContext> options) : base(options)
     {
         Database.EnsureCreated();
@@ -28,13 +21,6 @@ public partial class PDIFeatherTrackingDbContext : DbContext
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserLevel> UserLevels { get; set; }
-
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //{
-    //    optionsBuilder.UseMySQL(_connectionString);
-    //}
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //        => optionsBuilder.UseMySQL(_configuration.GetValue<string>("ConnectionStrings:PDIFeatherTracking"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

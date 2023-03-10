@@ -1,36 +1,31 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata.Ecma335;
+﻿using Microsoft.AspNetCore.Mvc;
 using PDI_Feather_Tracking_API.Models;
-using PDI_Feather_Tracking_API.Services.Services;
-using PDI_Feather_Tracking_API.Services.ServicesImpl;
 using PDI_Feather_Tracking_API.Models.ResponseModel;
+using PDI_Feather_Tracking_API.Services;
 
 namespace PDI_Feather_Tracking_API.Controllers
 {
-    // [Controller("User")]
-    [Route("handheld")]
     [ApiController]
+    [Route("api/outbound")]
     public class OutboundController : Controller
     {
         private readonly OutboundService _outboundService;
 
-        public OutboundController(OutboundServiceImpl outboundService)
+        public OutboundController(OutboundService outboundService)
         {
             _outboundService = outboundService;
         }
 
         [HttpGet("get-details")]
-        public InventoryRecords? GetPackageDetailByReferenceNumber(string referenceNo)
+        public ActionResult GetPackageDetailByReferenceNumber(string referenceNo)
         {
-            return _outboundService.GetPackageDetailByReferenceNumber(referenceNo);
+            return Ok(_outboundService.GetPackageDetailByReferenceNumber(referenceNo));
         }
 
         [HttpGet("outbound/{referenceNo}")]
-        public BooleanMessageModel Outbound(string referenceNo)
+        public ActionResult Outbound(string referenceNo)
         {
-            return _outboundService.Outbound(referenceNo);
+            return Ok(_outboundService.Outbound(referenceNo));
         }
     }
 }

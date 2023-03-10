@@ -4,21 +4,39 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PDI_Feather_Tracking_API.Models.RequestModel;
 using PDI_Feather_Tracking_API.Models.ResponseModel;
-using PDI_Feather_Tracking_API.Services.Services;
+using PDI_Feather_Tracking_API.Services;
 
 namespace PDI_Feather_Tracking_API.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/user")]
     public class UserController : Controller
     {
-        private readonly UserService userService;
+        private readonly UserService _userService;
 
-        [HttpPost("login")]
-        public BooleanMessageModel Login(LoginModel loginModel)
+        public UserController(UserService userService)
         {
-            return userService.TryLogin(loginModel);
+            _userService = userService;
         }
 
+        [HttpPost("login")]
+        public ActionResult Login(LoginModel loginModel)
+        {
+            return Ok(_userService.TryLogin(loginModel));
+        }
+
+
+        [HttpPost("logout")]
+        public ActionResult Logout()
+        {
+            return Ok(_userService.Logout());
+        }
+
+
+        [HttpPost("logout-all")]
+        public ActionResult LogoutAll()
+        {
+            return Ok(_userService.LogoutAll());
+        }
     }
 }
