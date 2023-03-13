@@ -1,4 +1,3 @@
-<script>
 const base_url = process.env.VUE_APP_BASEURL + "/api/";
 
 const _post = async function (url, body) {
@@ -20,11 +19,11 @@ const _delete = async function (url, body) {
 const FetchFunc = async function (type, url, body) {
   return fetch(url, {
     method: type,
-    // headers: {
-    //     Authorization: 'Bearer ' + this.token,
-    //   Accept: 'application/json',
-    //   'Content-Type': 'application/json;charset=utf-8',
-    // },
+    headers: {
+      // Authorization: 'Bearer ' + this.token,
+      Accept: "application/json",
+      "Content-Type": "application/json;charset=utf-8",
+    },
     body: body != null ? JSON.stringify(body) : null,
   });
 };
@@ -35,4 +34,3 @@ export default {
   _put,
   _delete,
 };
-</script>

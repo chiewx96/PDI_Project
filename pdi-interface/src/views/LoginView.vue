@@ -26,7 +26,8 @@
 </template>
 
 <script>
-import ApiService from "@/components/ApiService.vue";
+import ApiService from "@/components/ApiService.js";
+// import ApiService from "@/services/api.service.js";
 export default {
   name: "LoginView",
   data() {

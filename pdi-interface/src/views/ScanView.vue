@@ -14,7 +14,7 @@
 
 <script>
 import { QrcodeStream } from "vue3-qrcode-reader";
-import ApiService from "@/components/ApiService.vue";
+import ApiService from "@/components/ApiService.js";
 
 export default {
   components: { QrcodeStream },
