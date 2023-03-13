@@ -129,7 +129,6 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         {
             _confirmationViewModel.set("Are you sure want to record this?", confirm_save_record);
             _confirmation.ShowDialog();
-
         }
 
         private void confirm_save_record()
@@ -166,18 +165,18 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 {
                     Task.Run(() =>
                     {
-                        string response = _tcpClientHelper.SendData(label_no, decimal.Round(GrossWeight, 2), decimal.Round(TareWeight, 2), decimal.Round(NettWeight, 2), CurrentUser.EmployeeNo, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-                        log(response);
-                    }, cancellationTokenSource.Token).ContinueWith(_ => General.SendNotifcation($"Label printed successfully"));
+                        string response = _tcpClientHelper.SendData(label_no, decimal.Round(GrossWeight, 4));
+                        log($"Print status for batch number [{label_no}] => {response}");
+                    }, cancellationTokenSource.Token);
                     cancellationTokenSource.CancelAfter(5000);
                 }
                 catch (TaskCanceledException taskCancelledException)
                 {
-                    General.SendNotifcation("Label failed to print");
+                    General.SendNotifcation("Timeout! Label failed to print.");
                     // Log down fails.
                     // Notify user failure
                 }
-                cancellationTokenSource.CancelAfter(5000);
+                cancellationTokenSource.CancelAfter(10000);
 
             }
         }
@@ -218,7 +217,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         #region Property
         public ICommand ModifyTareWeightCommand => new Command(show_dialog);
 
-        public ICommand RecordCommand => new Command(show_confirm_record);
+        public ICommand RecordCommand => new Command(_ => confirm_save_record());
 
         public ICommand TestCommand => new Command(test_action);
 

@@ -38,7 +38,7 @@ namespace PDI_Feather_Tracking_WPF.Helper
             }
         }
 
-        public string SendData(string content, decimal gross_weight, decimal tare_weight, decimal nett_weight, string employee_no, string date)
+        public string SendData(string content, decimal gross_weight)
         {
             try
             {
@@ -51,24 +51,22 @@ namespace PDI_Feather_Tracking_WPF.Helper
 
                 if (client.Connected)
                 {
+                    //Send Request
                     using NetworkStream networkStream = client.GetStream();
-                    networkStream.ReadTimeout = 2000;
-
-                    //Read Response
-                    using var reader = new StreamReader(networkStream, Encoding.UTF8);
-
+                    networkStream.ReadTimeout = 6000;
                     var dict = new Dictionary<string, string>()
                     {
                         {"batch_no", content },
                         {"gross_weight", gross_weight.ToString() },
-                        {"tare_weight", tare_weight.ToString() },
-                        {"incoming_date", date },
                     };
                     byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(dict));
                     networkStream.Write(bytes, 0, bytes.Length);
 
-                    content = reader.ReadToEnd();
-                    Debug.WriteLine($"Response: {reader.ReadToEnd()}");
+                    //Read Response
+                    byte[] buffer = new byte[1024];
+                    int bytesRead = networkStream.Read(buffer, 0, buffer.Length);
+                    string response = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                    handlePrinterResponse(response);
                 }
                 else content = $"Client is not connected. Print fail for Batch No : {content}";
             }
@@ -85,7 +83,7 @@ namespace PDI_Feather_Tracking_WPF.Helper
             cancellationTokenSource.Cancel();
         }
 
-        private void AutoReconnectHandler(string ip, int port)
+        private void autoReconnectHandler(string ip, int port)
         {
             Task.Run(() =>
             {
@@ -118,6 +116,19 @@ namespace PDI_Feather_Tracking_WPF.Helper
                     }
                 }
             }, cancellationTokenSource.Token);
+        }
+
+        private void handlePrinterResponse(string response)
+        {
+            switch (response.ToLower())
+            {
+                case "failure":
+                    General.SendNotifcation($"Label fail to print.");
+                    break;
+                case "success":
+                    General.SendNotifcation($"Label printed successfully.");
+                    break;
+            }
         }
     }
 }

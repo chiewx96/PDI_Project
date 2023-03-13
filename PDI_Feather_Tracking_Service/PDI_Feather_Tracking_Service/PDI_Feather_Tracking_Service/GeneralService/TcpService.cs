@@ -16,7 +16,7 @@ namespace PDI_Feather_Tracking_Service.GeneralService
 
         private bool isServerEnabled = false;
 
-        public TcpService(Action<object> action, Action<object> log_action, int port)
+        public TcpService(Func<object, string> action, Action<object> log_action, int port)
         {
             server = null;
             try
@@ -56,15 +56,16 @@ namespace PDI_Feather_Tracking_Service.GeneralService
                         {
                             // Translate data bytes to a ASCII string.
                             data = System.Text.Encoding.ASCII.GetString(bytes, 0, i);
-                            string request_text = $"Received : {data}";
-                            string response_text = $"Sent : PDI_FEATHER_SERVICE[{data}]";
-                            action(data); // so something on data received.
+                            string request_text = $"Received <<< {data}";
+                            log_action(request_text);
 
-                            byte[] msg = System.Text.Encoding.ASCII.GetBytes(response_text);
+
+                            string response_text = action(data); // do something on data received.
 
                             // Send back a response.
+                            byte[] msg = Encoding.ASCII.GetBytes(response_text);
                             stream.Write(msg, 0, msg.Length);
-                            log_action(response_text);
+                            log_action($"Send >>> {response_text}");
                         }
                     }
                     catch (Exception e)

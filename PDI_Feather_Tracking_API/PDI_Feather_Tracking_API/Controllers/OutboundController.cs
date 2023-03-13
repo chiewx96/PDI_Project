@@ -16,7 +16,7 @@ namespace PDI_Feather_Tracking_API.Controllers
             _outboundService = outboundService;
         }
 
-        [HttpGet("get-details")]
+        [HttpGet("get-details/{referenceNo}")]
         public ActionResult GetPackageDetailByReferenceNumber(string referenceNo)
         {
             return Ok(_outboundService.GetPackageDetailByReferenceNumber(referenceNo));
