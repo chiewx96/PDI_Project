@@ -1,4 +1,5 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
+using Google.Protobuf;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -18,12 +19,18 @@ namespace PDI_Feather_Tracking_WPF.Helper
         SerialPort _serialPort;
         int settings_completed = 0;
         Thread readThread;
-        bool _readThreadStart = false;
+        Action<decimal> _callBackAction;
+        Action<object> _logAction;
+        CancellationTokenSource _cancellationTokenSource;
+        int _delayInterval;
 
-        public SerialCommunicationHelper(IConfiguration configuration)
+        public SerialCommunicationHelper(IConfiguration configuration, Action<decimal> action, int readtimeout, Action<object> log)
         {
             try
             {
+                _callBackAction = action;
+                _logAction = log;
+                _delayInterval = readtimeout;
                 var machine = configuration.GetSection("weighing_machine");
                 var _list = machine.GetChildren().ToList();
                 Parity parity = Parity.None;
@@ -36,37 +43,60 @@ namespace PDI_Feather_Tracking_WPF.Helper
                     int.TryParse(_list.Where(x => x.Key.ToLower() == "baudrate").First().Value, out int baudrate) &&
                     int.TryParse(_list.Where(x => x.Key.ToLower() == "databits").First().Value, out int databits))
                 {
-                    new SerialCommunicationHelper(_list.Where(x => x.Key.ToLower() == "portname").First().Value, baudrate, parity, databits, stopBits, handshake);
+                    NewPort(_list.Where(x => x.Key.ToLower() == "portname").First().Value, baudrate, parity, databits, stopBits, handshake);
                 }
             }
-            catch
+            catch (Exception e)
             {
-                // log : failed to connect to machine
+                _logAction($"Failed to connect to weighting machine. Exception : {e.Message}");
             }
         }
 
-        public SerialCommunicationHelper(string portName, int baudrate, Parity parity, int databits, StopBits stopBits, Handshake handshake)
+        private void NewPort(string portName, int baudrate, Parity parity, int databits, StopBits stopBits, Handshake handshake)
         {
             _serialPort = new SerialPort(portName, baudrate, parity, databits, stopBits);
             _serialPort.Handshake = handshake;
-            readThread = new Thread(Read);
-            Messenger.Default.Send(this);
-        }
-
-        public void Set(SerialDataReceivedEventHandler eventHandler, int readtimeout)
-        {
-            _serialPort.DataReceived += new SerialDataReceivedEventHandler(eventHandler);
-            _serialPort.ReadTimeout = readtimeout;
+            _serialPort.DataReceived += new SerialDataReceivedEventHandler(port_DataReceived);
+            //Messenger.Default.Send(this);
             settings_completed = 1;
+            Start();
         }
 
-        public bool Start()
+        private void port_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            try
+            {
+                SerialPort sp = (SerialPort)sender;
+                string data = sp.ReadLine();
+                if (data.StartsWith("ST,GS,"))
+                {
+                    try
+                    {
+                        string weight = data.Split(',')[2];
+                        if (decimal.TryParse(weight.Trim(), out decimal _weight))
+                            _callBackAction(_weight < 0 ? 0 : _weight);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logAction($"Read value failed. Exception : {ex.Message}");
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private bool Start()
         {
             if (settings_completed > 0 && !_serialPort.IsOpen)
             {
+                _cancellationTokenSource = new CancellationTokenSource();
                 _serialPort.Open();
-                _readThreadStart = true;
-                readThread.Start();
+                //ThreadPool.QueueUserWorkItem(new WaitCallback(Read), _cancellationTokenSource.Token);
+                Messenger.Default.Register<string>(this, _ =>
+                {
+                    if (_ == General.StopWeighting)
+                        Stop();
+                });
             }
             return _serialPort.IsOpen;
         }
@@ -75,26 +105,10 @@ namespace PDI_Feather_Tracking_WPF.Helper
         {
             if (_serialPort.IsOpen)
             {
+                _cancellationTokenSource.Cancel();
                 _serialPort.Close();
-                _readThreadStart = false;
             }
             return !_serialPort.IsOpen;
         }
-
-        public void Read()
-        {
-            while (_readThreadStart)
-            {
-                try
-                {
-                    string message = _serialPort.ReadLine();
-                    Debug.WriteLine(message);
-                }
-                catch (TimeoutException) { }
-            }
-        }
-
-
-
     }
 }

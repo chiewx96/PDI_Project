@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,10 +30,9 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         FeatherDbContext _dbContext;
         Confirmation _confirmation;
         ConfirmationViewModel _confirmationViewModel;
-        TcpClientHelper _tcpClientHelper;
+        TcpClientHelper _printerTcpHelper;
+        TcpClientHelper _loggerTcpHelper;
         SerialCommunicationHelper _serialCommunicationHelper;
-        int _printService = 0;
-        int _weightService = 0;
 
         public HomeViewModel(FeatherDbContext dbContext, TareWeightView tareWeightView, TareWeightViewModel tareWeightViewModel,
              Confirmation confirmation, ConfirmationViewModel confirmationViewModel, IConfiguration configuration)
@@ -44,28 +44,23 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             });
             Messenger.Default.Register<SkuType?>(this,
                 refresh_sku_types);
-            Messenger.Default.Register<SerialCommunicationHelper>(this, _ =>
-            {
-                _serialCommunicationHelper = _;
-                setup_weighing_machine_connection();
-            });
-            Messenger.Default.Register<TcpClientHelper>(this, _ =>
-            {
-                _tcpClientHelper = _;
-            });
-
+            Messenger.Default.Register<LoggerModel?>(this,
+                _ => log(_.Message));
+            // log service
+            if (int.TryParse(configuration.GetSection("LogServicePort").Value, out int logger_port))
+                _loggerTcpHelper = new TcpClientHelper(logger_port);
             _tareWeightViewModel = tareWeightViewModel;
             _tareWeightView = tareWeightView;
             _dbContext = dbContext;
             _confirmation = confirmation;
             _confirmationViewModel = confirmationViewModel;
             refresh_tare_weight_setting();
-            int.TryParse(configuration.GetSection("PrintService").Value, out _printService);
-            int.TryParse(configuration.GetSection("WeightService").Value, out _weightService);
-            if (_printService == 1)
-                _tcpClientHelper = new TcpClientHelper(configuration);
+            int.TryParse(configuration.GetSection("PrintService").Value, out int _printService);
+            int.TryParse(configuration.GetSection("WeightService").Value, out int _weightService);
+            if (_printService == 1 && int.TryParse(configuration.GetSection("PrintServicePort").Value, out int port))
+                _printerTcpHelper = new TcpClientHelper(port);
             if (_weightService == 1)
-                _serialCommunicationHelper = new SerialCommunicationHelper(configuration);
+                _serialCommunicationHelper = new SerialCommunicationHelper(configuration, receive_weighing_machine_input, 500, (a) => log(a.ToString()));
         }
 
 
@@ -133,6 +128,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         private void confirm_save_record()
         {
+            if (SelectedSkuType == null || SelectedSkuType.Id == null || SelectedSkuType.Id == 0) return;
             string batch_no = General.GenerateRunningNumber(SelectedSkuType.Code, SelectedSkuType.LastSkuCode, Math.Truncate(GrossWeight));
             _dbContext.InventoryRecords.Add(new InventoryRecords
             {
@@ -158,14 +154,19 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         private void handle_print_label(string label_no)
         {
-            if (_tcpClientHelper != null)
+            if (_printerTcpHelper != null)
             {
                 CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
                 try
                 {
                     Task.Run(() =>
                     {
-                        string response = _tcpClientHelper.SendData(label_no, decimal.Round(GrossWeight, 4));
+                        var dict = new Dictionary<string, string>()
+                        {
+                        {"batch_no", label_no },
+                        {"gross_weight", decimal.Round(GrossWeight, 4).ToString() },
+                    };
+                        string response = _printerTcpHelper.SendData(dict, handlePrinterResponse);
                         log($"Print status for batch number [{label_no}] => {response}");
                     }, cancellationTokenSource.Token);
                     cancellationTokenSource.CancelAfter(5000);
@@ -177,29 +178,21 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                     // Notify user failure
                 }
                 cancellationTokenSource.CancelAfter(10000);
-
             }
         }
 
-        private void setup_weighing_machine_connection()
+        private void receive_weighing_machine_input(decimal data)
         {
-            if (_serialCommunicationHelper != null)
-            {
-                _serialCommunicationHelper.Set(receive_weighing_machine_input, 500);
-                _serialCommunicationHelper.Start();
-            }
-        }
-
-        private void receive_weighing_machine_input(object sender, SerialDataReceivedEventArgs e)
-        {
-            Debug.WriteLine(sender);
-            log(sender.ToString());
+            //Debug.WriteLine($"Data read : {data}");
+            //log(data.ToString());
+            GrossWeight = data;
         }
 
         private void test_action(object? obj)
         {
-            GrossWeight = Math.Round((decimal)General.RandomNumberBetween(250, 260), 4);
-            General.SendNotifcation($"Number generated {GrossWeight}");
+            //GrossWeight = Math.Round((decimal)General.RandomNumberBetween(250, 260), 4);
+            //General.SendNotifcation($"Number generated {GrossWeight}");
+            log("test_logger");
         }
 
         private void log(params string[] content)
@@ -209,7 +202,21 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             {
                 stringBuilder.Append(DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss")).Append(" : ").Append(content[i]).Append(Environment.NewLine);
             }
+            _loggerTcpHelper.SendData(stringBuilder.ToString(), null);
             Logger += stringBuilder.ToString();
+        }
+
+        private void handlePrinterResponse(string response)
+        {
+            switch (response.ToLower())
+            {
+                case "failure":
+                    General.SendNotifcation($"Label fail to print.");
+                    break;
+                case "success":
+                    General.SendNotifcation($"Label printed successfully.");
+                    break;
+            }
         }
 
         #endregion

@@ -21,6 +21,8 @@ namespace PDI_Feather_Tracking_WPF
     {
         public const string CloseWindow = "CloseWindow";
 
+        public const string StopWeighting = "StopWeighting";
+
         public const string PrintLabelCommand = "PDI_PL_Feather";
 
         public static User? TryLogin(string username, string password, ref FeatherDbContext dbContext)
