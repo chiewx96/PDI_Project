@@ -78,6 +78,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 Status = true
             });
             _dbContext.SaveChanges();
+            General.SendNotifcation("New user created");
             refresh_user_list();
         }
 
@@ -124,6 +125,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 target.UpdatedBy = CurrentUser?.Id ?? 0;
                 target.UpdatedAt = DateTime.Now;
                 _dbContext.SaveChanges();
+                General.SendNotifcation("Deleted");
                 refresh_user_list();
             }
         }
@@ -149,6 +151,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 selected.UpdatedBy = CurrentUser?.Id ?? 0;
                 selected.UpdatedAt = DateTime.Now;
                 _dbContext.SaveChanges();
+                General.SendNotifcation("Saved");
             }
             refresh_user_list();
         }
@@ -176,6 +179,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             selected.UpdatedBy = CurrentUser?.Id ?? 0;
             selected.UpdatedAt = DateTime.Now;
             _dbContext.SaveChanges();
+            General.SendNotifcation("Password has been reset");
             RefreshCommand.Execute(null);
         }
         #endregion

@@ -7,6 +7,7 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:converter="clr-namespace:PDI_Feather_Tracking_WPF.Converter"
+        xmlns:view="clr-namespace:PDI_Feather_Tracking_WPF.View"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
         TextElement.FontSize="13"
@@ -20,6 +21,7 @@
         <converter:EmployeeNoConverter x:Key="EmployeeNoConverter"/>
         <converter:UserToVisibilityConverter x:Key="UserToVisibilityConverter"/>
         <converter:InverseUserToVisibilityConverter x:Key="InverseUserToVisibilityConverter"/>
+        <converter:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
     <Grid>
         <StackPanel>
@@ -33,43 +35,54 @@
                             <ToggleButton Margin="16" HorizontalAlignment="Right" DockPanel.Dock="Top" 
                                           IsChecked="{Binding ElementName=MenuToggleButton, Path=IsChecked, Mode=TwoWay}" 
                                           Style="{StaticResource MaterialDesignHamburgerToggleButton}" />
-                            <ListBox x:Name="DemoItemsListBox" Margin="0,16,0,16" AutomationProperties.Name="DemoPagesListBox" 
+                            <ListBox x:Name="DemoItemsListBox" Margin="0,16,0,16" AutomationProperties.Name="DemoPagesListBox" DisplayMemberPath="Name"
                                      ItemsSource="{Binding MenuItems}" PreviewMouseLeftButtonUp="UIElement_OnPreviewMouseLeftButtonUp" 
-                                     SelectedIndex="{Binding SelectedIndex}" SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}" 
-                                     Style="{StaticResource MaterialDesignNavigationPrimaryListBox}">
+                                     SelectedIndex="{Binding SelectedIndex}" SelectedItem="{Binding SelectedItem, UpdateSourceTrigger=PropertyChanged}">
                                 <ListBox.Resources>
                                     <Style TargetType="ScrollBar" BasedOn="{StaticResource MaterialDesignScrollBarMinimal}" />
+                                    <!--<Style TargetType="ListBoxItem" BasedOn="{StaticResource MaterialDesignNavigationPrimaryListBox}" />-->
                                 </ListBox.Resources>
-                                <ListBox.ItemTemplate>
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource MaterialDesignNavigationListBoxItem}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsVisible}" Value="False">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+
+                                <!--<ListBox.ItemTemplate>
                                     <DataTemplate DataType="domain:DemoItem">
                                         <TextBlock Margin="24,4,0,4" AutomationProperties.AutomationId="DemoItemPage" 
-                                                   Text="{Binding Name}" />
+                                                   Text="{Binding Name}" Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" IsHitTestVisible="{Binding IsVisible}" IsEnabled="{Binding IsVisible}">
+                                        </TextBlock>
                                     </DataTemplate>
-                                </ListBox.ItemTemplate>
+                                </ListBox.ItemTemplate>-->
                             </ListBox>
                         </DockPanel>
                     </materialDesign:DrawerHost.LeftDrawerContent>
 
                     <materialDesign:DrawerHost.RightDrawerContent>
                         <!--<ScrollViewer VerticalScrollBarVisibility="Auto">-->
-                            <UniformGrid MinWidth="220" Columns="1" Rows="5" Margin="5">
-                                <Button Command="{Binding ChangePassword}" Content="Change Password" Grid.Row="0"/>
-                                <TextBlock Text="{Binding Message}" Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
-                                <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  
+                        <UniformGrid MinWidth="220" Columns="1" Rows="5" Margin="5">
+                            <Button Command="{Binding ChangePassword}" Content="Change Password" Grid.Row="0"/>
+                            <TextBlock Text="{Binding Message}" Style="{StaticResource MaterialDesignOverlineTextBlock}"/>
+                            <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"  
                                      Style="{StaticResource MaterialDesignDataGridTextColumnEditingStyle}"  
                                      Width="250"  FontSize="20" 
                                      HorizontalAlignment="Center" VerticalAlignment="Center" 
                                      Text="{Binding NewPassword, UpdateSourceTrigger=PropertyChanged}" 
                                      Visibility="{Binding ChangePasswordMode, Converter={StaticResource BooleanToVisibilityConverter}}"
                                      materialDesign:HintAssist.Hint="New Password"/>
-                                <Button Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Top" 
+                            <Button Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Top" 
                                     materialDesign:ButtonProgressAssist.IsIndicatorVisible="True" Width="200" Height="50" 
                                     Command="{Binding SaveChangedPassword}"
                                     Style="{StaticResource MaterialDesignOutlinedButton}"
                                     Visibility="{Binding ChangePasswordMode, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Content="Save New Password"/>
-                                <Button  Grid.Row="3" Command="{Binding Logout}" Content="Logout" PreviewMouseLeftButtonUp="RightDrawer_Hide"/>
-                            </UniformGrid>
+                            <Button  Grid.Row="3" Command="{Binding Logout}" Content="Logout" PreviewMouseLeftButtonUp="RightDrawer_Hide"/>
+                        </UniformGrid>
                         <!--</ScrollViewer>-->
                     </materialDesign:DrawerHost.RightDrawerContent>
 
@@ -115,18 +128,19 @@
 
                         <Grid>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
-                            <!--<domain:DocumentationLinks DataContext="{Binding SelectedItem}" />-->
 
-                            <ScrollViewer x:Name="MainScrollViewer" Grid.Row="1" materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True" 
+                            <ScrollViewer x:Name="MainScrollViewer" materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True" 
                                           HorizontalScrollBarVisibility="{Binding SelectedItem.HorizontalScrollBarVisibilityRequirement, FallbackValue=Disabled}" 
                                           VerticalScrollBarVisibility="{Binding SelectedItem.VerticalScrollBarVisibilityRequirement, FallbackValue=Disabled}">
                                 <ContentControl DataContext="{Binding SelectedItem}" Content="{Binding Content, UpdateSourceTrigger=PropertyChanged, FallbackValue={x:Null}}"
-                                                DataContextChanged="OnSelectedItemChanged" />
+                                                DataContextChanged="OnSelectedItemChanged">
+                                </ContentControl>
                             </ScrollViewer>
 
+                            <view:Notification x:Name="MainSnackbar" VerticalAlignment="Bottom"/>
                         </Grid>
                     </DockPanel>
                 </materialDesign:DrawerHost>

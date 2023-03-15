@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using GalaSoft.MvvmLight.Messaging;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using PDI_Feather_Tracking_WPF.Global;
 using PDI_Feather_Tracking_WPF.Model;
 using PDI_Feather_Tracking_WPF.Models;
+using PDI_Feather_Tracking_WPF.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,6 +20,8 @@ namespace PDI_Feather_Tracking_WPF
     public class General
     {
         public const string CloseWindow = "CloseWindow";
+
+        public const string StopWeighting = "StopWeighting";
 
         public const string PrintLabelCommand = "PDI_PL_Feather";
 
@@ -81,6 +85,14 @@ namespace PDI_Feather_Tracking_WPF
             Random random = new Random();
             var next = random.NextDouble();
             return minValue + (next * (maxValue - minValue));
+        }
+
+        public static void SendNotifcation(string message)
+        {
+            Messenger.Default.Send(new NotificationViewModel()
+            {
+                Message = message
+            });
         }
     }
 }

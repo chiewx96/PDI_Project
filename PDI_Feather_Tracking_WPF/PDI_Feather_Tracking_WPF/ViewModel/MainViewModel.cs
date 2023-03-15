@@ -35,9 +35,10 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         UserView _userView;
         LoginViewModel _loginViewModel;
         LoginView _loginView;
+        ReportView _reportView;
 
-        public MainViewModel(FeatherDbContext dbContext, HomeView homeView, SkuTypeSettingView skuTypeSettingView, 
-            UserLevelView userLevelView, UserView userView, LoginViewModel loginViewModel, LoginView loginView)
+        public MainViewModel(FeatherDbContext dbContext, HomeView homeView, SkuTypeSettingView skuTypeSettingView,
+            UserLevelView userLevelView, UserView userView, LoginViewModel loginViewModel, LoginView loginView, ReportView reportView)
         {
             Messenger.Default.Register<User?>(this, _ =>
             {
@@ -53,18 +54,23 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             _userView = userView;
             _loginViewModel = loginViewModel;
             _loginView = loginView;
+            _reportView = reportView;
             #endregion
             _showLogin = new Command(_ => show_login());
             _changePassword = new Command(_ => ChangePasswordMode = true);
             _saveChangedPassword = new Command(_ => save_changed_password());
-            _logout = new Command(_ => Messenger.Default.Send<string>(General.CloseWindow));
-            show_login();
+            _logout = new Command(_ =>
+            {
+                Messenger.Default.Send<User>(null);
+                SelectedItem = MenuItems.First();
+            });
 
             foreach (var item in GenerateMenuItems().OrderBy(i => i.Name))
             {
                 MenuItems.Add(item);
             }
             SelectedItem = MenuItems.First();
+            show_login();
 
         }
 
@@ -76,7 +82,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         {
             yield return new MenuItem(
                "Home",
-               typeof(HomeView), _homeView) ;
+               typeof(HomeView), _homeView);
 
             yield return new MenuItem(
                 "User",
@@ -91,6 +97,11 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             yield return new MenuItem(
                     "Sku Type",
                     typeof(SkuTypeSettingView), _skuTypeSettingView, ModuleEnum.sku_type);
+
+
+            yield return new MenuItem(
+                    "Report",
+                    typeof(ReportView), _reportView, ModuleEnum.reporting);
 
         }
 
@@ -114,8 +125,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                     current_user.UpdatedAt = DateTime.Now;
                     current_user.UpdatedBy = CurrentUser.Id;
                     _dbContext.SaveChanges();
-                    Message = "Password saved successfully";
-                    reset_message(3);
+                    General.SendNotifcation("Password changed success");
                     NewPassword = string.Empty;
                     ChangePasswordMode = false;
                 }

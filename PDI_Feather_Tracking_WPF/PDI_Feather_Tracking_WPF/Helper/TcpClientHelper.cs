@@ -1,6 +1,8 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Configuration;
 using MySqlX.XDevAPI;
+using Newtonsoft.Json;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,91 +22,50 @@ namespace PDI_Feather_Tracking_WPF.Helper
     {
         private TcpClient client;
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private string _ip;
+        private int _port;
 
-        public TcpClientHelper(IConfiguration configuration)
+        public TcpClientHelper(int port)
         {
             client = new TcpClient();
-            if (int.TryParse(configuration.GetSection("PrintServicePort").Value, out int port))
-            {
-                string ip = "127.0.0.1";
-                client.Connect(ip, port);
-                //AutoReconnectHandler(ip, port);
-                Messenger.Default.Send(this);
-            }
+            _ip = "127.0.0.1";
+            _port = port;
+            client.Connect(_ip, port);
         }
 
-        public string SendData(string content, decimal gross_weight)
+        public string SendData(object data, Action<string> action_callback)
         {
+            string responseStr = string.Empty;
             try
             {
+                if (!client.Connected)
+                {
+                    client = new TcpClient();
+                    client.Connect(_ip, _port);
+                }
 
                 if (client.Connected)
                 {
+                    //Send Request
                     using NetworkStream networkStream = client.GetStream();
-                    networkStream.ReadTimeout = 2000;
-
-                    //Read Response
-                    using var reader = new StreamReader(networkStream, Encoding.UTF8);
-
-                    var dict = new Dictionary<string, string>()
-                    {
-                        {"batch_no", content },
-                        {"gross_weight", gross_weight.ToString() },
-
-                    };
-                    byte[] bytes = Encoding.UTF8.GetBytes(Newtonsoft.Json.JsonConvert.SerializeObject(dict));
+                    networkStream.ReadTimeout = 6000;
+                    byte[] bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(data));
                     networkStream.Write(bytes, 0, bytes.Length);
 
-                    content = reader.ReadToEnd();
-                    Debug.WriteLine($"Response: {reader.ReadToEnd()}");
+                    //Read Response
+                    byte[] buffer = new byte[1024];
+                    int bytesRead = networkStream.Read(buffer, 0, buffer.Length);
+                    string response = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                    action_callback?.Invoke(response);
                 }
-                else content = $"Client is not connected. Print fail for Batch No : {content}";
+                else responseStr = $"Client is not connected. Port:{_port}";
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
-            return content;
-        }
-
-        public void StopAutoReconnect()
-        {
-            cancellationTokenSource.Cancel();
-        }
-
-        private void AutoReconnectHandler(string ip, int port)
-        {
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    while (!client.Connected)
-                    {
-                        try
-                        {
-                            client.Connect(ip, port);
-                        }
-                        catch (Exception ex)
-                        {
-                            var w32ex = ex as Win32Exception;
-                            if (w32ex == null)
-                            {
-                                w32ex = ex.InnerException as Win32Exception;
-                            }
-                            if (w32ex != null)
-                            {
-                                int code = w32ex.ErrorCode;
-                                if (code == 10056)
-                                {
-                                    Debug.WriteLine("Socket already connected by others");
-                                    StopAutoReconnect();
-                                }
-                                Debug.WriteLine(ex.Message);
-                            }
-                        }
-                    }
-                }
-            }, cancellationTokenSource.Token);
+            finally { client.Close(); }
+            return responseStr;
         }
     }
 }

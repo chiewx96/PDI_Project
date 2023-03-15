@@ -53,6 +53,7 @@ namespace PDI_Feather_Tracking_WPF
 
         private void Window_Closed(object? sender, EventArgs e)
         {
+            Messenger.Default.Send<string>(General.StopWeighting);
             Messenger.Default.Send<string>(General.CloseWindow);
         }
     }

@@ -21,6 +21,7 @@ public class MenuItem : ViewModelBase
         {
             Messenger.Default.Register<User?>(this, update_module_access);
             _moduleEnum = moduleEnum;
+            update_module_access(null);
         }
         Name = name;
         _contentType = contentType;
@@ -64,12 +65,12 @@ public class MenuItem : ViewModelBase
         set => _marginRequirement = value;
     }
 
-    private bool isVisible = false;
+    private bool isVisible = true;
 
     public bool IsVisible
     {
         get { return isVisible; }
-        set { isVisible = value; RaisePropertyChanged(nameof(IsVisible)); }
+        private set { isVisible = value; RaisePropertyChanged(nameof(IsVisible)); }
     }
 
     #endregion
