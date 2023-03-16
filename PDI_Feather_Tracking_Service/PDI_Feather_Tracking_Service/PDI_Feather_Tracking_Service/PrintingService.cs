@@ -16,35 +16,48 @@ using static System.Net.WebRequestMethods;
 using Seagull.BarTender.Print;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
+using System.Threading;
 
 namespace PDI_Feather_Tracking_Service
 {
     public partial class PrintingService : ServiceBase
     {
-        private TcpService TcpService;
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         public PrintingService()
         {
             InitializeComponent();
         }
 
-        public void Start()
+        public async void Start()
         {
-            TcpService tcpService = new TcpService(PrintLabel, log_request, Global.PrintServicePort);
+            Task log_task = Task.Run(initializeLogService, cancellationTokenSource.Token);
+            Task printer_task = Task.Run(initializePrinterService, cancellationTokenSource.Token);
+            Task.WaitAll(log_task, printer_task);
+        }
 
+        private void initializeLogService()
+        {
+            TcpService logService = new TcpService(log_request, log_request, Global.LogServicePort);
+        }
+
+        private void initializePrinterService()
+        {
+            var printerService = new TcpService(PrintLabel, log_request, Global.PrintServicePort);
         }
 
         protected override void OnStart(string[] args)
         {
             TcpService tcpService = new TcpService(PrintLabel, log_request, Global.PrintServicePort);
+            TcpService logService = new TcpService(log_request, log_request, Global.LogServicePort);
         }
 
         protected override void OnStop()
         {
-            TcpService.Dispose();
+            cancellationTokenSource.Cancel();
         }
 
-        public void log_request(object sender)
+        public string log_request(object sender)
         {
             try
             {
@@ -61,8 +74,7 @@ namespace PDI_Feather_Tracking_Service
             {
                 Debug.WriteLine(ex.Message);
             }
-
-            // TODO: Insert monitoring activities here.
+            return string.Empty;
         }
 
         public void readLabel(object? sender)

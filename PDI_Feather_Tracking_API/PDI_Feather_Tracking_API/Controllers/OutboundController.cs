@@ -27,5 +27,11 @@ namespace PDI_Feather_Tracking_API.Controllers
         {
             return Ok(_outboundService.Outbound(referenceNo));
         }
+
+        //[HttpGet("get-details/{referenceNo}")]
+        //public ActionResult GetPackageDetailByReferenceNumber(bool newBatch)
+        //{
+        //    return Ok(_outboundService.GetPackageDetailByReferenceNumber(referenceNo));
+        //}
     }
 }
