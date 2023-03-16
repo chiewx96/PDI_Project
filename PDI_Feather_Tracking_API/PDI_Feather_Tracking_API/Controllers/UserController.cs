@@ -20,9 +20,9 @@ namespace PDI_Feather_Tracking_API.Controllers
         }
 
         [HttpPost("login")]
-        public ActionResult Login(Object? obj)
+        public ActionResult Login(LoginModel loginModel)
         {
-            LoginModel loginModel = (LoginModel)obj;
+            //LoginModel loginModel = (LoginModel)obj;
             return Ok(_userService.TryLogin(loginModel));
         }
 

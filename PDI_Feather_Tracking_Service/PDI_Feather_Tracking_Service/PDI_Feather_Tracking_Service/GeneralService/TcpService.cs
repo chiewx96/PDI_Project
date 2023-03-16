@@ -16,7 +16,7 @@ namespace PDI_Feather_Tracking_Service.GeneralService
 
         private bool isServerEnabled = false;
 
-        public TcpService(Func<object, string> action, Action<object> log_action, int port)
+        public TcpService(Func<object, string> action, Func<object, string> log_action, int port)
         {
             server = null;
             try
