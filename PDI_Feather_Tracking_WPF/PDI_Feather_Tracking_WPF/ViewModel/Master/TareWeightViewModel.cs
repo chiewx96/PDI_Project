@@ -1,4 +1,6 @@
 ﻿using GalaSoft.MvvmLight;
+using Microsoft.EntityFrameworkCore;
+using PDI_Feather_Tracking_WPF.Global;
 using PDI_Feather_Tracking_WPF.Models;
 using System;
 using System.Collections.Generic;
@@ -24,6 +26,17 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         {
             get { return tareWeight; }
             set { tareWeight = value; RaisePropertyChanged(nameof(TareWeight)); }
+        }
+
+        FeatherDbContext? _context;
+
+        public TareWeightViewModel() { }
+
+        public TareWeightViewModel(FeatherDbContext context)
+        {
+            _context = context;
+            ChildCount = _context.TareWeightSetting.AsNoTracking().First().ChildCount;
+            TareWeight = _context.TareWeightSetting.AsNoTracking().First().Weight;
         }
 
         public void set(TareWeightSetting tareWeightSetting)

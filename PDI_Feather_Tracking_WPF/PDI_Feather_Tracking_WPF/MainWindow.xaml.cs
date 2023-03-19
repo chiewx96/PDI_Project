@@ -63,5 +63,13 @@ namespace PDI_Feather_Tracking_WPF
         {
             LoggedInButton.IsChecked = false;
         }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                Messenger.Default.Send(General.RecordCommand);
+            }
+        }
     }
 }

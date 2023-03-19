@@ -37,6 +37,14 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         public HomeViewModel(FeatherDbContext dbContext, TareWeightView tareWeightView, TareWeightViewModel tareWeightViewModel,
              Confirmation confirmation, ConfirmationViewModel confirmationViewModel, IConfiguration configuration)
         {
+#if !DEBUG
+            start_service();
+#endif
+            Messenger.Default.Register<string>(this, _ =>
+            {
+                if (_ == General.RecordCommand)
+                    key_down_action();
+            });
             Messenger.Default.Register<User?>(this, _ =>
             {
                 CurrentUser = _;
@@ -46,9 +54,8 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 refresh_sku_types);
             Messenger.Default.Register<LoggerModel?>(this,
                 _ => log(_.Message));
-            // log service
             if (int.TryParse(configuration.GetSection("LogServicePort").Value, out int logger_port))
-                _loggerTcpHelper = new TcpClientHelper(logger_port);
+                connect_logger_service(logger_port);
             _tareWeightViewModel = tareWeightViewModel;
             _tareWeightView = tareWeightView;
             _dbContext = dbContext;
@@ -58,7 +65,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             int.TryParse(configuration.GetSection("PrintService").Value, out int _printService);
             int.TryParse(configuration.GetSection("WeightService").Value, out int _weightService);
             if (_printService == 1 && int.TryParse(configuration.GetSection("PrintServicePort").Value, out int port))
-                _printerTcpHelper = new TcpClientHelper(port);
+                connect_print_service(port);
             if (_weightService == 1)
                 _serialCommunicationHelper = new SerialCommunicationHelper(configuration, receive_weighing_machine_input, 500, (a) => log(a.ToString()));
         }
@@ -148,32 +155,33 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             _dbContext.SkuType.Where(x => x.Id == SelectedSkuType.Id).First().LastSkuCode = batch_no;
             SelectedSkuType.LastSkuCode = batch_no;
             _dbContext.SaveChanges();
-            General.SendNotifcation("Record Saved");
-            handle_print_label(batch_no);
+            log("Record Saved");
+            handle_print_label(batch_no, GrossWeight);
         }
 
-        private void handle_print_label(string label_no)
+        private void handle_print_label(string label_no, decimal grossWeight)
         {
             if (_printerTcpHelper != null)
             {
                 CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
                 try
                 {
-                    Task.Run(() =>
+                    Task.Run(async () =>
                     {
+                        log($"Start printing for batch number [{label_no}]");
                         var dict = new Dictionary<string, string>()
                         {
-                        {"batch_no", label_no },
-                        {"gross_weight", decimal.Round(GrossWeight, 4).ToString() },
-                    };
+                            {"batch_no", label_no },
+                            {"gross_weight", decimal.Round(grossWeight, 4).ToString() },
+                        };
                         string response = _printerTcpHelper.SendData(dict, handlePrinterResponse);
-                        log($"Print status for batch number [{label_no}] => {response}");
+                        //log($"Print status for batch number [{label_no}] => {response}");
                     }, cancellationTokenSource.Token);
                     cancellationTokenSource.CancelAfter(5000);
                 }
                 catch (TaskCanceledException taskCancelledException)
                 {
-                    General.SendNotifcation("Timeout! Label failed to print.");
+                    log("Timeout! Label failed to print.");
                     // Log down fails.
                     // Notify user failure
                 }
@@ -202,8 +210,11 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             {
                 stringBuilder.Append(DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss")).Append(" : ").Append(content[i]).Append(Environment.NewLine);
             }
-            _loggerTcpHelper.SendData(stringBuilder.ToString(), null);
             Logger += stringBuilder.ToString();
+            if (_loggerTcpHelper != null)
+            {
+                Task.Run(() => _loggerTcpHelper.SendData(stringBuilder.ToString(), null));
+            }
         }
 
         private void handlePrinterResponse(string response)
@@ -211,11 +222,70 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             switch (response.ToLower())
             {
                 case "failure":
-                    General.SendNotifcation($"Label fail to print.");
+                    log($"Label fail to print.");
                     break;
                 case "success":
-                    General.SendNotifcation($"Label printed successfully.");
+                    log($"Label printed successfully.");
                     break;
+            }
+        }
+
+        private void key_down_action()
+        {
+            if (SelectedSkuType == null || SelectedSkuType.Id <= 0)
+                log("Sku Type is not set");
+            else
+                confirm_save_record();
+        }
+
+        private void start_service()
+        {
+            try
+            {
+
+                ServiceHelper.RunService("PDI_Feather_Service");
+            }
+            catch (Exception ex)
+            {
+                General.SendNotifcation("Service cannot be started.");
+            }
+        }
+
+        private void connect_logger_service(int logger_port)
+        {
+            try
+            {
+                _loggerTcpHelper = new TcpClientHelper(logger_port);
+            }
+            catch
+            {
+                General.SendNotifcation("logger service cannot be connected.");
+            }
+        }
+
+        private void connect_print_service(int port)
+        {
+            try
+            {
+                _printerTcpHelper = new TcpClientHelper(port);
+            }
+            catch
+            {
+                General.SendNotifcation("logger service cannot be connected.");
+            }
+        }
+
+        private void reprint(object? obj)
+        {
+            log($"Start to reprint {ReprintBatchNo}");
+            var record = _dbContext.InventoryRecords.AsNoTracking().Where(z => z.BatchNo == ReprintBatchNo.Trim()).FirstOrDefault();
+            if (string.IsNullOrEmpty(ReprintBatchNo))
+                log("reprint batch number cannot be empty.");
+            else if (record == null)
+                log("Batch number to reprint is not found.");
+            else
+            {
+                handle_print_label(record.BatchNo, record.GrossWeight);
             }
         }
 
@@ -228,6 +298,8 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         public ICommand TestCommand => new Command(test_action);
 
+        public ICommand ReprintCommand => new Command(reprint);
+
         private User? currentUser;
 
         public User? CurrentUser
@@ -235,7 +307,6 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             get { return currentUser; }
             set { currentUser = value; RaisePropertyChanged(nameof(CurrentUser)); }
         }
-
 
         private List<SkuType> skuTypes = new List<SkuType>();
 
@@ -293,6 +364,13 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         public decimal NettWeight => GrossWeight - TareWeight < 0 ? 0 : GrossWeight - TareWeight;
 
+        private string reprintBatchNo;
+
+        public string ReprintBatchNo
+        {
+            get { return reprintBatchNo; }
+            set { reprintBatchNo = value; RaisePropertyChanged(nameof(ReprintBatchNo)); }
+        }
 
         private string logger = string.Empty;
 
