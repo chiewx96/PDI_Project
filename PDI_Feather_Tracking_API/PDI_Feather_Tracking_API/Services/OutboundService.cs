@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EFWeightScan;
+using Microsoft.EntityFrameworkCore;
 using PDI_Feather_Tracking_API.Models;
 using PDI_Feather_Tracking_API.Models.ResponseModel;
 
@@ -24,7 +25,7 @@ namespace PDI_Feather_Tracking_API.Services
             if (result != null)
             {
                 result.OutgoingDateTime = DateTime.Now;
-                //result.OutgoingPic = 
+                result.OutgoingPic = General.LoggedInUser?.Id ?? 0; 
                 dbContext.SaveChanges();
             }
             return new BooleanMessageModel(true, "saved");
