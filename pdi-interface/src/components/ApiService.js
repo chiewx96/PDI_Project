@@ -17,7 +17,11 @@ const _delete = async function (url, body) {
 };
 
 const FetchFunc = async function (type, url, body) {
-  return fetch(url, {
+  let timeout = 2000;
+  const options = { timeout: timeout };
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  var response = await fetch(url, {
     method: type,
     headers: {
       // Authorization: 'Bearer ' + this.token,
@@ -25,7 +29,11 @@ const FetchFunc = async function (type, url, body) {
       "Content-Type": "application/json;charset=utf-8",
     },
     body: body != null ? JSON.stringify(body) : null,
+    ...options,
+    signal: controller.signal,
   });
+  clearTimeout(id);
+  return response;
 };
 
 export default {

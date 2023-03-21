@@ -9,57 +9,73 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button Margin="0 0 -30 0" Command="{Binding ModifyTareWeightCommand}"
-                    Style="{StaticResource MaterialDesignFloatingActionLightButton}"  Background="Transparent"
-                    BorderBrush="Transparent"
-                    Visibility="{Binding TareWeightAccess, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Thunder"/>
-                </StackPanel>
-            </Button>
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Orientation="Horizontal" Margin="10">
             <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"  
-                     Width="100"  FontSize="10" Margin="20"  IsReadOnly="True"
-                     HorizontalAlignment="Right" VerticalAlignment="Top" 
+                     Width="100"  FontSize="10" Margin="20"  IsReadOnly="True" VerticalAlignment="Top" 
                      materialDesign:TextFieldAssist.SuffixText="kg"
                      materialDesign:HintAssist.Hint="Tare Weight" Text="{Binding TareWeight, Mode=OneWay}"/>
+            <Button Margin="0 0 0 0" Command="{Binding ModifyTareWeightCommand}"
+                    Style="{StaticResource MaterialDesignFloatingActionSecondaryDarkButton}" Background="Cyan"
+                    BorderBrush="Transparent"
+                    Visibility="{Binding TareWeightAccess, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <StackPanel Orientation="Horizontal" >
+                    <materialDesign:PackIcon Kind="Thunder"/>
+                    <TextBlock Text="Set"/>
+                </StackPanel>
+            </Button>
 
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
-
-            <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"  
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <DockPanel>
+                        <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"  
                      Width="250"  FontSize="20" Margin="30" IsReadOnly="True"
                      HorizontalAlignment="Center" VerticalAlignment="Center" 
                      materialDesign:TextFieldAssist.SuffixText="kg"
                      materialDesign:HintAssist.Hint="Gross Weight" Text="{Binding GrossWeight, Mode=OneWay}"/>
 
-            <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"  
+                        <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"  
                      Width="250"  FontSize="20" IsReadOnly="True"
                      HorizontalAlignment="Center" VerticalAlignment="Center" 
                      materialDesign:TextFieldAssist.SuffixText="kg"
                      materialDesign:HintAssist.Hint="Nett Weight" Text="{Binding NettWeight, Mode=OneWay}"/>
 
-            <ScrollViewer VerticalAlignment="Center" Margin="30">
-                <StackPanel Orientation="Vertical" Margin="20">
 
-                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                        <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}"
                           ItemsSource="{Binding SkuTypes}" SelectedItem="{Binding SelectedSkuType}" 
-                          DisplayMemberPath="Code"/>
+                          DisplayMemberPath="Code" Margin="30" MinWidth="100"/>
 
-                    <Button Margin="10" Command="{Binding RecordCommand}"
-                    Content="Record"/>
+                        <Button Margin="20" Command="{Binding RecordCommand}" Style="{StaticResource MaterialDesignRaisedButton}" Height="50"
+                            Content="Record and Print"/>
 
-                    <Button Margin="10" Command="{Binding TestCommand}"
-                    Content="Generate"/>
+                        <Button Margin="20" Command="{Binding TestCommand}" Visibility="Collapsed"
+                            Content="Generate"/>
+                    </DockPanel>
+                    <DockPanel>
+                        <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"  
+                                 Width="250"  FontSize="20" Margin="30" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                 materialDesign:HintAssist.Hint="Reprint Batch Number" Text="{Binding ReprintBatchNo}"/>
+
+                        <Button Margin="20" Command="{Binding ReprintCommand}" Style="{StaticResource MaterialDesignRaisedButton}" Height="50"
+                            Content="Reprint"/>
+                    </DockPanel>
                 </StackPanel>
-            </ScrollViewer>
+                <TextBox Margin="50 0 50 0" Grid.Column="1" MinWidth="600" MaxHeight="200" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                         Text="{Binding Logger}" Style="{StaticResource MaterialDesignOutlinedTextBox}" IsReadOnly="True"
+                         BorderBrush="MediumPurple" BorderThickness="3" TextChanged="Logger_TextChanged"/>
+                <!--<TextBlock Text="{Binding Logger}" IsEnabled="False" Style="{StaticResource MaterialDesignBody1TextBlock}">
+                </TextBlock>-->
+            </Grid>
+
         </StackPanel>
-        <TextBlock Grid.Row="2" Text="{Binding Logger}" IsEnabled="False" Style="{StaticResource MaterialDesignBody1TextBlock}">
-        </TextBlock>
 
     </Grid>
 </UserControl>

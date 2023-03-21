@@ -79,7 +79,8 @@
             </StackPanel>
         </GroupBox>
         <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
-            <DataGrid ItemsSource="{Binding FilteredInventories}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
+            <DataGrid ItemsSource="{Binding FilteredInventories}" AutoGenerateColumns="False" CanUserAddRows="False" 
+                      IsReadOnly="True" ScrollViewer.CanContentScroll="True" MaxHeight="600">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Batch No" Binding="{Binding BatchNo}"/>
                     <DataGridTextColumn Header="Sku" Binding="{Binding SkuType.Code}"/>

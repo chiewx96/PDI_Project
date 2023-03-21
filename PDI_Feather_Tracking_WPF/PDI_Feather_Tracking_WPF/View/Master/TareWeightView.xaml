@@ -28,6 +28,7 @@
              Margin="0,6,0,0"
              wpf:HintAssist.Hint="Package Number"
              FontSize="18" Name="number"
+                 Text="{Binding ChildCount}"
              Style="{StaticResource MaterialDesignFloatingHintTextBox}">
             <i:Interaction.Behaviors>
                 <Behaviors:TextBoxInputBehavior InputMode="DigitInput"/>
@@ -38,6 +39,7 @@
              wpf:HintAssist.Hint="Tare Weight"
              FontSize="16" Name="weight"
              materialDesign:TextFieldAssist.SuffixText="kg"
+                 Text="{Binding TareWeight}"
              Style="{StaticResource MaterialDesignFloatingHintTextBox}" >
             <i:Interaction.Behaviors>
                 <Behaviors:TextBoxInputBehavior InputMode="DecimalInput"/>

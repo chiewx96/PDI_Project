@@ -19,11 +19,15 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
         public LoginViewModel(FeatherDbContext dbContext)
         {
+            Messenger.Default.Register<User?>(this, _ =>
+            {
+                set_user(_);
+            });
             Messenger.Default.Register<string>(this, _ =>
             {
                 if (_ == General.CloseWindow)
                 {
-                    var closingTask = Task.Run(() => LogoutAction?.Invoke());
+                    var closingTask = Task.Run(() => set_user(null));
                     closingTask.Wait();
                     Environment.Exit(0);
                 }
@@ -31,14 +35,13 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             _dbContext = dbContext;
             LoginCommand = new Command(login_action);
             CloseCommand = new Command((e) => Action?.Invoke());
-            LogoutAction = new Action(() => set_user(null));
         }
 
         #region PrivateMethods
         private void login_action(object? obj)
         {
             User? result = General.TryLogin(UserNameTextContent, PasswordTextContent, ref _dbContext);
-            set_user(result);
+            Messenger.Default.Send(result);
             if (result == null)
             {
                 ErrorLogin = true;
@@ -76,7 +79,6 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         #endregion
 
         #region Property
-        public Action LogoutAction { get; set; }
 
         public Action Action { get; set; }
 
@@ -164,8 +166,6 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             set
             {
                 isVisible = value;
-                if (!value)
-                    Messenger.Default.Send(CurrentUser);
                 RaisePropertyChanged(nameof(CurrentUser));
             }
         }

@@ -25,6 +25,8 @@ namespace PDI_Feather_Tracking_WPF
 
         public const string PrintLabelCommand = "PDI_PL_Feather";
 
+        public const string RecordCommand = "*()record_current_result!@#";
+
         public static User? TryLogin(string username, string password, ref FeatherDbContext dbContext)
         {
             if (dbContext != null)
@@ -45,7 +47,7 @@ namespace PDI_Feather_Tracking_WPF
         {
             string year_code = DateTime.Now.Year.ToString().Substring(2, 2);
             string month_code = ((MonthEnum)DateTime.Now.Month).ToString();
-            if (last_sku_code == null ||  last_sku_code == String.Empty || last_sku_code.Substring(0, 1) != month_code || last_sku_code.Substring(1, 2) != year_code)
+            if (last_sku_code == null || last_sku_code == String.Empty || last_sku_code.Substring(0, 1) != month_code || last_sku_code.Substring(1, 2) != year_code)
             {
                 // newly deployed || new month || new year
                 return $"{month_code}{year_code}{gross_weight.ToString().PadLeft(3, '0')}{sku_type_code.ToString()}00001";
@@ -93,6 +95,7 @@ namespace PDI_Feather_Tracking_WPF
             {
                 Message = message
             });
+            Messenger.Default.Send(new LoggerModel() { Message = message });
         }
     }
 }

@@ -13,8 +13,10 @@ namespace PDI_Feather_Tracking_WPF.Helper
     public class ReportHelper
     {
 
-        public static void GenerateIncomingReport(List<InventoryRecords> records, string filepath)
+        public static void GenerateIncomingReport(List<InventoryRecords> records, string folderPath)
         {
+            Directory.CreateDirectory(folderPath);
+
             DataTable dt = new DataTable();
 
             dt.Columns.Add(new DataColumn
@@ -53,7 +55,9 @@ namespace PDI_Feather_Tracking_WPF.Helper
 
             byte[] filecontent = PDFHelper.GeneratePdf(dt);
             string filename = "Incoming_Report_PDF_" + DateTime.Now.ToString("MMddyyyyhhmmss") + ".pdf";
-            File.WriteAllBytes(Path.Combine(filepath, filename), filecontent);
+            string report_full_path = Path.Combine(folderPath, filename);
+            File.WriteAllBytes(report_full_path, filecontent);
+            General.SendNotifcation($"Report Path :{report_full_path}");
         }
 
         internal static void GenerateActualWeightList(List<InventoryRecords> filteredInventories, string path)

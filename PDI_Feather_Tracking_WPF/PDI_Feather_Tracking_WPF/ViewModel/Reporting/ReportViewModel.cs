@@ -1,6 +1,7 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using PDI_Feather_Tracking_WPF.Global;
 using PDI_Feather_Tracking_WPF.Helper;
 using PDI_Feather_Tracking_WPF.Models;
@@ -18,9 +19,11 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
     public class ReportViewModel : ViewModelBase
     {
         FeatherDbContext _dbContext;
-        public ReportViewModel(FeatherDbContext dbContext)
+        string? _reportPath;
+        public ReportViewModel(FeatherDbContext dbContext, IConfiguration configuration)
         {
             _dbContext = dbContext;
+            _reportPath = configuration.GetSection("ReportStoringPath").Value;
             Messenger.Default.Register<SkuType>(this, _ => refresh_sku_types());
             ReportTypes = Enum.GetValues(typeof(ReportTypesEnum)).Cast<ReportTypesEnum>().ToList();
             SelectedReportType = ReportTypes.FirstOrDefault();
@@ -52,7 +55,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
 
                 temp_inventory_records = _dbContext.InventoryRecords.AsNoTracking().ToList();
                 if (vm.SkuTypeId > 0)
-                    temp_inventory_records = temp_inventory_records.Where(x => x.SkuTypeId > 0).ToList();
+                    temp_inventory_records = temp_inventory_records.Where(x => x.SkuTypeId == vm.SkuTypeId).ToList();
 
                 if (vm.OutgoingFromDate != null && vm.OutgoingToDate != null)
                     temp_inventory_records = temp_inventory_records.Where(x => x.OutgoingDateTime >= vm.OutgoingFromDate &&
@@ -78,17 +81,20 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         private void generateReport(object? obj)
         {
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            string path = "C:\\Users\\chiew\\OneDrive\\Documents\\BarTender";
+            if (_reportPath == null)
+            {
+                General.SendNotifcation("Report path setting not found.");
+            }
             if (SelectedReportType != null)
             {
                 Action action = null;
                 switch (SelectedReportType)
                 {
                     case ReportTypesEnum.IncomingReport:
-                        action = () => ReportHelper.GenerateIncomingReport(FilteredInventories, path);
+                        action = () => ReportHelper.GenerateIncomingReport(FilteredInventories, _reportPath);
                         break;
                     case ReportTypesEnum.ActualWeightList:
-                        action = () => ReportHelper.GenerateActualWeightList(FilteredInventories, path);
+                        action = () => ReportHelper.GenerateActualWeightList(FilteredInventories, _reportPath);
                         break;
                     default:
                         break;

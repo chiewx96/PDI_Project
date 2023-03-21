@@ -15,8 +15,8 @@
         TextOptions.TextRenderingMode="Auto"        
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
-        mc:Ignorable="d"
-        Title="PDI Feather Tracking">
+        mc:Ignorable="d" MaxHeight="800" MaxWidth="1600"
+        Title="PDI Feather Tracking" KeyDown="Window_KeyDown">
     <Window.Resources>
         <converter:EmployeeNoConverter x:Key="EmployeeNoConverter"/>
         <converter:UserToVisibilityConverter x:Key="UserToVisibilityConverter"/>

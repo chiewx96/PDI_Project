@@ -1,6 +1,7 @@
 const { defineConfig } = require("@vue/cli-service");
 const fs = require("fs");
 module.exports = defineConfig({
+  lintOnSave:true,
   devServer: {
     port: 7100, // CHANGE YOUR PORT HERE!
     https: {
