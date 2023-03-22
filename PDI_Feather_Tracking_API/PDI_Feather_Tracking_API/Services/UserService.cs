@@ -21,7 +21,7 @@ namespace PDI_Feather_Tracking_API.Services
             {
                 return new BooleanMessageModel(false, "Invalid login credentials");
             }
-            else if(General.LoggedInUser != null)
+            else if (General.LoggedInUser != null)
             {
                 return new BooleanMessageModel(false, "User has been signed in");
             }
@@ -32,8 +32,8 @@ namespace PDI_Feather_Tracking_API.Services
                 {
                     return new BooleanMessageModel(false, "Username / Password is wrong.");
                 }
+                return new BooleanMessageModel(true, General.GenerateToken(user));
             }
-            return new BooleanMessageModel(true, "login success");
         }
 
         public BooleanMessageModel Logout()
@@ -58,5 +58,7 @@ namespace PDI_Feather_Tracking_API.Services
                 return false;
             }
         }
+
+
     }
 }
