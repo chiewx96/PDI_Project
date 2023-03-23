@@ -20,8 +20,9 @@
 
 <script>
 import { QrcodeStream } from 'vue3-qrcode-reader';
-import ApiService from '@/components/ApiService.js';
+import ApiService from '@/services/api.service';
 import Swal from 'sweetalert2';
+
 export default {
   components: { QrcodeStream },
   data() {
@@ -125,15 +126,15 @@ export default {
     },
     outbound() {
       if (this.decoded_batch_no != '') {
-        ApiService._get('outbound/outbound/' + this.decoded_batch_no)
+        ApiService._get('outbound/outbound/'+ this.decoded_batch_no)
           .then(async (response) => {
             if (response.status == 200) {
               Swal.fire({
                 icon: 'success',
                 title: 'Outbound success.',
-                text:'Batch No : ' + this.decoded_batch_no
+                text: 'Batch No : ' + this.decoded_batch_no,
               });
-              this.decoded_batch_no = "";
+              this.decoded_batch_no = '';
             } else {
               Swal.fire({
                 icon: 'error',

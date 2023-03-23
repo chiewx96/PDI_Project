@@ -3,9 +3,9 @@
     public class BooleanMessageModel
     {
         public bool status { get; set; }
-        public string message { get; set; }
+        public object message { get; set; }
 
-        public BooleanMessageModel(bool status, string message)
+        public BooleanMessageModel(bool status, object message)
         {
             this.status = status;
             this.message = message; 

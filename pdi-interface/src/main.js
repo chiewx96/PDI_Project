@@ -12,12 +12,15 @@ import * as directives from "vuetify/directives";
 /* import font awesome icon component */
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
+import store from "./store";
+
 const vuetify = createVuetify({
   components,
   directives,
 });
 
 createApp(App)
+  .use(store)
   .use(router)
   .use(vuetify)
   .component("font-awesome-icon", FontAwesomeIcon)

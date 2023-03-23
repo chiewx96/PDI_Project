@@ -1,5 +1,5 @@
 <template>
-  <div id="login">
+  <form id="login">
     <h1>Login</h1>
     <div class="form-inputs">
       <label for="username">Username</label>
@@ -21,37 +21,49 @@
         placeholder="Password"
       />
     </div>
-    <button type="button" v-on:click="login()">Login</button>
-  </div>
+    <button
+      type="button"
+      v-on:click="login()"
+    >
+      Login
+    </button>
+  </form>
 </template>
 
 <script>
-import ApiService from "@/components/ApiService.js";
-// import ApiService from "@/services/api.service.js";
+import ApiService from '@/services/api.service';
+import { mapMutations } from 'vuex';
+
 export default {
-  name: "LoginView",
+  name: 'LoginView',
   data() {
     return {
       input: {
-        username: "",
-        password: "",
+        username: '',
+        password: '',
       },
     };
   },
   methods: {
+    ...mapMutations(['setUser', 'setToken']),
     login() {
-      if (this.input.username != "" && this.input.password != "") {
+      if (this.input.username != '' && this.input.password != '') {
         // This should actually be an api call not a check against this.$parent.mockAccount
-        ApiService._post("user/login", {
+        ApiService._post('user/login', {
           username: this.input.username,
           password: this.input.password,
-        }).then((response) => {
-          if (response.ok) {
-            this.$router.push("/about");
+        }).then(async (response) => {
+          if (response.status == 200) {
+            const { status, message } = await response.json();
+            if (status == true) {
+              this.setUser(message.user);
+              this.setToken(message.token);
+              this.$router.push('/scan');
+            }
           }
         });
       } else {
-        console.log("A username and password must be present");
+        console.log('A username and password must be present');
       }
     },
   },

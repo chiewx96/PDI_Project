@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using EFWeightScan;
 
 namespace PDI_Feather_Tracking_API.Models;
 

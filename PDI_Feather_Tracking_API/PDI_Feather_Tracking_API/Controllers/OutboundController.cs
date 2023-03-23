@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PDI_Feather_Tracking_API.Models;
-using PDI_Feather_Tracking_API.Models.ResponseModel;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web;
 using PDI_Feather_Tracking_API.Services;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace PDI_Feather_Tracking_API.Controllers
 {
@@ -25,7 +28,8 @@ namespace PDI_Feather_Tracking_API.Controllers
         [HttpGet("outbound/{referenceNo}")]
         public ActionResult Outbound(string referenceNo)
         {
-            return Ok(_outboundService.Outbound(referenceNo));
+            var token = (HttpContext.User.Identity as ClaimsIdentity).FindFirst("id").Value;
+            return Ok(_outboundService.Outbound(referenceNo, null));
         }
 
         //[HttpGet("get-details/{referenceNo}")]
