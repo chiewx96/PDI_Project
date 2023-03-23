@@ -44,16 +44,12 @@ builder.Services.AddAuthentication(options =>
     o.SaveToken = true;
     o.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidIssuer = "PDI_Feather_Tracking_API",
-        ValidAudience = "PDI_Feather_Tracking_API",
-        IssuerSigningKey = new SymmetricSecurityKey
-        (Encoding.ASCII.GetBytes("PDI_Feather_Tracking_API_1234567890)(*&^%$#@!")),
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        RequireExpirationTime= true,
+        ValidIssuer = "PDI_Feather_Tracking",
+        ValidAudience = "PDI_Feather_Tracking",
+        ValidateIssuer = false,
+        ValidateAudience = false,
     };
+    o.Events = AuthEventsHandler.Instance;
 });
 #region Service
 builder.Services.AddScoped<UserService>();

@@ -1,5 +1,4 @@
-﻿using EFWeightScan;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PDI_Feather_Tracking_API.Models;
 using PDI_Feather_Tracking_API.Models.RequestModel;
 using PDI_Feather_Tracking_API.Models.ResponseModel;
@@ -21,18 +20,14 @@ namespace PDI_Feather_Tracking_API.Services
             {
                 return new BooleanMessageModel(false, "Invalid login credentials");
             }
-            else if (General.LoggedInUser != null)
-            {
-                return new BooleanMessageModel(false, "User has been signed in");
-            }
             else
             {
-                var user = General.TryLogin(loginModel.username, loginModel.password, ref dbContext);
-                if (user == null)
+                var response = General.TryLogin(loginModel.username, loginModel.password, ref dbContext);
+                if (response == null)
                 {
                     return new BooleanMessageModel(false, "Username / Password is wrong.");
                 }
-                return new BooleanMessageModel(true, General.GenerateToken(user));
+                return new BooleanMessageModel(true, response);
             }
         }
 

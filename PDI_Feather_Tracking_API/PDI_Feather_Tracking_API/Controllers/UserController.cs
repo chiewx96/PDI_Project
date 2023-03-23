@@ -1,17 +1,7 @@
-﻿using EFWeightScan;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using PDI_Feather_Tracking_API.Models;
 using PDI_Feather_Tracking_API.Models.RequestModel;
-using PDI_Feather_Tracking_API.Models.ResponseModel;
 using PDI_Feather_Tracking_API.Services;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace PDI_Feather_Tracking_API.Controllers
 {
@@ -43,8 +33,6 @@ namespace PDI_Feather_Tracking_API.Controllers
         [HttpPost("logout-all")]
         public ActionResult LogoutAll()
         {
-            var aaa = HttpContext.GetTokenAsync("access_token");
-            string username = General.ValidateToken(aaa.Result);
             return Ok(_userService.LogoutAll());
         }
 

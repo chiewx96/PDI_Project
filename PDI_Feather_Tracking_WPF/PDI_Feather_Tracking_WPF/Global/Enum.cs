@@ -36,7 +36,6 @@ namespace PDI_Feather_Tracking_WPF.Global
     public enum ReportTypesEnum
     {
         IncomingReport, //
-        OutgoingReport,
         OnHandBalanceReport,
         ActualWeightList //
     }
