@@ -1,33 +1,50 @@
 <template>
-  <form id="login">
-    <h1>Login</h1>
-    <div class="form-inputs">
-      <label for="username">Username</label>
-      <input
-        type="text"
-        id="username"
-        name="username"
-        v-model="input.username"
-        placeholder="Username"
-      />
-    </div>
-    <div class="form-inputs">
-      <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        name="password"
-        v-model="input.password"
-        placeholder="Password"
-      />
-    </div>
-    <button
-      type="button"
-      v-on:click="login()"
+  <v-content>
+    <v-container
+      fluid
+      fill-height
     >
-      Login
-    </button>
-  </form>
+      <v-layout
+        align-center
+        justify-center
+      >
+        <div
+          class="justify-center min-width"
+          size="md"
+        >
+          <v-card-text>
+            <v-form
+              lazy-validation
+              @submit.prevent="login"
+            >
+              <v-text-field
+                v-model="input.username"
+                prepend-icon="mdi-account"
+                name="login"
+                label="Login"
+                type="text"
+                autocomplete="new-username"
+              ></v-text-field>
+              <v-text-field
+                v-model="input.password"
+                id="password"
+                prepend-icon="mdi-lock"
+                name="password"
+                label="Password"
+                type="password"
+                autocomplete="new-password"
+              ></v-text-field>
+              <v-btn
+                color="primary"
+                type="submit"
+                >Login</v-btn
+              >
+            </v-form>
+          </v-card-text>
+        </div>
+      </v-layout>
+    </v-container>
+  </v-content>
 </template>
 
 <script>
@@ -71,10 +88,9 @@ export default {
 </script>
 
 <style>
-#login .form-inputs {
-  padding-bottom: 10px;
-}
-#login .form-inputs label {
-  padding-right: 10px;
+.min-width {
+  min-width: 300px;
+  margin: auto;
+  margin-top: 150px;
 }
 </style>

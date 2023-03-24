@@ -28,8 +28,17 @@ namespace PDI_Feather_Tracking_API.Controllers
         [HttpGet("outbound/{referenceNo}")]
         public ActionResult Outbound(string referenceNo)
         {
-            var token = (HttpContext.User.Identity as ClaimsIdentity).FindFirst("id").Value;
-            return Ok(_outboundService.Outbound(referenceNo, null));
+            try
+            {
+                string user_id = (HttpContext.User.Identity as ClaimsIdentity).FindFirst("id").Value;
+                if (user_id == null)
+                    return Unauthorized((false, "error : user is not logged in."));
+                return Ok(_outboundService.Outbound(referenceNo, user_id));
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
         }
 
         //[HttpGet("get-details/{referenceNo}")]

@@ -1,8 +1,5 @@
+import router from "@/router";
 import { createStore } from "vuex";
-// import Vue from "vue";
-// import Vuex from "vuex";
-
-// Vue.use(Vuex);
 
 export default createStore({
   state: {
@@ -28,7 +25,17 @@ export default createStore({
     setToken(state, token) {
       state.token = token;
     },
+    // logout(state){
+    //   state.token = null;
+    //   state.user = null;
+    // }
   },
-  actions: {},
+  actions: {
+    logout(){
+      this.state.token = null;
+      this.state.user = null;
+      router.push('/');
+    }
+  },
   modules: {},
 });

@@ -18,14 +18,9 @@ namespace PDI_Feather_Tracking_API.Services
             return dbContext.InventoryRecords.AsNoTracking().Where(x => x.BatchNo == referenceNo).FirstOrDefault();
         }
 
-        public BooleanMessageModel Outbound(string referenceNo, string token)
+        public BooleanMessageModel Outbound(string referenceNo, string user_id)
         {
             var result = dbContext.InventoryRecords.Where(x => x.BatchNo == referenceNo).FirstOrDefault();
-            string? user_id = TokenService.ValidateToken(token);
-            if (user_id == null)
-            { 
-                return new BooleanMessageModel(false, "error : user is not logged in.");
-            }
             if (result != null)
             {
                 result.OutgoingDateTime = DateTime.Now;

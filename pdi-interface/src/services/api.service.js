@@ -23,18 +23,22 @@ const FetchFunc = async function (type, url, body) {
   const options = { timeout: timeout };
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
-  var response = await fetch(url, {
+
+  let response_data = {
     method: type,
     headers: {
       // Authorization: 'Bearer ' + this.token,
       Accept: 'application/json',
       'Content-Type': 'application/json;charset=utf-8',
-      Authorization: 'Bearer ' + store.getters.getToken,
     },
     body: body != null ? JSON.stringify(body) : null,
     ...options,
     signal: controller.signal,
-  });
+  };
+  if (store.getters.getToken) {
+    response_data.headers.Authorization = 'Bearer ' + store.getters.getToken;
+  }
+  var response = await fetch(url, response_data);
   clearTimeout(id);
   return response;
 };

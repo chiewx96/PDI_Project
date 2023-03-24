@@ -34,6 +34,12 @@ builder.Services.AddSwaggerGen(c => c.SwaggerDoc("v1", new OpenApiInfo { Title =
 //Entity Framework Connection
 var connectionStr = builder.Configuration.GetConnectionString("PDIFeatherTracking");
 builder.Services.AddDbContext<PDIFeatherTrackingDbContext>(options => options.UseMySQL(connectionStr));
+//builder.Services.AddAuthentication(options =>
+//{
+//    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+//    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+//})
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -41,15 +47,18 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(o =>
 {
-    o.SaveToken = true;
     o.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidIssuer = "PDI_Feather_Tracking",
-        ValidAudience = "PDI_Feather_Tracking",
-        ValidateIssuer = false,
-        ValidateAudience = false,
+        ValidIssuer = General.EncryptionKey,
+        ValidAudience = General.EncryptionKey,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(General.TokenKey)),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateIssuerSigningKey = true,
+        //ValidateLifetime = true,
+        //RequireExpirationTime = true,
     };
-    o.Events = AuthEventsHandler.Instance;
+    o.SaveToken = true;
 });
 #region Service
 builder.Services.AddScoped<UserService>();
