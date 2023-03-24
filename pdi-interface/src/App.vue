@@ -1,23 +1,15 @@
 <template>
   <menubar></menubar>
-  <!-- <nav>
-    <router-link to="/">Login</router-link> |
-  </nav> -->
-  <!-- <v-app>
-    <ScanView></ScanView>
-  </v-app> -->
   <router-view id="content"/>
 </template>
 
 <script>
 import ScanView from '@/views/ScanView.vue';
 import Menubar from './components/Menubar.vue';
-// import Login from '@/views/LoginView.vue';
 
 export default {
   components: {
     Menubar,
-    // Login,
     ScanView
   },
 };

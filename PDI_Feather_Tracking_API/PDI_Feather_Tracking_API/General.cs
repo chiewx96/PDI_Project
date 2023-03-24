@@ -36,7 +36,7 @@ namespace PDI_Feather_Tracking_API
                     if (password == unhashed)
                     {
                         dbContext.SaveChanges();
-                        string token = TokenService.GenerateToken(targetUser);
+                        string token = TokenService.GenerateToken(targetUser.Id.ToString(), targetUser.Username);
                         return new Dictionary<string, object>()
                         {
                             { "user", targetUser },

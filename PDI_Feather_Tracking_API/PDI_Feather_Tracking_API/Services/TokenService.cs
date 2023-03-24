@@ -9,22 +9,19 @@ namespace PDI_Feather_Tracking_API
     public class TokenService
     {
 
-        public static string GenerateToken(User user)
+        public static string GenerateToken(string id, string user)
         {
-            var key = Encoding.ASCII.GetBytes(General.TokenKey);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                        new Claim("Id", user.Id.ToString()),
-                        new Claim(ClaimTypes.Name, user.Username),
-                        new Claim(JwtRegisteredClaimNames.Jti,
-                        Guid.NewGuid().ToString())
-                    }),
-                Expires = DateTime.UtcNow.AddMinutes(1),
+                        new Claim("Id", id),
+                        new Claim(ClaimTypes.Name, user),
+                }),
+                Expires = DateTime.UtcNow.AddHours(1),
                 Issuer = General.EncryptionKey,
                 Audience = General.EncryptionKey,
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(General.TokenKey)), SecurityAlgorithms.HmacSha256),
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -39,14 +36,13 @@ namespace PDI_Feather_Tracking_API
                 JwtSecurityToken jwtToken = (JwtSecurityToken)tokenHandler.ReadToken(token);
                 if (jwtToken == null)
                     return null;
-                byte[] key = Encoding.ASCII.GetBytes(General.TokenKey);
                 TokenValidationParameters parameters = new TokenValidationParameters()
                 {
                     RequireExpirationTime = true,
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateLifetime = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(General.TokenKey))
                 };
                 SecurityToken securityToken;
                 ClaimsPrincipal principal = tokenHandler.ValidateToken(token,

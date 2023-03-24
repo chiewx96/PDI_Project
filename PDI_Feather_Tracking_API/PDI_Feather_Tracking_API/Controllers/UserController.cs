@@ -36,16 +36,16 @@ namespace PDI_Feather_Tracking_API.Controllers
             return Ok(_userService.LogoutAll());
         }
 
-        //[AllowAnonymous]
-        //[HttpPost("getSampleLogin")]
-        //public ActionResult getSampleLogin(LoginModel user)
-        //{
-        //    if (user.username == "admin" && user.password == "admin")
-        //    {
-        //        return Ok(General.GenerateToken("admin"));
-        //    }
-        //    return Unauthorized();
+        [AllowAnonymous]
+        [HttpPost("getSampleLogin")]
+        public ActionResult getSampleLogin(LoginModel user)
+        {
+            if (user.username == "admin" && user.password == "admin")
+            {
+                return Ok(TokenService.GenerateToken("id", "admin"));
+            }
+            return Unauthorized();
 
-        //}
+        }
     }
 }
