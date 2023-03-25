@@ -1,17 +1,17 @@
-import { createRouter, createWebHashHistory } from 'vue-router';
-import store from '@/store';
-import LoginView from '@/views/LoginView.vue';
+import { createRouter, createWebHashHistory } from "vue-router";
+import store from "@/store";
+import LoginView from "@/views/LoginView.vue";
 
 const routes = [
   {
-    path: '/',
-    name: 'Login',
+    path: "/",
+    name: "Login",
     component: LoginView,
   },
   {
-    path: '/scan',
-    name: 'Scan',
-    component: () => import('../views/ScanView.vue'),
+    path: "/scan",
+    name: "Scan",
+    component: () => import("../views/ScanView.vue"),
     meta: {
       authRequired: true,
     },
@@ -28,7 +28,7 @@ router.beforeEach((to, from, next) => {
   // if not, redirect to login page.
   if (to.matched.some((record) => record.meta.authRequired)) {
     if (!store.getters.isLoggedIn) {
-      next({ name: 'Login' });
+      next({ name: "Login" });
     } else {
       next(); // go to wherever I'm going
     }

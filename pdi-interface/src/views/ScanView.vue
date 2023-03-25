@@ -7,6 +7,7 @@
       hide-details="auto"
       v-model="decoded_batch_no"
       label="Batch No"
+      prepend-icon="mdi-qrcode"
       @keydown.enter.prevent="outbound"
     ></v-text-field>
     <qrcode-stream
@@ -126,8 +127,9 @@ export default {
     },
     outbound() {
       if (this.decoded_batch_no != '') {
-        ApiService._get('outbound/outbound/'+ this.decoded_batch_no)
+        ApiService._get('outbound/outbound/' + this.decoded_batch_no)
           .then(async (response) => {
+            let result = await response.json();
             if (response.status == 200) {
               Swal.fire({
                 icon: 'success',
@@ -135,6 +137,18 @@ export default {
                 text: 'Batch No : ' + this.decoded_batch_no,
               });
               this.decoded_batch_no = '';
+            } else if (response.status == 401) {
+              Swal.fire({
+                icon: 'warning',
+                title: 'Outbound Error.',
+                text: 'Please login to proceed',
+              });
+            } else if (response.status == 409) {
+              Swal.fire({
+                icon: 'warning',
+                title: 'Outbound Error.',
+                text: result.message,
+              });
             } else {
               Swal.fire({
                 icon: 'error',

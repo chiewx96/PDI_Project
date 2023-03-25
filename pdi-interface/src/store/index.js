@@ -11,12 +11,12 @@ export default createStore({
       return state.token != null;
       // return !!state.token;
     },
-    getToken(state){
+    getToken(state) {
       return state.token;
     },
-    getUser(state){
+    getUser(state) {
       return state.user;
-    }
+    },
   },
   mutations: {
     setUser(state, user) {
@@ -31,11 +31,11 @@ export default createStore({
     // }
   },
   actions: {
-    logout(){
+    logout() {
       this.state.token = null;
       this.state.user = null;
-      router.push('/');
-    }
+      router.push("/");
+    },
   },
   modules: {},
 });

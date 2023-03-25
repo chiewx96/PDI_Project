@@ -33,11 +33,16 @@ namespace PDI_Feather_Tracking_API.Controllers
                 string user_id = (HttpContext.User.Identity as ClaimsIdentity).FindFirst("id").Value;
                 if (user_id == null)
                     return Unauthorized((false, "error : user is not logged in."));
-                return Ok(_outboundService.Outbound(referenceNo, user_id));
+                var response = _outboundService.Outbound(referenceNo, user_id);
+                if (response.status)
+                    return Ok(response);
+                else
+                    return Conflict(response);
+
             }
             catch (Exception e)
             {
-                return StatusCode(500, e.Message);
+                return Unauthorized(e.Message);
             }
         }
 
