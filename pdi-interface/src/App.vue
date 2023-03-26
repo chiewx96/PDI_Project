@@ -1,16 +1,14 @@
 <template>
   <menubar></menubar>
-  <router-view id="content"/>
+  <router-view id="content" />
 </template>
 
 <script>
-import ScanView from '@/views/ScanView.vue';
-import Menubar from './components/Menubar.vue';
+import Menubar from "./components/Menubar.vue";
 
 export default {
   components: {
     Menubar,
-    ScanView
   },
 };
 </script>

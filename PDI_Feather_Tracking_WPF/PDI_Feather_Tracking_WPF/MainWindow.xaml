@@ -120,6 +120,7 @@
                                     </StackPanel>
                                 </ToggleButton>
 
+                                <Image Width="120" Height="90" Source="../logo.png" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
                                 <TextBlock Margin="-152,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" 
                                            FontSize="22" Text="PDI Feather Tracking" />

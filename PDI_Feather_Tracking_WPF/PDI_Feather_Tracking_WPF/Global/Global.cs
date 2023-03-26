@@ -34,9 +34,10 @@ namespace PDI_Feather_Tracking_WPF
                 var targetUser = dbContext.Users.AsNoTracking()
                      .Where(z => z.Username == username)
                      .FirstOrDefault();
-                if (targetUser != null && !targetUser.IsSignedIn)
+                if (targetUser != null)
                 {
                     var unhashed = EncryptionHelper.Decrypt(targetUser?.Password);
+                    targetUser.UserLevel = dbContext.UserLevels.AsNoTracking().Where(x=>x.Id == targetUser.UserLevelId).First();
                     return password == unhashed ? targetUser : null;
                 }
             }

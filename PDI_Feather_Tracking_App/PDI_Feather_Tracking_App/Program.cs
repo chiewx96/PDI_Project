@@ -1,63 +1,54 @@
-﻿using System;
-using System.Net;
+﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using PDI_Feather_Tracking_App.Service;
+using Seagull.BarTender.Print;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Sockets;
-using System.ServiceProcess;
 using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
-using PDI_Feather_Tracking_Service.GeneralService;
-using static System.Net.WebRequestMethods;
-using Seagull.BarTender.Print;
 using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 using System.Threading;
+using System.Threading.Tasks;
 
-namespace PDI_Feather_Tracking_Service
+namespace PDI_Feather_Tracking_App
 {
-    public partial class PrintingService : ServiceBase
+    internal class Program
     {
-        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private static IConfiguration Configuration { get; set; }
 
-        public PrintingService()
+        static CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+        static void Main(string[] args)
         {
-            InitializeComponent();
+            string folderpath = "D:\\Projects\\PDI_Feather_Tracking\\PDI_Feather_Tracking_WPF\\PDI_Feather_Tracking_WPF\\bin\\Debug\\net6.0-windows";
+            var builder = new ConfigurationBuilder().SetBasePath(folderpath)
+              .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+            Configuration = builder.Build();
+            Global.SetGlobalProperty(Configuration);
+            Start();
         }
 
-        public async void Start()
+        static void Start()
         {
             Task log_task = Task.Run(initializeLogService, cancellationTokenSource.Token);
             Task printer_task = Task.Run(initializePrinterService, cancellationTokenSource.Token);
             Task.WaitAll(log_task, printer_task);
         }
 
-        private void initializeLogService()
+        static void initializeLogService()
         {
             TcpService logService = new TcpService(log_request, log_request, Global.LogServicePort);
         }
 
-        private void initializePrinterService()
+        static void initializePrinterService()
         {
             var printerService = new TcpService(PrintLabel, log_request, Global.PrintServicePort);
         }
 
-        protected override void OnStart(string[] args)
-        {
-            TcpService tcpService = new TcpService(PrintLabel, log_request, Global.PrintServicePort);
-            TcpService logService = new TcpService(log_request, log_request, Global.LogServicePort);
-        }
-
-        protected override void OnStop()
-        {
-            cancellationTokenSource.Cancel();
-        }
-
-        public string log_request(object sender)
+        static string log_request(object sender)
         {
             try
             {
@@ -67,25 +58,27 @@ namespace PDI_Feather_Tracking_Service
                     System.IO.File.Create(Path.Combine(Global.LogFilePath, DateTime.Now.ToString("yyyyMMdd")));
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine($"Time:{DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss")} Event : {sender.ToString()}");
-                using (StreamWriter sw = System.IO.File.AppendText(Path.Combine(Global.LogFilePath, DateTime.Now.ToString("yyyyMMdd"))))
-                {
-                    sw.WriteLine(sb.ToString());
-                }
+                //using (StreamWriter sw = System.IO.File.AppendText(Path.Combine(Global.LogFilePath, DateTime.Now.ToString("yyyyMMdd"))))
+                //{
+                //    sw.WriteLine(sb.ToString());
+                //}
+                Console.WriteLine(sb.ToString());
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+                Console.WriteLine(ex.Message);
             }
             return string.Empty;
         }
 
-        public void readLabel(object? sender)
+        static void readLabel(object? sender)
         {
             LabelFormatDocument item = BartenderService.ReadLabelDocument(Global.LabelTemplatePath);
             log_request(item);
         }
 
-        public string PrintLabel(object sender)
+        static string PrintLabel(object sender)
         {
             try
             {

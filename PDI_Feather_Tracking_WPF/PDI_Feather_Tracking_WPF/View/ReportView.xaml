@@ -7,7 +7,7 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:converter="clr-namespace:PDI_Feather_Tracking_WPF.Converter"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="500" d:DesignWidth="800">
     <UserControl.Resources>
         <converter:SearchReportConverter x:Key="SearchReportConverter"/>
         <converter:PicConvertDateDisplay x:Key="PicConvertDateDisplay"/>
@@ -80,7 +80,7 @@
         </GroupBox>
         <StackPanel Grid.Row="1" Grid.ColumnSpan="2">
             <DataGrid ItemsSource="{Binding FilteredInventories}" AutoGenerateColumns="False" CanUserAddRows="False" 
-                      IsReadOnly="True" ScrollViewer.CanContentScroll="True" MaxHeight="600">
+                      IsReadOnly="True" ScrollViewer.CanContentScroll="True" MaxHeight="490">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Batch No" Binding="{Binding BatchNo}"/>
                     <DataGridTextColumn Header="Sku" Binding="{Binding SkuType.Code}"/>
@@ -88,8 +88,7 @@
                     <DataGridTextColumn Header="Tare Weight" Binding="{Binding TareWeight}"/>
                     <DataGridTextColumn Header="Nett Weight" Binding="{Binding NettWeight}"/>
                     <DataGridTextColumn Header="Incoming Date" Binding="{Binding IncomingDateTime}"/>
-                    <DataGridTextColumn Header="Outgoing Date" Binding="{Binding .,Source={RelativeSource AncestorType=DataGrid}
-                        , Converter={StaticResource PicConvertDateDisplay}}" />
+                    <DataGridTextColumn Header="Outgoing Date" Binding="{Binding .,Converter={StaticResource PicConvertDateDisplay}}" />
                     <DataGridTextColumn Header="Outgoing PIC" Binding="{Binding OutgoingPic}" x:Name="dgc_pic"/>
                 </DataGrid.Columns>
             </DataGrid>

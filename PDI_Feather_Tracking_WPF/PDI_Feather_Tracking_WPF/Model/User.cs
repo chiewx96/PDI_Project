@@ -30,7 +30,7 @@ namespace PDI_Feather_Tracking_WPF.Models
         public bool Status{ get; set; }
 
         [Required]
-        [DefaultValue(true)]
+        [DefaultValue(false)]
         public bool IsSignedIn { get; set; }
 
         [Required]

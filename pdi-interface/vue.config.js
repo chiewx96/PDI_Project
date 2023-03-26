@@ -8,6 +8,7 @@ module.exports = defineConfig({
       key: fs.readFileSync("./key.pem"),
       cert: fs.readFileSync("./cert.pem"),
     },
+    //  https: true,
   },
   chainWebpack: (config) => {
     config.module

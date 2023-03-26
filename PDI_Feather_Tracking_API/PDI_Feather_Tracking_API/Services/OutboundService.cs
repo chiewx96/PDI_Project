@@ -21,13 +21,21 @@ namespace PDI_Feather_Tracking_API.Services
         public BooleanMessageModel Outbound(string referenceNo, string user_id)
         {
             var result = dbContext.InventoryRecords.Where(x => x.BatchNo == referenceNo).FirstOrDefault();
-            if (result != null)
+            if (result != null && result.OutgoingPic == 0)
             {
                 result.OutgoingDateTime = DateTime.Now;
                 result.OutgoingPic = int.Parse(user_id);
                 dbContext.SaveChanges();
+                return new BooleanMessageModel(true, "saved");
             }
-            return new BooleanMessageModel(true, "saved");
+            else if(result != null && result.OutgoingPic != 0)
+            {
+                return new BooleanMessageModel(false, "Batch number has been outbound.");
+            }
+            else
+            {
+                return new BooleanMessageModel(false, "Batch number not exists");
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using MaterialDesignThemes.Wpf;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Crypto.Tls;
 using PDI_Feather_Tracking_WPF.Global;
 using PDI_Feather_Tracking_WPF.Helper;
 using PDI_Feather_Tracking_WPF.Models;
@@ -48,8 +49,9 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             Messenger.Default.Register<User?>(this, _ =>
             {
                 CurrentUser = _;
-                refresh_tare_weight_access(_);
             });
+            Messenger.Default.Register<User?>(this, refresh_tare_weight_access);
+
             Messenger.Default.Register<SkuType?>(this,
                 refresh_sku_types);
             Messenger.Default.Register<LoggerModel?>(this,
@@ -155,8 +157,30 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             _dbContext.SkuType.Where(x => x.Id == SelectedSkuType.Id).First().LastSkuCode = batch_no;
             SelectedSkuType.LastSkuCode = batch_no;
             _dbContext.SaveChanges();
+            handle_saved_records(batch_no);
             log("Record Saved");
             handle_print_label(batch_no, GrossWeight);
+        }
+
+        private void handle_saved_records(string? batch_no)
+        {
+            string content = string.Empty;
+            if (batch_no == null)
+            {
+                content = $"Batch No | Gross Weight | Nett Weight | Tare Weight | Incoming DateTime | SKU Type ";
+            }
+            else
+            {
+                InventoryRecords? inventory = _dbContext.InventoryRecords.AsNoTracking().Where(x => x.BatchNo == batch_no).FirstOrDefault();
+                if (inventory != null)
+                {
+                    inventory.SkuType = _dbContext.SkuType.AsNoTracking().Where(x => x.Id == inventory.SkuTypeId).FirstOrDefault();
+                    content = $"Batch number : {inventory.BatchNo} | Gross Weight : {inventory.GrossWeight} | Nett Weight : {inventory.NettWeight} | " +
+                        $"Tare Weight : {inventory.TareWeight} | Incoming : {inventory.IncomingDateTime} | Sku Type : {inventory.SkuType.Code}";
+                }
+            }
+            SavedRecords += content;
+            SavedRecords += Environment.NewLine;
         }
 
         private void handle_print_label(string label_no, decimal grossWeight)
@@ -380,6 +404,12 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             set { logger = value; RaisePropertyChanged(nameof(Logger)); }
         }
 
+        private string savedRecords = string.Empty;
+        public string SavedRecords
+        {
+            get { return savedRecords; }
+            set { savedRecords = value; RaisePropertyChanged(nameof(SavedRecords)); }
+        }
         #endregion
     }
 }
