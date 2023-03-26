@@ -21,13 +21,13 @@ namespace PDI_Feather_Tracking_WPF.Helper
             Rectangle rec = new Rectangle(PageSize.A4);
             rec.BackgroundColor = new BaseColor(System.Drawing.Color.Olive);
             Document doc = new Document(rec);
-            doc.SetPageSize(PageSize.A4);
+            doc.SetPageSize(PageSize.A2);
             PdfWriter writer = PdfWriter.GetInstance(doc, ms);
             doc.Open();
 
             //Creating paragraph for header  
-            BaseFont bfntHead = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-            Font fntHead = new Font(bfntHead, 16, 1, BaseColor.BLUE);
+            BaseFont bfntHead = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, BaseFont.EMBEDDED);
+            Font fntHead = new Font(bfntHead, 8, 2, BaseColor.BLUE);
             //Paragraph prgHeading = new Paragraph();
             //prgHeading.Alignment = Element.ALIGN_LEFT;
             //prgHeading.Add(new Chunk("Dynamic Report PDF".ToUpper(), fntHead));

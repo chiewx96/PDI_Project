@@ -19,7 +19,7 @@ const _delete = async function (url, body) {
 };
 
 const FetchFunc = async function (type, url, body) {
-  let timeout = 2000;
+  let timeout = 20000;
   const options = { timeout: timeout };
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
@@ -35,7 +35,8 @@ const FetchFunc = async function (type, url, body) {
     ...options,
     signal: controller.signal,
   };
-  if (store.getters.getToken) {
+  // if (store.getters.getToken) {
+  if (store.getters.isLoggedIn) {
     response_data.headers.Authorization = "Bearer " + store.getters.getToken;
   }
   var response = await fetch(url, response_data);

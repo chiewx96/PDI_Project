@@ -11,6 +11,9 @@
         <v-app-bar-title>PDI-Feather-Tracking</v-app-bar-title>
         <template v-slot:prepend>
           <v-btn icon="mdi-home" to="/"></v-btn>
+          <v-avatar>
+            <img src="../assets/Capture.png" />
+          </v-avatar>
         </template>
         <template v-slot:append v-if="isLoggedIn">
           <v-btn icon="mdi-qrcode-scan" to="/scan"></v-btn>

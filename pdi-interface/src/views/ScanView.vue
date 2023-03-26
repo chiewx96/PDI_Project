@@ -20,19 +20,19 @@
 </template>
 
 <script>
-import { QrcodeStream } from 'vue3-qrcode-reader';
-import ApiService from '@/services/api.service';
-import Swal from 'sweetalert2';
+import { QrcodeStream } from "vue3-qrcode-reader";
+import ApiService from "@/services/api.service";
+import Swal from "sweetalert2";
 
 export default {
   components: { QrcodeStream },
   data() {
     return {
-      error: '',
-      decoded_batch_no: '',
+      error: "",
+      decoded_batch_no: "",
       torch: false,
-      fetchData: '',
-      camera: 'auto',
+      fetchData: "",
+      camera: "auto",
     };
   },
   methods: {
@@ -40,26 +40,26 @@ export default {
       try {
         await promise;
       } catch (error) {
-        if (error.name === 'NotAllowedError') {
-          this.error = 'ERROR: you need to grant camera access permission';
-        } else if (error.name === 'NotFoundError') {
-          this.error = 'ERROR: no camera on this device';
-        } else if (error.name === 'NotSupportedError') {
-          this.error = 'ERROR: secure context required (HTTPS, localhost)';
-        } else if (error.name === 'NotReadableError') {
-          this.error = 'ERROR: is the camera already in use?';
-        } else if (error.name === 'OverconstrainedError') {
-          this.error = 'ERROR: installed cameras are not suitable';
-        } else if (error.name === 'StreamApiNotSupportedError') {
-          this.error = 'ERROR: Stream API is not supported in this browser';
-        } else if (error.name === 'InsecureContextError') {
+        if (error.name === "NotAllowedError") {
+          this.error = "ERROR: you need to grant camera access permission";
+        } else if (error.name === "NotFoundError") {
+          this.error = "ERROR: no camera on this device";
+        } else if (error.name === "NotSupportedError") {
+          this.error = "ERROR: secure context required (HTTPS, localhost)";
+        } else if (error.name === "NotReadableError") {
+          this.error = "ERROR: is the camera already in use?";
+        } else if (error.name === "OverconstrainedError") {
+          this.error = "ERROR: installed cameras are not suitable";
+        } else if (error.name === "StreamApiNotSupportedError") {
+          this.error = "ERROR: Stream API is not supported in this browser";
+        } else if (error.name === "InsecureContextError") {
           this.error =
-            'ERROR: Camera access is only permitted in secure context. Use HTTPS or localhost rather than HTTP.';
+            "ERROR: Camera access is only permitted in secure context. Use HTTPS or localhost rather than HTTP.";
         } else {
           this.error = `ERROR: Camera error (${error.name})`;
         }
       } finally {
-        this.showScanConfirmation = this.camera === 'off';
+        this.showScanConfirmation = this.camera === "off";
       }
     },
     async onDecode(result) {
@@ -72,34 +72,34 @@ export default {
     async showBundleDetails() {
       let tableContent =
         '<v-dialog v-model="dialog" activator="parent" width="auto">' +
-        '<v-card>' +
-        '<v-container>' +
-        '<v-table>' +
-        '<thead>' +
-        '<tr>' +
+        "<v-card>" +
+        "<v-container>" +
+        "<v-table>" +
+        "<thead>" +
+        "<tr>" +
         '<th class="text-left">Reference No</th>' +
         '<th class="text-left">Gross Weight</th>' +
         '<th class="text-left">Tare Weight</th>' +
         '<th class="text-left">Nett Weight</th>' +
         '<th class="text-left">Incoming Date Time</th>' +
         '<th class="text-left">Created At</th>' +
-        '</tr>' +
-        '</thead>' +
-        '<tbody>' +
-        '<tr>' +
+        "</tr>" +
+        "</thead>" +
+        "<tbody>" +
+        "<tr>" +
         `<td>${this.fetchData.BatchNo}</td>` +
         `<td>${this.fetchData.GrossWeight}</td>` +
         `<td>${this.fetchData.TareWeight}</td>` +
         `<td>${this.fetchData.NettWeight}</td>` +
         `<td>${this.fetchData.IncomingDateTime}</td>` +
         `<td>${this.fetchData.CreatedAt}</td>` +
-        '</tr>' +
-        '</tbody>' +
-        '</v-table>' +
-        '</v-container>' +
-        '</v-card>';
+        "</tr>" +
+        "</tbody>" +
+        "</v-table>" +
+        "</v-container>" +
+        "</v-card>";
       Swal.fire({
-        title: 'Bundle Information',
+        title: "Bundle Information",
         html: tableContent,
         showCloseButton: true,
         showCancelButton: true,
@@ -110,9 +110,9 @@ export default {
       }).then((result) => {
         if (result.isConfirmed) {
           Swal.fire(
-            'Outbound!',
-            'This item is registered for outbound.',
-            'success'
+            "Outbound!",
+            "This item is registered for outbound.",
+            "success"
           );
           result.dismiss === Swal.DismissReason.close;
         } else {
@@ -126,42 +126,42 @@ export default {
       window.location.reload();
     },
     outbound() {
-      if (this.decoded_batch_no != '') {
-        ApiService._get('outbound/outbound/' + this.decoded_batch_no)
+      if (this.decoded_batch_no != "") {
+        ApiService._get("outbound/outbound/" + this.decoded_batch_no)
           .then(async (response) => {
             let result = await response.json();
             if (response.status == 200) {
               Swal.fire({
-                icon: 'success',
-                title: 'Outbound success.',
-                text: 'Batch No : ' + this.decoded_batch_no,
+                icon: "success",
+                title: "Outbound success.",
+                text: "Batch No : " + this.decoded_batch_no,
               });
-              this.decoded_batch_no = '';
+              this.decoded_batch_no = "";
             } else if (response.status == 401) {
               Swal.fire({
-                icon: 'warning',
-                title: 'Outbound Error.',
-                text: 'Please login to proceed',
+                icon: "warning",
+                title: "Outbound Error.",
+                text: "Please login to proceed",
               });
             } else if (response.status == 409) {
               Swal.fire({
-                icon: 'warning',
-                title: 'Outbound Error.',
+                icon: "warning",
+                title: "Outbound Error.",
                 text: result.message,
               });
             } else {
               Swal.fire({
-                icon: 'error',
-                title: 'Outbound Error.',
-                text: 'Contact Administrator! Outbound process unavailable.',
+                icon: "error",
+                title: "Outbound Error.",
+                text: "Contact Administrator! Outbound process unavailable.",
               });
             }
           })
           .catch(() => {
             Swal.fire({
-              icon: 'error',
-              title: 'Network Error. Could not connect to api service.',
-              text: 'Contact Administrator!',
+              icon: "error",
+              title: "Network Error. Could not connect to api service.",
+              text: "Contact Administrator!",
             });
           });
       }

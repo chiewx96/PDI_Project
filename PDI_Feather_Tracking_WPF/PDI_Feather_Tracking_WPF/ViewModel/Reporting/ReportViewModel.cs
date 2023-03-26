@@ -94,7 +94,10 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                         action = () => ReportHelper.GenerateIncomingReport(FilteredInventories, _reportPath);
                         break;
                     case ReportTypesEnum.ActualWeightList:
-                        action = () => ReportHelper.GenerateActualWeightList(FilteredInventories, _reportPath);
+                        action = () => ReportHelper.GenerateActualWeightList(FilteredInventories.Where(x=>x.OutgoingPic > 0).ToList(), _reportPath);
+                        break;
+                    case ReportTypesEnum.OnHandBalanceReport:
+                        action = () => ReportHelper.GenerateIncomingReport(FilteredInventories.Where(x => x.OutgoingPic == 0).ToList(), _reportPath);
                         break;
                     default:
                         break;

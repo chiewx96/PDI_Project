@@ -3,6 +3,7 @@ using PDI_Feather_Tracking_WPF.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -57,6 +58,7 @@ namespace PDI_Feather_Tracking_WPF.Helper
             string filename = "Incoming_Report_PDF_" + DateTime.Now.ToString("MMddyyyyhhmmss") + ".pdf";
             string report_full_path = Path.Combine(folderPath, filename);
             File.WriteAllBytes(report_full_path, filecontent);
+            OpenFile(report_full_path);
             General.SendNotifcation($"Report Path :{report_full_path}");
         }
 
@@ -67,6 +69,8 @@ namespace PDI_Feather_Tracking_WPF.Helper
             byte[] filecontent = PDFHelper.GeneratePdf(dt);
             string filename = "Actual_Weight_PDF_" + DateTime.Now.ToString("MMddyyyyhhmmss") + ".pdf";
             File.WriteAllBytes(Path.Combine(path, filename), filecontent);
+            OpenFile(Path.Combine(path, filename));
+            General.SendNotifcation($"Report Path :{Path.Combine(path, filename)}");
         }
 
         private static void GenerateActualWeightListDT(List<InventoryRecords> filteredInventories, ref DataTable dt)
@@ -92,8 +96,6 @@ namespace PDI_Feather_Tracking_WPF.Helper
                     Caption = "Gross",
                     ColumnName = $"Gross_{i}"
                 });
-
-
             }
 
 
@@ -136,6 +138,16 @@ namespace PDI_Feather_Tracking_WPF.Helper
                 }
                 dt.Rows.Add(obj);
             }
+        }
+
+        private static void OpenFile(string filePath)
+        {
+            Process.Start(new ProcessStartInfo { FileName = filePath, UseShellExecute = true });
+            //System.Diagnostics.Process.Start(filePath);
+            //using Process myProcess = new Process();
+            //myProcess.StartInfo.FileName = "chrome.exe"; //not the full application path
+            //myProcess.StartInfo.Arguments = $"/A \"page=2=OpenActions\" {filePath}";
+            //myProcess.Start();
         }
     }
 }
