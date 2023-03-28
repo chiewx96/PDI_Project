@@ -91,13 +91,13 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 switch (SelectedReportType)
                 {
                     case ReportTypesEnum.IncomingReport:
-                        action = () => ReportHelper.GenerateIncomingReport(FilteredInventories, _reportPath);
+                        action = () => ReportHelper.GenerateIncomingReport(FilteredInventories, _reportPath, false);
                         break;
                     case ReportTypesEnum.ActualWeightList:
                         action = () => ReportHelper.GenerateActualWeightList(FilteredInventories.Where(x=>x.OutgoingPic > 0).ToList(), _reportPath);
                         break;
                     case ReportTypesEnum.OnHandBalanceReport:
-                        action = () => ReportHelper.GenerateIncomingReport(FilteredInventories.Where(x => x.OutgoingPic == 0).ToList(), _reportPath);
+                        action = () => ReportHelper.GenerateIncomingReport(FilteredInventories.Where(x => x.OutgoingPic == 0).ToList(), _reportPath, true);
                         break;
                     default:
                         break;

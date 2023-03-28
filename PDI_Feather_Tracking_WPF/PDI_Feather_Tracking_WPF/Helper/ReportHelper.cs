@@ -14,7 +14,7 @@ namespace PDI_Feather_Tracking_WPF.Helper
     public class ReportHelper
     {
 
-        public static void GenerateIncomingReport(List<InventoryRecords> records, string folderPath)
+        public static void GenerateIncomingReport(List<InventoryRecords> records, string folderPath, bool is_onhand_balance)
         {
             Directory.CreateDirectory(folderPath);
 
@@ -54,8 +54,8 @@ namespace PDI_Feather_Tracking_WPF.Helper
             records.ForEach(x => dt.Rows.Add(new object[]
             { x.BatchNo, x.GrossWeight, x.TareWeight, x.NettWeight, x.IncomingDateTime, x.SkuType.Code }));
 
-            byte[] filecontent = PDFHelper.GeneratePdf(dt);
-            string filename = "Incoming_Report_PDF_" + DateTime.Now.ToString("MMddyyyyhhmmss") + ".pdf";
+            byte[] filecontent = PDFHelper.GeneratePdf(dt, is_onhand_balance ? "On Hand Balance Report" : "Incoming Report", false);
+            string filename = is_onhand_balance ? $"On_Hand_Balance_Report_PDF_{DateTime.Now.ToString("MMddyyyyhhmmss")}.pdf" : $"Incoming_Report_PDF_{DateTime.Now.ToString("MMddyyyyhhmmss")}.pdf";
             string report_full_path = Path.Combine(folderPath, filename);
             File.WriteAllBytes(report_full_path, filecontent);
             OpenFile(report_full_path);
@@ -66,7 +66,13 @@ namespace PDI_Feather_Tracking_WPF.Helper
         {
             DataTable dt = new DataTable();
             GenerateActualWeightListDT(filteredInventories, ref dt);
-            byte[] filecontent = PDFHelper.GeneratePdf(dt);
+            decimal total_nett_weight = 0, total_gross_weight = 0;
+            filteredInventories.ForEach(z =>
+            {
+                total_gross_weight += z.GrossWeight;
+                total_nett_weight += z.NettWeight;
+            });
+            byte[] filecontent = PDFHelper.GeneratePdf(dt, "Actual Weight List", true, total_gross_weight, total_nett_weight, filteredInventories.Count);
             string filename = "Actual_Weight_PDF_" + DateTime.Now.ToString("MMddyyyyhhmmss") + ".pdf";
             File.WriteAllBytes(Path.Combine(path, filename), filecontent);
             OpenFile(Path.Combine(path, filename));

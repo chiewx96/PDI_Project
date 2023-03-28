@@ -12,21 +12,36 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left" Orientation="Horizontal" Margin="10">
-            <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"  
-                     Width="100"  FontSize="10" Margin="20"  IsReadOnly="True" VerticalAlignment="Top" 
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Orientation="Horizontal" Margin="10">
+            <GroupBox VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10" BorderThickness="3" Width="220">
+                <GroupBox.Header>
+                    <DockPanel>
+                        <TextBlock Text="Tare Weight Setting" Foreground="White" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <Button Margin="0 0 0 0" Command="{Binding ModifyTareWeightCommand}"
+                    Style="{StaticResource MaterialDesignRaisedAccentButton}" 
+                    BorderBrush="Transparent" HorizontalAlignment="Right"
+                    Visibility="{Binding TareWeightAccess, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel Orientation="Horizontal" >
+                                <materialDesign:PackIcon Kind="Thunder"/>
+                                <TextBlock Text="Set"/>
+                            </StackPanel>
+                        </Button>
+                    </DockPanel>
+                </GroupBox.Header>
+                <TextBox Style="{StaticResource MaterialDesignOutlinedTextBox}"  
+                     Width="100"  FontSize="10"  IsReadOnly="True" VerticalAlignment="Top"
                      materialDesign:TextFieldAssist.SuffixText="kg"
                      materialDesign:HintAssist.Hint="Tare Weight" Text="{Binding TareWeight, Mode=OneWay}"/>
-            <Button Margin="0 0 0 0" Command="{Binding ModifyTareWeightCommand}"
-                    Style="{StaticResource MaterialDesignFloatingActionSecondaryDarkButton}" Background="Cyan"
-                    BorderBrush="Transparent"
-                    Visibility="{Binding TareWeightAccess, Converter={StaticResource BooleanToVisibilityConverter}}">
+            </GroupBox>
+            <Button Margin="0 0 0 0"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    BorderBrush="Transparent" Height="50"
+                    Visibility="{Binding CanOutbound, Converter={StaticResource BooleanToVisibilityConverter}}" Click="Outbound_Click">
                 <StackPanel Orientation="Horizontal" >
-                    <materialDesign:PackIcon Kind="Thunder"/>
-                    <TextBlock Text="Set"/>
+                    <materialDesign:PackIcon Kind="LocationExit" Margin="0 2 5 0"/>
+                    <TextBlock Text="Outbound"/>
                 </StackPanel>
             </Button>
-
         </StackPanel>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
             <Grid>

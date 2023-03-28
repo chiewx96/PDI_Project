@@ -22,13 +22,21 @@ namespace PDI_Feather_Tracking_App
 
         static void Main(string[] args)
         {
-            string folderpath = "D:\\Projects\\PDI_Feather_Tracking\\PDI_Feather_Tracking_WPF\\PDI_Feather_Tracking_WPF\\bin\\Debug\\net6.0-windows";
-            var builder = new ConfigurationBuilder().SetBasePath(folderpath)
-              .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            try
+            {
+                string folderpath = System.Configuration.ConfigurationManager.AppSettings["configuration_folder_path"];
+                var builder = new ConfigurationBuilder().SetBasePath(folderpath)
+                  .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
-            Configuration = builder.Build();
-            Global.SetGlobalProperty(Configuration);
-            Start();
+                Configuration = builder.Build();
+                Global.SetGlobalProperty(Configuration);
+                Start();
+            }
+            catch (Exception ex)
+            {
+                log_request(ex.ToString());
+                Console.ReadKey();
+            }
         }
 
         static void Start()
@@ -40,11 +48,13 @@ namespace PDI_Feather_Tracking_App
 
         static void initializeLogService()
         {
+            log_request("Log service started");
             TcpService logService = new TcpService(log_request, log_request, Global.LogServicePort);
         }
 
         static void initializePrinterService()
         {
+            log_request("printer service started");
             var printerService = new TcpService(PrintLabel, log_request, Global.PrintServicePort);
         }
 
@@ -58,10 +68,10 @@ namespace PDI_Feather_Tracking_App
                     System.IO.File.Create(Path.Combine(Global.LogFilePath, DateTime.Now.ToString("yyyyMMdd")));
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine($"Time:{DateTime.Now.ToString("dd-MM-yyyy HH:mm:ss")} Event : {sender.ToString()}");
-                //using (StreamWriter sw = System.IO.File.AppendText(Path.Combine(Global.LogFilePath, DateTime.Now.ToString("yyyyMMdd"))))
-                //{
-                //    sw.WriteLine(sb.ToString());
-                //}
+                using (StreamWriter sw = System.IO.File.AppendText(Path.Combine(Global.LogFilePath, DateTime.Now.ToString("yyyyMMdd"))))
+                {
+                    sw.WriteLine(sb.ToString());
+                }
                 Console.WriteLine(sb.ToString());
             }
             catch (Exception ex)

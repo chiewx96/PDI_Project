@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using PDI_Feather_Tracking_API.Models;
 using PDI_Feather_Tracking_API.Models.RequestModel;
 using System;
@@ -35,17 +36,43 @@ namespace PDI_Feather_Tracking_API
                     var unhashed = Decrypt(targetUser?.Password);
                     if (password == unhashed)
                     {
-                        dbContext.SaveChanges();
-                        string token = TokenService.GenerateToken(targetUser.Id.ToString(), targetUser.Username);
-                        return new Dictionary<string, object>()
+                        if (check_user_have_access(targetUser, ref dbContext))
                         {
-                            { "user", targetUser },
-                            { "token", token},
-                        };
+                            string token = TokenService.GenerateToken(targetUser.Id.ToString(), targetUser.Username);
+                            return new Dictionary<string, object>()
+                            {
+                                { "user", targetUser },
+                                { "token", token},
+                            };
+                        }
+                        else
+                        {
+                            return new Dictionary<string, object>()
+                            {
+                                { "user", null },
+                                { "token", null},
+                            };
+                        }
                     }
                 }
             }
             return null;
+        }
+
+        private static bool check_user_have_access(User targetUser, ref PDIFeatherTrackingDbContext dbContext)
+        {
+            bool result = false;
+            try
+            {
+                var module_access_from_db = dbContext.UserLevels.Where(x => x.Id == targetUser.UserLevelId).First().ModuleAccess;
+                var json = JsonConvert.DeserializeObject<List<ModuleAccess>>(module_access_from_db);
+                if (json.Where(x => x.Module.Name == ModuleEnum.outgoing.ToString()).FirstOrDefault()?.Status == 1)
+                    result = true;
+            }
+            catch (Exception ex)
+            {
+            }
+            return result;
         }
 
         public static bool Logout(ref PDIFeatherTrackingDbContext dbContext)

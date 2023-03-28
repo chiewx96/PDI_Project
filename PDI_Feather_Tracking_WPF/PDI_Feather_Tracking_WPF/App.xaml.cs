@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using System.Diagnostics;
+using System.Configuration;
 
 namespace PDI_Feather_Tracking_WPF
 {
@@ -30,6 +32,7 @@ namespace PDI_Feather_Tracking_WPF
             Configuration = builder.Build();
             connectionString = Configuration.GetConnectionString("PDIFeatherTracking")?.ToString() ?? string.Empty;
 
+            StartService();
             ConfigureServices(services);
             serviceProvider = services.BuildServiceProvider();
         }
@@ -55,6 +58,15 @@ namespace PDI_Feather_Tracking_WPF
         {
             Messenger.Default.Send<string>(General.StopWeighting);
             Messenger.Default.Send<string>(General.CloseWindow);
+        }
+
+        private void StartService()
+        {
+            var runningProcessByName = Process.GetProcessesByName("PDI_Feather_Tracking_App");
+            if (runningProcessByName.Length == 0 && Configuration.GetSection("PrintServicePath").Value != null)
+            {
+                Process.Start(Configuration.GetSection("PrintServicePath").Value.ToString());
+            }
         }
     }
 }

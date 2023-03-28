@@ -28,10 +28,6 @@ namespace PDI_Feather_Tracking_API.Models
         public bool Status{ get; set; }
 
         [Required]
-        [DefaultValue(true)]
-        public bool IsSignedIn { get; set; }
-
-        [Required]
         public int CreatedBy { get; set; }
 
         [Required]
