@@ -27,6 +27,10 @@ namespace PDI_Feather_Tracking_API.Services
                 {
                     return new BooleanMessageModel(false, "Username / Password is wrong.");
                 }
+                else if(response != null && response.GetValueOrDefault<string, object>("user") == null)
+                {
+                    return new BooleanMessageModel(false, "You have no access on this module.");
+                }
                 return new BooleanMessageModel(true, response);
             }
         }
@@ -44,8 +48,6 @@ namespace PDI_Feather_Tracking_API.Services
         {
             try
             {
-                dbContext.Users.ForEachAsync(z => z.IsSignedIn = false);
-                dbContext.SaveChanges();
                 return true;
             }
             catch (Exception e)

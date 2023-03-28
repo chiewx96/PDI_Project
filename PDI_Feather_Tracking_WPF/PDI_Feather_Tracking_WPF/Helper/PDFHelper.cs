@@ -13,7 +13,7 @@ namespace PDI_Feather_Tracking_WPF.Helper
     internal class PDFHelper
     {
 
-        public static byte[] GeneratePdf(DataTable data_table)
+        public static byte[] GeneratePdf(DataTable data_table, string pdf_title, bool compute_total_weight, params decimal[] footer)
         {
 
             // creating document object  
@@ -27,7 +27,7 @@ namespace PDI_Feather_Tracking_WPF.Helper
 
             //Creating paragraph for header  
             BaseFont bfntHead = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, BaseFont.EMBEDDED);
-            Font fntHead = new Font(bfntHead, 8, 2, BaseColor.BLUE);
+            Font fntHead = new Font(bfntHead, 20, 2, BaseColor.BLACK);
             //Paragraph prgHeading = new Paragraph();
             //prgHeading.Alignment = Element.ALIGN_LEFT;
             //prgHeading.Add(new Chunk("Dynamic Report PDF".ToUpper(), fntHead));
@@ -43,6 +43,7 @@ namespace PDI_Feather_Tracking_WPF.Helper
             //doc.Add(prgGeneratedBY);
 
             //Adding a line  
+            doc.Add(new Chunk(pdf_title, fntHead));
             Paragraph p = new Paragraph(new Chunk(new iTextSharp.text.pdf.draw.LineSeparator(0.0F, 100.0F, iTextSharp.text.BaseColor.BLACK, Element.ALIGN_LEFT, 1)));
             doc.Add(p);
 
@@ -75,6 +76,14 @@ namespace PDI_Feather_Tracking_WPF.Helper
             }
 
             doc.Add(table);
+            if (compute_total_weight)
+            {
+                Font fntFoot = new Font(bfntHead, 12, 2, BaseColor.BLACK);
+                string space = new string(' ', 100);
+                doc.Add(new Chunk($"{space}{"TOTAL GROSS WEIGHTS".PadRight(48)}:   {footer[0].ToString().PadLeft(20)} KGS\n", fntFoot));
+                doc.Add(new Chunk($"{space}{"TOTAL NET WEIGHTS".PadRight(50)}:   {footer[1].ToString().PadLeft(20)} KGS\n", fntFoot));
+                doc.Add(new Chunk($"{space}{"TOTAL BAGS".PadRight(59)}:   {footer[2].ToString().PadLeft(20)} BAGS\n", fntFoot));
+            }
             doc.Close();
 
             byte[] result = ms.ToArray();

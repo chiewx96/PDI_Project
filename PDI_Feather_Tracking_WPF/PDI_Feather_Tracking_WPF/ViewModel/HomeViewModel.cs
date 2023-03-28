@@ -49,8 +49,8 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             Messenger.Default.Register<User?>(this, _ =>
             {
                 CurrentUser = _;
+                refresh_user_access(_);
             });
-            Messenger.Default.Register<User?>(this, refresh_tare_weight_access);
 
             Messenger.Default.Register<SkuType?>(this,
                 refresh_sku_types);
@@ -124,9 +124,10 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             }
         }
 
-        private void refresh_tare_weight_access(User? obj)
+        private void refresh_user_access(User? obj)
         {
             TareWeightAccess = General.CheckAccessibility(obj, ModuleEnum.tare_weight_setting);
+            CanOutbound = General.CheckAccessibility(obj, ModuleEnum.outgoing);
         }
 
         private void show_confirm_record(object? obj)
@@ -405,11 +406,21 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         }
 
         private string savedRecords = string.Empty;
+
         public string SavedRecords
         {
             get { return savedRecords; }
             set { savedRecords = value; RaisePropertyChanged(nameof(SavedRecords)); }
         }
+
+        private bool canOutBound = false;
+
+        public bool CanOutbound
+        {
+            get { return canOutBound; }
+            private set { canOutBound = value; RaisePropertyChanged(nameof(CanOutbound)); }
+        }
+
         #endregion
     }
 }
