@@ -89,7 +89,7 @@
                     <DataGridTextColumn Header="Nett Weight" Binding="{Binding NettWeight}"/>
                     <DataGridTextColumn Header="Incoming Date" Binding="{Binding IncomingDateTime}"/>
                     <DataGridTextColumn Header="Outgoing Date" Binding="{Binding .,Converter={StaticResource PicConvertDateDisplay}}" />
-                    <DataGridTextColumn Header="Outgoing PIC" Binding="{Binding OutgoingPic}" x:Name="dgc_pic"/>
+                    <!--<DataGridTextColumn Header="Outgoing PIC" Binding="{Binding OutgoingPic}" x:Name="dgc_pic"/>-->
                 </DataGrid.Columns>
             </DataGrid>
         </StackPanel>
