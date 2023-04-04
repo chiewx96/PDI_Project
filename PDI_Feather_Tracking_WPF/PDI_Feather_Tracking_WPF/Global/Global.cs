@@ -25,6 +25,8 @@ namespace PDI_Feather_Tracking_WPF
 
         public const string PrintLabelCommand = "PDI_PL_Feather";
 
+        public const string RefreshUserAccess = "Refresh_User_Access";
+
         public const string RecordCommand = "*()record_current_result!@#";
 
         public static User? TryLogin(string username, string password, ref FeatherDbContext dbContext)

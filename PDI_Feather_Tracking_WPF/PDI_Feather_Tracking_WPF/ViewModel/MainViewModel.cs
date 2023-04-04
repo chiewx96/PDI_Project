@@ -45,6 +45,13 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 CurrentUser = _;
             });
 
+            Messenger.Default.Register<string>(this, _ =>
+            {
+                if (_ == General.RefreshUserAccess)
+                    SelectedItem = MenuItems.Where(x => x.IsVisible).FirstOrDefault();
+            });
+
+
             MenuItems = new ObservableCollection<MenuItem>();
             #region Constructor Assigning
             _dbContext = dbContext;
@@ -62,16 +69,13 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             _logout = new Command(_ =>
             {
                 Messenger.Default.Send<User>(null);
-                SelectedItem = MenuItems.First();
             });
 
             foreach (var item in GenerateMenuItems().OrderBy(i => i.Name))
             {
                 MenuItems.Add(item);
             }
-            SelectedItem = MenuItems.First();
             show_login();
-
         }
 
 
@@ -82,7 +86,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
         {
             yield return new MenuItem(
                "Home",
-               typeof(HomeView), _homeView);
+               typeof(HomeView), _homeView, ModuleEnum.incoming);
 
             yield return new MenuItem(
                 "User",
