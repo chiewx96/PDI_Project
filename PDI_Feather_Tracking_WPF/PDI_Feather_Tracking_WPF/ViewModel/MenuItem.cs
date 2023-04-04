@@ -31,6 +31,7 @@ public class MenuItem : ViewModelBase
     private void update_module_access(User? obj)
     {
         IsVisible = General.CheckAccessibility(obj, _moduleEnum);
+        Messenger.Default.Send(General.RefreshUserAccess);
     }
 
     #region Property
