@@ -9,7 +9,7 @@ namespace PDI_Feather_Tracking_App.Service
 {
     internal class BartenderService
     {
-        public static string Print(string batch_no, string gross_weight, string qr_code_data, string template_path, string printer_name)
+        public static string Print(string batch_no, string gross_weight, string title, string qr_code_data, string template_path, string printer_name)
         {
             using (Engine engine = new Engine())
             {
@@ -17,7 +17,7 @@ namespace PDI_Feather_Tracking_App.Service
 
                 LabelFormatDocument format = engine.Documents.Open(template_path);
 
-
+                format.SubStrings["title"].Value = title;
                 format.SubStrings["gross_weight"].Value = gross_weight;
                 format.SubStrings["batch_no"].Value = batch_no;
                 format.SubStrings["qr_code"].Value = qr_code_data;
