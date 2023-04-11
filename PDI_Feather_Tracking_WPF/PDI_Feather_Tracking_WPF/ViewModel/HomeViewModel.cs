@@ -160,7 +160,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             _dbContext.SaveChanges();
             handle_saved_records(batch_no);
             log("Record Saved");
-            handle_print_label(batch_no, GrossWeight);
+            handle_print_label(batch_no, GrossWeight, SelectedSkuType.Description);
         }
 
         private void handle_saved_records(string? batch_no)
@@ -184,8 +184,13 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             SavedRecords += Environment.NewLine;
         }
 
-        private void handle_print_label(string label_no, decimal grossWeight)
+        private void handle_print_label(string label_no, decimal grossWeight, string? title)
         {
+            if (title == null)
+            {
+                log("SKU type description is not properly set");
+                return;
+            }
             if (_printerTcpHelper != null)
             {
                 CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -196,6 +201,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                         log($"Start printing for batch number [{label_no}]");
                         var dict = new Dictionary<string, string>()
                         {
+                            {"title", title},
                             {"batch_no", label_no },
                             {"gross_weight", decimal.Round(grossWeight, 4).ToString() },
                         };
@@ -310,7 +316,8 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                 log("Batch number to reprint is not found.");
             else
             {
-                handle_print_label(record.BatchNo, record.GrossWeight);
+                string title = _dbContext.SkuType.Where(x => x.Id == record.SkuTypeId).First().Description;
+                handle_print_label(record.BatchNo, record.GrossWeight, title);
             }
         }
 
