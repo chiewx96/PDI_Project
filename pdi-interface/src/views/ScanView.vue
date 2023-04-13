@@ -1,71 +1,108 @@
+/* eslint-disable */
 <template>
-  <div class="bg-gray-50 px-8">
+  <v-content>
     <!-- <v-btn @click="torch = torch">+</v-btn>
     <button @click="torch = !torch">Turn on/off flashlight</button> -->
-    <v-text-field
-      required
-      hide-details="auto"
-      v-model="decoded_batch_no"
-      label="Batch No"
-      prepend-icon="mdi-qrcode"
-      @keydown.enter.prevent="outbound"
-    ></v-text-field>
-    <v-checkbox v-model="hide_scanner" value="1" false-value="0"> </v-checkbox>
-    <qrcode-stream
-      v-show="hide_scanner === 1"
-      @init="onInit"
-      @decode="onDecode"
-      :torch="torch"
-      :camera="camera"
-    ></qrcode-stream>
-    <v-text-field
-      required
-      hide-details="auto"
-      v-model="container_id"
-      label="Container Id"
-      prepend-icon="mdi-square-rounded-badge-outline"
-    ></v-text-field>
-    <v-btn @click="outbound">Outbound</v-btn>
-    <v-table>
-      <thead>
-        <tr>
-          <th>Reference Number</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="item in scanned_items" :key="item.ref_no">
-          <td>{{ item.ref_no }}</td>
-          <td>
-            <v-btn
-              icon="mdi-delete-outline"
-              @click="delete item.ref_no"
-            ></v-btn>
-          </td>
-        </tr>
-      </tbody>
-    </v-table>
-  </div>
+    <v-container
+      fluid
+      fill-height
+    >
+      <v-layout
+        align-center
+        justify-center
+      >
+        <div
+          class="justify-center min-width"
+          size="md"
+        >
+          <v-text-field
+            class="col-lg-3 col-md-6 col-sm-12"
+            required
+            hide-details="auto"
+            v-model="decoded_batch_no"
+            label="Batch No"
+            prepend-icon="mdi-qrcode"
+            @keydown.enter.prevent="addToTable"
+          ></v-text-field>
+          <v-checkbox
+            v-model="hide_scanner"
+            value="1"
+            false-value="0"
+            label="Hide Scanner"
+          >
+          </v-checkbox>
+          <qrcode-stream
+            v-show="hide_scanner === 1"
+            @init="onInit"
+            @decode="onDecode"
+            :torch="torch"
+            :camera="camera"
+          ></qrcode-stream>
+          <v-text-field
+            lg="4"
+            md="4"
+            sm="12"
+            required
+            hide-details="auto"
+            v-model="container_id"
+            label="Container Id"
+            prepend-icon="mdi-square-rounded-badge-outline"
+          ></v-text-field>
+
+          <v-table
+            fixed-header
+            height="300px"
+          >
+            <thead>
+              <tr>
+                <th class="text-center">Reference Number</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="item in scanned_items"
+                :key="item"
+              >
+                <td>{{ item }}</td>
+                <td>
+                  <v-btn
+                    icon="mdi-delete-outline"
+                    @click="remove(item)"
+                  ></v-btn>
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
+          <v-btn
+            variant="elevated"
+            @click="outbound"
+            >Outbound</v-btn
+          >
+        </div>
+      </v-layout>
+    </v-container>
+  </v-content>
 </template>
 
 <script>
-import { QrcodeStream } from "vue3-qrcode-reader";
-import ApiService from "@/services/api.service";
-import Swal from "sweetalert2";
-import { exportDefaultSpecifier } from "@babel/types";
+import { QrcodeStream } from 'vue3-qrcode-reader';
+import ApiService from '@/services/api.service';
+import Swal from 'sweetalert2';
+import { exportDefaultSpecifier } from '@babel/types';
 
 export default {
   components: { QrcodeStream },
   data() {
     return {
-      error: "",
-      decoded_batch_no: "",
+      error: '',
+      decoded_batch_no: '',
       torch: false,
-      fetchData: "",
-      camera: "auto",
+      fetchData: '',
+      camera: 'auto',
       hide_scanner: 0,
       scanned_items: [],
-      container_id: "",
+      container_id: '',
     };
   },
   computed: {
@@ -82,31 +119,30 @@ export default {
       try {
         await promise;
       } catch (error) {
-        if (error.name === "NotAllowedError") {
-          this.error = "ERROR: you need to grant camera access permission";
-        } else if (error.name === "NotFoundError") {
-          this.error = "ERROR: no camera on this device";
-        } else if (error.name === "NotSupportedError") {
-          this.error = "ERROR: secure context required (HTTPS, localhost)";
-        } else if (error.name === "NotReadableError") {
-          this.error = "ERROR: is the camera already in use?";
-        } else if (error.name === "OverconstrainedError") {
-          this.error = "ERROR: installed cameras are not suitable";
-        } else if (error.name === "StreamApiNotSupportedError") {
-          this.error = "ERROR: Stream API is not supported in this browser";
-        } else if (error.name === "InsecureContextError") {
+        if (error.name === 'NotAllowedError') {
+          this.error = 'ERROR: you need to grant camera access permission';
+        } else if (error.name === 'NotFoundError') {
+          this.error = 'ERROR: no camera on this device';
+        } else if (error.name === 'NotSupportedError') {
+          this.error = 'ERROR: secure context required (HTTPS, localhost)';
+        } else if (error.name === 'NotReadableError') {
+          this.error = 'ERROR: is the camera already in use?';
+        } else if (error.name === 'OverconstrainedError') {
+          this.error = 'ERROR: installed cameras are not suitable';
+        } else if (error.name === 'StreamApiNotSupportedError') {
+          this.error = 'ERROR: Stream API is not supported in this browser';
+        } else if (error.name === 'InsecureContextError') {
           this.error =
-            "ERROR: Camera access is only permitted in secure context. Use HTTPS or localhost rather than HTTP.";
+            'ERROR: Camera access is only permitted in secure context. Use HTTPS or localhost rather than HTTP.';
         } else {
           this.error = `ERROR: Camera error (${error.name})`;
         }
       } finally {
-        this.showScanConfirmation = this.camera === "off";
+        this.showScanConfirmation = this.camera === 'off';
       }
     },
     async onDecode(result) {
-      if (this.scanned_items.indexOf(result) == -1)
-        this.scanned_items.push(result);
+      this.addToTable();
       // this.decoded_batch_no = result;
       // this.outbound();
     },
@@ -163,45 +199,53 @@ export default {
     //   });
     // },
 
+    addToTable() {
+      if (
+        this.decoded_batch_no != '' &&
+        this.scanned_items.indexOf(this.decoded_batch_no) == -1
+      )
+        this.scanned_items.push(this.decoded_batch_no);
+      this.decoded_batch_no = '';
+    },
     outbound() {
-      if (this.scanned_items.length > 0 && this.container_id != "") {
-        ApiService._post("outbound/" + this.computed_outbound_model)
+      if (this.scanned_items.length > 0 && this.container_id != '') {
+        ApiService._post('outbound', this.computed_outbound_model)
           .then(async (response) => {
             let result = await response.json();
             if (response.status == 200) {
-              let result_text = "";
+              let result_text = '';
               if (result.NotExistsReferenceNo.length > 0)
                 result_text += `Batch No not exists : ${result.NotExistsReferenceNo.toString()} \n`;
               if (result.OutboundedReferenceNo.length > 0)
                 result_text += `Batch No has been outbound : ${result.OutboundedReferenceNo.toString()} \n`;
               Swal.fire({
-                icon: "success",
-                title: "Outbound success.",
-                text: result_text == "" ? `` : result_text,
+                icon: 'success',
+                title: 'Outbound success.',
+                text: result_text == '' ? `` : result_text,
               });
             } else {
               Swal.fire({
-                icon: "error",
-                title: "Outbound Error.",
-                text: "Contact Administrator! Outbound process unavailable.",
+                icon: 'error',
+                title: 'Outbound Error.',
+                text: 'Contact Administrator! Outbound process unavailable.',
               });
             }
           })
           .catch(() => {
             Swal.fire({
-              icon: "error",
-              title: "Network Error. Could not connect to api service.",
-              text: "Contact Administrator!",
+              icon: 'error',
+              title: 'Network Error. Could not connect to api service.',
+              text: 'Contact Administrator!',
             });
           });
       } else {
         Swal.fire({
-          icon: "warning",
-          title: "Container id and packages reference number cannot be empty",
+          icon: 'warning',
+          title: 'Container id and packages reference number cannot be empty',
         });
       }
     },
-    delete(ref_no) {
+    remove(ref_no) {
       let index = this.scanned_items.indexOf(ref_no);
       if (index > -1) {
         // only splice array when item is found
@@ -231,5 +275,11 @@ export default {
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
+}
+
+.min-width {
+  min-width: 800px;
+  margin-top: 50px;
+  margin: auto;
 }
 </style>
