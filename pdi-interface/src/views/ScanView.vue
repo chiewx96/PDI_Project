@@ -223,6 +223,7 @@ export default {
                 title: 'Outbound success.',
                 text: result_text == '' ? `` : result_text,
               });
+              this.scanned_items = [];
             } else {
               Swal.fire({
                 icon: 'error',
