@@ -31,6 +31,11 @@ namespace PDI_Feather_Tracking_API.Services
                 {
                     return new BooleanMessageModel(false, "You have no access on this module.");
                 }
+                if(response["user"] is User user)
+                {
+                    user.UserLevel.Users = null;
+                    response["user"] = user;
+                }
                 return new BooleanMessageModel(true, response);
             }
         }

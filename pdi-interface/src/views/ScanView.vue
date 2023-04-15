@@ -28,11 +28,11 @@
             v-model="hide_scanner"
             value="1"
             false-value="0"
-            label="Hide Scanner"
+            label="Hide Camera"
           >
           </v-checkbox>
           <qrcode-stream
-            v-show="hide_scanner === 1"
+            v-show="hide_scanner == 0"
             @init="onInit"
             @decode="onDecode"
             :torch="torch"
@@ -224,6 +224,7 @@ export default {
                 text: result_text == '' ? `` : result_text,
               });
               this.scanned_items = [];
+              this.container_id = "";
             } else {
               Swal.fire({
                 icon: 'error',
