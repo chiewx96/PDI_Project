@@ -13,7 +13,7 @@ namespace PDI_Feather_Tracking_WPF.Helper
     internal class PDFHelper
     {
 
-        public static byte[] GeneratePdf(DataTable data_table, string pdf_title, bool compute_total_weight, params decimal[] footer)
+        public static byte[] GeneratePdf(DataTable data_table, string pdf_title, bool compute_total_weight, string? containerId, params decimal[] footer)
         {
 
             // creating document object  
@@ -76,13 +76,19 @@ namespace PDI_Feather_Tracking_WPF.Helper
             }
 
             doc.Add(table);
+            // Footer
+            Font fntFoot = new Font(bfntHead, 12, 2, BaseColor.BLACK);
+            string space = new string(' ', 100);
             if (compute_total_weight)
             {
-                Font fntFoot = new Font(bfntHead, 12, 2, BaseColor.BLACK);
-                string space = new string(' ', 100);
                 doc.Add(new Chunk($"{space}{"TOTAL GROSS WEIGHTS".PadRight(48)}:   {footer[0].ToString().PadLeft(20)} KGS\n", fntFoot));
                 doc.Add(new Chunk($"{space}{"TOTAL NET WEIGHTS".PadRight(50)}:   {footer[1].ToString().PadLeft(20)} KGS\n", fntFoot));
-                doc.Add(new Chunk($"{space}{"TOTAL BAGS".PadRight(59)}:   {footer[2].ToString().PadLeft(20)} BAGS\n", fntFoot));
+                doc.Add(new Chunk($"{space}{"TOTAL BAGS".PadRight(59)}:   {footer[2].ToString().PadLeft(19)} BAGS\n", fntFoot));
+            }
+
+            if (!string.IsNullOrEmpty(containerId))
+            {
+                doc.Add(new Chunk($"{space}{"CONTAINER ID".PadRight(57)}:   {containerId.PadLeft(27)} \n", fntFoot));
             }
             doc.Close();
 

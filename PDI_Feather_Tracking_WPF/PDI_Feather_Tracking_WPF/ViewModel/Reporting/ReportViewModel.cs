@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -88,16 +89,23 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             if (SelectedReportType != null)
             {
                 Action action = null;
+                var records = FilteredInventories;
                 switch (SelectedReportType)
                 {
                     case ReportTypesEnum.IncomingReport:
-                        action = () => ReportHelper.GenerateIncomingReport(FilteredInventories, _reportPath, false);
+                        if (!string.IsNullOrEmpty(SelectedContainerId))
+                            records = FilteredInventories.Where(x => x.OutgoingContainer == SelectedContainerId).ToList();
+                        action = () => ReportHelper.GenerateIncomingReport(records, SelectedContainerId, _reportPath, false);
                         break;
                     case ReportTypesEnum.ActualWeightList:
-                        action = () => ReportHelper.GenerateActualWeightList(FilteredInventories.Where(x=>x.OutgoingPic > 0).ToList(), _reportPath);
+                        if (!string.IsNullOrEmpty(SelectedContainerId))
+                            records = FilteredInventories.Where(x => x.OutgoingContainer == SelectedContainerId && x.OutgoingPic > 0).ToList();
+                        action = () => ReportHelper.GenerateActualWeightList(records.Where(x => x.OutgoingPic > 0).ToList(), SelectedContainerId, _reportPath);
                         break;
                     case ReportTypesEnum.OnHandBalanceReport:
-                        action = () => ReportHelper.GenerateIncomingReport(FilteredInventories.Where(x => x.OutgoingPic == 0).ToList(), _reportPath, true);
+                        if (!string.IsNullOrEmpty(SelectedContainerId))
+                            records = FilteredInventories.Where(x => x.OutgoingContainer == SelectedContainerId && x.OutgoingPic == 0).ToList();
+                        action = () => ReportHelper.GenerateIncomingReport(records.Where(x => x.OutgoingPic == 0).ToList(), SelectedContainerId, _reportPath, true);
                         break;
                     default:
                         break;
@@ -143,12 +151,25 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
             set { selectedReportType = value; RaisePropertyChanged(nameof(SelectedReportType)); }
         }
 
+        public List<string>? FilteredContainers
+        {
+            get { return FilteredInventories.Where(z => !string.IsNullOrEmpty(z.OutgoingContainer)).Select(x => x.OutgoingContainer).ToList(); }
+        }
+
+        private string? selectedContainerId = string.Empty;
+
+        public string? SelectedContainerId
+        {
+            get { return selectedContainerId; }
+            set { selectedContainerId = value; RaisePropertyChanged(nameof(SelectedContainerId)); }
+        }
+
         private List<InventoryRecords> filteredInventories;
 
         public List<InventoryRecords> FilteredInventories
         {
             get { return filteredInventories; }
-            private set { filteredInventories = value; RaisePropertyChanged(nameof(FilteredInventories)); }
+            private set { filteredInventories = value; RaisePropertyChanged(nameof(FilteredInventories)); RaisePropertyChanged(nameof(FilteredContainers)); }
         }
         public ICommand SearchCommand => new Command(search);
         public ICommand GenerateCommand => new Command(generateReport);

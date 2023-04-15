@@ -96,7 +96,7 @@ namespace PDI_Feather_Tracking_App
                 {
                     var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(json_string);
                     log_request($"Start printing : {json["batch_no"]}");
-                    string result = BartenderService.Print(json["batch_no"], json["gross_weight"], json["batch_no"],
+                    string result = BartenderService.Print(json["batch_no"], json["gross_weight"], json["title"], json["batch_no"],
                         Global.LabelTemplatePath, Global.PrinterName);
                     log_request($"End printing, Status : {result}");
                     return result;

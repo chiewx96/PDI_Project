@@ -14,7 +14,7 @@ namespace PDI_Feather_Tracking_WPF.Helper
     public class ReportHelper
     {
 
-        public static void GenerateIncomingReport(List<InventoryRecords> records, string folderPath, bool is_onhand_balance)
+        public static void GenerateIncomingReport(List<InventoryRecords> records, string? containerId, string folderPath, bool is_onhand_balance)
         {
             Directory.CreateDirectory(folderPath);
 
@@ -54,7 +54,7 @@ namespace PDI_Feather_Tracking_WPF.Helper
             records.ForEach(x => dt.Rows.Add(new object[]
             { x.BatchNo, x.GrossWeight, x.TareWeight, x.NettWeight, x.IncomingDateTime, x.SkuType.Code }));
 
-            byte[] filecontent = PDFHelper.GeneratePdf(dt, is_onhand_balance ? "On Hand Balance Report" : "Incoming Report", false);
+            byte[] filecontent = PDFHelper.GeneratePdf(dt, is_onhand_balance ? "On Hand Balance Report" : "Incoming Report", false, containerId);
             string filename = is_onhand_balance ? $"On_Hand_Balance_Report_PDF_{DateTime.Now.ToString("MMddyyyyhhmmss")}.pdf" : $"Incoming_Report_PDF_{DateTime.Now.ToString("MMddyyyyhhmmss")}.pdf";
             string report_full_path = Path.Combine(folderPath, filename);
             File.WriteAllBytes(report_full_path, filecontent);
@@ -62,7 +62,7 @@ namespace PDI_Feather_Tracking_WPF.Helper
             General.SendNotifcation($"Report Path :{report_full_path}");
         }
 
-        internal static void GenerateActualWeightList(List<InventoryRecords> filteredInventories, string path)
+        internal static void GenerateActualWeightList(List<InventoryRecords> filteredInventories, string containerId, string path)
         {
             DataTable dt = new DataTable();
             GenerateActualWeightListDT(filteredInventories, ref dt);
@@ -72,7 +72,7 @@ namespace PDI_Feather_Tracking_WPF.Helper
                 total_gross_weight += z.GrossWeight;
                 total_nett_weight += z.NettWeight;
             });
-            byte[] filecontent = PDFHelper.GeneratePdf(dt, "Actual Weight List", true, total_gross_weight, total_nett_weight, filteredInventories.Count);
+            byte[] filecontent = PDFHelper.GeneratePdf(dt, "Actual Weight List", true, containerId, total_gross_weight, total_nett_weight, filteredInventories.Count);
             string filename = "Actual_Weight_PDF_" + DateTime.Now.ToString("MMddyyyyhhmmss") + ".pdf";
             File.WriteAllBytes(Path.Combine(path, filename), filecontent);
             OpenFile(Path.Combine(path, filename));
