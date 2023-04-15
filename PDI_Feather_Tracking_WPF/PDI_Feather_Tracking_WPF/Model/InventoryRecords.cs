@@ -28,7 +28,9 @@ namespace PDI_Feather_Tracking_WPF.Models
         [Required]
         public DateTime IncomingDateTime { get; set; }
 
-        public DateTime OutgoingDateTime { get; set; }  
+        public DateTime OutgoingDateTime { get; set; }
+
+        public string? OutgoingContainer { get; set; }
 
         public int OutgoingPic { get; set; }
 

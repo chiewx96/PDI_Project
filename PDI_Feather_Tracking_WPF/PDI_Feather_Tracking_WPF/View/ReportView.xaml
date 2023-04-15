@@ -70,6 +70,10 @@
                 <ComboBox Width="200" Margin="5" ItemsSource="{Binding ReportTypes}" SelectedItem="{Binding SelectedReportType}"
                       materialDesign:HintAssist.Hint="Report Types" Name="cbb_report_types">
                 </ComboBox>
+                <CheckBox Content="By Container Id" HorizontalAlignment="Center" Name="cb_container"/>
+                <ComboBox Width="200" Margin="5" ItemsSource="{Binding FilteredContainers}" SelectedItem="{Binding SelectedContainerId}"
+                      materialDesign:HintAssist.Hint="Container Ids" Visibility="{Binding IsChecked,ElementName=cb_container,Converter={StaticResource BooleanToVisibilityConverter}}">
+                </ComboBox>
                 <Button Margin="15" Command="{Binding GenerateCommand}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Margin="0, 2, 6, 0" Kind="FileOutline" />
@@ -89,6 +93,7 @@
                     <DataGridTextColumn Header="Nett Weight" Binding="{Binding NettWeight}"/>
                     <DataGridTextColumn Header="Incoming Date" Binding="{Binding IncomingDateTime}"/>
                     <DataGridTextColumn Header="Outgoing Date" Binding="{Binding .,Converter={StaticResource PicConvertDateDisplay}}" />
+                    <DataGridTextColumn Header="Container Id" Binding="{Binding OutgoingContainer}"/>
                     <!--<DataGridTextColumn Header="Outgoing PIC" Binding="{Binding OutgoingPic}" x:Name="dgc_pic"/>-->
                 </DataGrid.Columns>
             </DataGrid>

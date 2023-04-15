@@ -4,3 +4,8 @@
 V1.1.0.0
 14/4/2023
 1. Add passing sku type description as label title to printing service.
+
+V1.2.0.0
+16/4/2023
+1. Add container id column in report view.
+2. Add filtered container ids in report selection filter.
