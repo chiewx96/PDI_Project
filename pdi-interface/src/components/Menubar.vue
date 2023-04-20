@@ -17,6 +17,7 @@
         </template>
         <template v-slot:append v-if="isLoggedIn">
           <v-btn icon="mdi-qrcode-scan" to="/scan"></v-btn>
+          <v-btn icon="mdi-qrcode-remove" to="/cancel"></v-btn>
           <v-menu>
             <template v-slot:activator="{ props }">
               <v-btn icon v-bind="props">

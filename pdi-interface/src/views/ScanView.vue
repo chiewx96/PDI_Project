@@ -89,7 +89,6 @@
 import { QrcodeStream } from 'vue3-qrcode-reader';
 import ApiService from '@/services/api.service';
 import Swal from 'sweetalert2';
-import { exportDefaultSpecifier } from '@babel/types';
 
 export default {
   components: { QrcodeStream },

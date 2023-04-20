@@ -20,25 +20,20 @@ namespace PDI_Feather_Tracking_API.Controllers
             _outboundService = outboundService;
         }
 
-        [HttpGet("outbound/{referenceNo}")]
-        public ActionResult Outbound(string referenceNo)
+        [HttpGet("/cancel/{batch_no}")]
+        public ActionResult CancelOutbound(string batch_no)
         {
+            string error_string = string.Empty;
             try
             {
-                string user_id = get_user_id();
-                if (user_id == null)
-                    return Unauthorized((false, "error : user is not logged in."));
-                var response = _outboundService.Outbound(referenceNo, user_id);
-                if (response.status)
-                    return Ok(response);
-                else
-                    return Conflict(response);
-
+                _outboundService.cancelOutbound(batch_no);
+                return Ok();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return Unauthorized(e.Message);
+                error_string = ex.Message;
             }
+            return ValidationProblem(error_string);
         }
 
         [HttpPost]

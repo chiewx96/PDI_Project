@@ -16,6 +16,14 @@ const routes = [
       authRequired: true,
     },
   },
+  {
+    path: "/cancel",
+    name: "Cancel",
+    component: () => import("../views/CancelView.vue"),
+    meta: {
+      authRequired: true,
+    },
+  },
 ];
 
 const router = createRouter({

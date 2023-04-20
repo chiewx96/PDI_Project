@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PDI_Feather_Tracking_API.Models
@@ -13,7 +15,7 @@ namespace PDI_Feather_Tracking_API.Models
         public int SkuTypeId { get; set; }
 
         [Required]
-        public string BatchNo{ get; set; }
+        public string BatchNo { get; set; }
 
         [Required]
         public decimal GrossWeight { get; set; }
@@ -45,6 +47,10 @@ namespace PDI_Feather_Tracking_API.Models
         [Required]
         public DateTime UpdatedAt { get; set; }
 
-        public SkuType SkuType { get; set; }    
+        [Comment("Cancel : 1, Not cancel : 0")]
+        [DefaultValue(0)]
+        public int CancelStatus { get; set; }
+
+        public SkuType SkuType { get; set; }
     }
 }
