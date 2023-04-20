@@ -20,14 +20,14 @@ namespace PDI_Feather_Tracking_API.Controllers
             _outboundService = outboundService;
         }
 
-        [HttpGet("/cancel/{batch_no}")]
+        [HttpGet("cancel/{batch_no}")]
         public ActionResult CancelOutbound(string batch_no)
         {
             string error_string = string.Empty;
             try
             {
                 _outboundService.cancelOutbound(batch_no);
-                return Ok();
+                return Ok(batch_no);
             }
             catch (Exception ex)
             {
