@@ -99,7 +99,7 @@ namespace PDI_Feather_Tracking_WPF.ViewModel
                         break;
                     case ReportTypesEnum.ActualWeightList:
                         if (!string.IsNullOrEmpty(SelectedContainerId))
-                            records = FilteredInventories.Where(x => x.OutgoingContainer == SelectedContainerId && x.OutgoingPic > 0).ToList();
+                            records = FilteredInventories.Where(x => x.OutgoingContainer == SelectedContainerId && x.OutgoingPic > 0 && x.CancelStatus == 0).ToList();
                         action = () => ReportHelper.GenerateActualWeightList(records.Where(x => x.OutgoingPic > 0).ToList(), SelectedContainerId, _reportPath);
                         break;
                     case ReportTypesEnum.OnHandBalanceReport:
