@@ -1,8 +1,6 @@
 /* eslint-disable */
 <template>
   <v-content>
-    <!-- <v-btn @click="torch = torch">+</v-btn>
-    <button @click="torch = !torch">Turn on/off flashlight</button> -->
     <v-container
       fluid
       fill-height
@@ -20,7 +18,7 @@
             required
             hide-details="auto"
             v-model="decoded_batch_no"
-            label="Batch No"
+            label="Package No"
             prepend-icon="mdi-qrcode"
             @keydown.enter.prevent="addToTable"
           ></v-text-field>
@@ -55,7 +53,7 @@
           >
             <thead>
               <tr>
-                <th class="text-center">Reference Number</th>
+                <th class="text-center">Package Number</th>
                 <th class="text-center">Action</th>
               </tr>
             </thead>
@@ -207,7 +205,7 @@ export default {
       this.decoded_batch_no = '';
     },
     outbound() {
-      if (this.scanned_items.length > 0 && this.container_id != '') {
+      if (this.scanned_items.length > 0) {
         ApiService._post('outbound', this.computed_outbound_model)
           .then(async (response) => {
             let result = await response.json();
@@ -242,7 +240,7 @@ export default {
       } else {
         Swal.fire({
           icon: 'warning',
-          title: 'Container id and packages reference number cannot be empty',
+          title: 'Packages reference number cannot be empty',
         });
       }
     },
