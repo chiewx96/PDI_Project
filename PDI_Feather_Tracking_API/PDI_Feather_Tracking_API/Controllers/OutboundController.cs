@@ -44,8 +44,8 @@ namespace PDI_Feather_Tracking_API.Controllers
             {
                 if (requestModel == null)
                     error_string = "Request Model cannot be null or empty.";
-                else if (string.IsNullOrEmpty(requestModel.ContainerId))
-                    error_string = "Container id cannot be empty.";
+                //else if (string.IsNullOrEmpty(requestModel.ContainerId))
+                //    error_string = "Container id cannot be empty.";
                 else if (requestModel.PackageReferenceNo == null || requestModel.PackageReferenceNo.Count == 0)
                     error_string = "Reference No list cannot be empty.";
                 else
