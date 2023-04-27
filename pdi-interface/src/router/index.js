@@ -24,6 +24,14 @@ const routes = [
       authRequired: true,
     },
   },
+  {
+    path: "/assign-container",
+    name: "AssignContainer",
+    component: () => import("../views/UpdateContainerView.vue"),
+    meta: {
+      authRequired: true,
+    },
+  },
 ];
 
 const router = createRouter({

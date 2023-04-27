@@ -13,19 +13,39 @@
           class="justify-center min-width"
           size="md"
         >
+          <v-text-field
+            v-model="container_id"
+            clearable
+            label="Container Id"
+          ></v-text-field>
           <v-btn
             variant="elevated"
-            @click="outbound"
-            >Outbound</v-btn
+            @click="assign"
+            >Assign</v-btn
           >
+          <!-- <v-text-field
+            class="col-lg-3 col-md-6 col-sm-12"
+            required
+            hide-details="auto"
+            v-model="decoded_batch_no"
+            label="Package No"
+            prepend-icon="mdi-qrcode"
+            @keydown.enter.prevent="addToTable"
+          ></v-text-field> -->
           <v-data-table
-            show-select
             v-model:items-per-page="itemsPerPage"
             :headers="headers"
             :items="items"
             item-value="name"
             class="elevation-1"
-          ></v-data-table>
+          >
+            <template v-slot:item.outgoing_date="{ item }">
+              <v-label>{{ dateFormat(item.value.OutgoingDateTime) }}</v-label>
+            </template>
+            <template v-slot:item.is_selected="{ item }">
+              <v-checkbox-btn v-model="item.value.is_selected"></v-checkbox-btn>
+            </template>
+          </v-data-table>
         </div>
       </v-layout>
     </v-container>
@@ -33,102 +53,99 @@
 </template>
 
 <script>
-import { QrcodeStream } from 'vue3-qrcode-reader';
 import ApiService from '@/services/api.service';
 import Swal from 'sweetalert2';
+import { VDataTable } from 'vuetify/labs/VDataTable';
 
 export default {
-  components: { QrcodeStream },
+  components: { VDataTable },
   data() {
     return {
       error: '',
-      decoded_batch_no: '',
-      torch: false,
-      fetchData: '',
-      camera: 'auto',
-      hide_scanner: 0,
-      scanned_items: [],
       container_id: '',
-      itemsPerPage: 20,
+      itemsPerPage: 10,
+      items: [],
       headers: [
-        { title: 'Package No', align: 'start', key: 'batch_no' },
-        { title: 'Outbound Date', align: 'end', key: 'outbound_date' },
+        { title: 'Package No', align: 'start', key: 'BatchNo' },
+        { title: 'Outbound Date', align: 'end', key: 'outgoing_date' },
+        { title: 'Action', align: 'end', key: 'is_selected' },
       ],
     };
   },
   computed: {
     computed_outbound_model() {
-      let model = {
-        ContainerId: this.container_id,
-        PackageReferenceNo: this.scanned_items,
-      };
-      return model;
+      return this.items.filter((x) => x.is_selected == true);
     },
   },
+  mounted() {
+    this.getUnassignPackages();
+  },
   methods: {
-    addToTable() {
-      if (
-        this.decoded_batch_no != '' &&
-        this.scanned_items.indexOf(this.decoded_batch_no) == -1
-      )
-        this.scanned_items.push(this.decoded_batch_no);
-      this.decoded_batch_no = '';
-    },
-    outbound() {
-      if (this.scanned_items.length > 0) {
-        ApiService._post('outbound', this.computed_outbound_model)
-          .then(async (response) => {
+    getUnassignPackages() {
+      ApiService._get('outbound/get-empty-container-result')
+        .then(async (response) => {
+          if (response.status == 200) {
             let result = await response.json();
+            this.items = result;
+            this.items.forEach((x) => (x.is_selected = false));
+          } else {
+            this.networkError();
+          }
+        })
+        .catch(() => {
+          this.networkError();
+        });
+    },
+    assign() {
+      if (this.computed_outbound_model.length > 0 && this.container_id != '') {
+        ApiService._post('outbound/update-container-id', {
+          container_id: this.container_id,
+          packages: this.computed_outbound_model,
+        })
+          .then(async (response) => {
             if (response.status == 200) {
-              let result_text = '';
-              if (result.NotExistsReferenceNo.length > 0)
-                result_text += `Batch No not exists : ${result.NotExistsReferenceNo.toString()} \n`;
-              if (result.OutboundedReferenceNo.length > 0)
-                result_text += `Batch No has been outbound : ${result.OutboundedReferenceNo.toString()} \n`;
               Swal.fire({
                 icon: 'success',
-                title: 'Outbound success.',
-                text: result_text == '' ? `` : result_text,
+                title: 'Container Id assign successfully.',
               });
-              this.scanned_items = [];
-              this.container_id = '';
+              this.getUnassignPackages();
             } else {
               Swal.fire({
                 icon: 'error',
-                title: 'Outbound Error.',
-                text: 'Contact Administrator! Outbound process unavailable.',
+                title: 'Container Id assign error.',
+                text: 'Contact Administrator! Please input valid container id.',
               });
             }
           })
           .catch(() => {
-            Swal.fire({
-              icon: 'error',
-              title: 'Network Error. Could not connect to api service.',
-              text: 'Contact Administrator!',
-            });
+            this.networkError();
           });
-      } else {
+      } else if (this.computed_outbound_model.length == 0) {
         Swal.fire({
           icon: 'warning',
-          title: 'Packages reference number cannot be empty',
+          title: 'Please select at least one package number.',
+        });
+      } else if (this.container_id == '') {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Please input container Id.',
         });
       }
-    },
-    remove(ref_no) {
-      let index = this.scanned_items.indexOf(ref_no);
-      if (index > -1) {
-        // only splice array when item is found
-        this.scanned_items.splice(index, 1); // 2nd parameter means remove one item only
-      }
-    },
-    async reloadPage() {
-      await this.timeout(500);
-      window.location.reload();
     },
     timeout(ms) {
       return new Promise((resolve) => {
         window.setTimeout(resolve, ms);
       });
+    },
+    networkError() {
+      Swal.fire({
+        icon: 'error',
+        title: 'Network Error. Could not connect to api service.',
+        text: 'Contact Administrator!',
+      });
+    },
+    dateFormat(content) {
+      return new Date(content).toString().replace(' GMT+0800 (Malaysia Time)','');
     },
   },
 };
