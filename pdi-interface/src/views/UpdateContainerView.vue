@@ -23,15 +23,6 @@
             @click="assign"
             >Assign</v-btn
           >
-          <!-- <v-text-field
-            class="col-lg-3 col-md-6 col-sm-12"
-            required
-            hide-details="auto"
-            v-model="decoded_batch_no"
-            label="Package No"
-            prepend-icon="mdi-qrcode"
-            @keydown.enter.prevent="addToTable"
-          ></v-text-field> -->
           <v-data-table
             v-model:items-per-page="itemsPerPage"
             :headers="headers"

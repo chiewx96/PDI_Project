@@ -20,6 +20,12 @@ namespace PDI_Feather_Tracking_API.Controllers
             _outboundService = outboundService;
         }
 
+        [HttpGet("get-empty-container-result")]
+        public ActionResult GetUnassignContainerResults()
+        {
+           return Ok(_outboundService.GetUnassignContainerResults());
+        }
+
         [HttpGet("cancel/{batch_no}")]
         public ActionResult CancelOutbound(string batch_no)
         {
@@ -65,6 +71,14 @@ namespace PDI_Feather_Tracking_API.Controllers
         private string get_user_id()
         {
             return (HttpContext.User.Identity as ClaimsIdentity).FindFirst("id").Value;
+        }
+
+        [HttpPost("update-container-id")]
+        public ActionResult UpdateContainerIdForOutboundedItems(Dictionary<string, object> requestModel)
+        {
+            string user_id = get_user_id();
+            _outboundService.UpdateContainerIdForOutboundedItems(requestModel, user_id);
+            return Ok();
         }
     }
 }
