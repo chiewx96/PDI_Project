@@ -1,4 +1,12 @@
 # PDI_Project
+- This is part of a warehouse tracking/management system that will keep track of details of products being entered and shipped out.
+- When production finished packing a bag of product, the bag will be put on top of the weighting machine.
+- Once the stable weight is captured (3 seconds), system will store the weight of the bag with auto generated fixed formatting reference number into database.
+- System will prints out label for operator to stick onto the bag.
+- Only those bags with label allow to enter warehouse for storage.
+- For products that need to be ship to customers, operator have to use handheld to scan qr code on each label stick on top of the bag, and these data will be updated to database.
+- The officer then able to view how many bags with weight and inbound date & time.
+- The officer will get to filter those products and generate delivery order / warehouse reports.
 
 ## Required software
 1. Mysql
